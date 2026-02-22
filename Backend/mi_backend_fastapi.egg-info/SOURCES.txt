@@ -1,0 +1,12 @@
+README.md
+pyproject.toml
+app/config.py
+app/database.py
+app/main.py
+app/routers/items.py
+app/schemas/item.py
+mi_backend_fastapi.egg-info/PKG-INFO
+mi_backend_fastapi.egg-info/SOURCES.txt
+mi_backend_fastapi.egg-info/dependency_links.txt
+mi_backend_fastapi.egg-info/requires.txt
+mi_backend_fastapi.egg-info/top_level.txt
