@@ -2,39 +2,40 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.routers import items
+from app.api.v1 import api_router
 
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
     description="""
-## Backend conectado a Supabase 🚀
+## Backend KDS conectado a Supabase 🚀
 
-Esta API fue generada con **FastAPI** y se conecta a **Supabase** como base de datos.
+### Módulos disponibles
+- **Empresas** — CRUD completo con soft delete y paginación
+- **Sucursales** — *(próximamente)*
+- **Perfiles de Usuario** — *(próximamente)*
+- **Usuarios × Sucursales** — *(próximamente)*
 
-### Documentación disponible
-- **Swagger UI**: `/docs`
-- **ReDoc**: `/redoc`
-- **OpenAPI JSON**: `/openapi.json`
+### Documentación
+- Swagger UI: `/docs`
+- ReDoc: `/redoc`
     """,
     docs_url="/docs",
     redoc_url="/redoc",
 )
 
-# ─── CORS ────────────────────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Cambia a tu dominio en producción
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # ─── Routers ─────────────────────────────────────────────────
-app.include_router(items.router, prefix="/api/v1")
+app.include_router(api_router)
 
 
-# ─── Health Check ────────────────────────────────────────────
 @app.get("/", tags=["Health"], summary="Health check")
 def root():
     """Verifica que el servidor esté corriendo."""
