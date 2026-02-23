@@ -1,24 +1,28 @@
 from supabase import create_client, Client
 from app.config import settings
 
-_supabase_client: Client | None = None
+_client: Client | None = None
+_admin_client: Client | None = None
 
 
 def get_supabase() -> Client:
-    """
-    Devuelve una instancia singleton del cliente Supabase.
-    Úsala como dependencia en tus rutas:
+    """Cliente normal — usa la anon o service_role key para queries de datos."""
+    global _client
+    if _client is None:
+        _client = create_client(settings.supabase_url, settings.supabase_key)
+    return _client
 
-        from app.database import get_supabase
 
-        @router.get("/items")
-        def list_items(db: Client = Depends(get_supabase)):
-            return db.table("items").select("*").execute()
+def get_supabase_admin() -> Client:
     """
-    global _supabase_client
-    if _supabase_client is None:
-        _supabase_client = create_client(
+    Cliente admin — SIEMPRE usa service_role key.
+    Necesario para auth.admin.create_user, delete_user, etc.
+    """
+    global _admin_client
+    if _admin_client is None:
+        from supabase.lib.client_options import ClientOptions
+        _admin_client = create_client(
             settings.supabase_url,
-            settings.supabase_key,
+            settings.supabase_service_key,  # ← service_role obligatorio
         )
-    return _supabase_client
+    return _admin_client

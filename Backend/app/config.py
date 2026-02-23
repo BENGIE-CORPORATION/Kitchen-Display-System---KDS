@@ -44,8 +44,8 @@ class Settings(BaseSettings):
 
     # Supabase
     supabase_url: str
-    supabase_key: str
-    supabase_jwt_secret: str   
-
+    supabase_key: str               # puede ser anon key para queries normales
+    supabase_service_key: str       # service_role key — solo para operaciones admin
+    supabase_jwt_secret: str
 
 settings = Settings()
