@@ -90,6 +90,7 @@ def get_empresas(
     estado: str | None = None,
     tipo_negocio: str | None = None,
     pais: str | None = None,
+    empresa_id: str | None = None, 
 ) -> dict:
     """
     Lista empresas con paginación, ordenamiento y filtros opcionales.
@@ -102,6 +103,8 @@ def get_empresas(
     query = db.table(TABLE_NAME).select("*", count="exact").neq("estado", "inactivo")
 
     # Filtros dinámicos
+    if empresa_id:
+        query = query.eq("id", str(empresa_id))
     if estado:
         query = query.eq("estado", estado)
     if tipo_negocio:
