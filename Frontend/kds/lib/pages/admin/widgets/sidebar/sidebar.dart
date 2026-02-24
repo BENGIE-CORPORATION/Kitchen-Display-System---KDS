@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import '../../../../routes/routes.dart';
 import '../../../../utils/constants/colors.dart';
+import '../../../../utils/constants/sizes.dart';
 import 'menu/menu_item.dart';
 
 class TSidebar extends StatelessWidget {
   final String currentRoute;
+  final Function(String) onItemSelected;
 
   const TSidebar({
     super.key,
     required this.currentRoute,
+    required this.onItemSelected,
   });
 
   @override
@@ -23,9 +26,11 @@ class TSidebar extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column (
           children: [
-            SizedBox(height: 32.0),
+            // image logo: esto lo tiene el mae del video
+            //TCircularImage(widht: 100, height: 100, image: TImages.darkAppLogo, backgroundColor: Colors.transparent):
+            SizedBox(height: TSizes.spaceBtwSections),
             Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(TSizes.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -40,7 +45,7 @@ class TSidebar extends StatelessWidget {
                     itemName: "Dashboard",
                     isActive: currentRoute == TRoutes.dashboard,
                     onTap: () {
-                      Navigator.pushNamed(context, TRoutes.dashboard);
+                      onItemSelected(TRoutes.dashboard);
                     },
                   ),
 
@@ -50,7 +55,7 @@ class TSidebar extends StatelessWidget {
                     itemName: "Ventas",
                     isActive: currentRoute == TRoutes.sales,
                     onTap: () {
-                      Navigator.pushNamed(context, TRoutes.sales);
+                      onItemSelected(TRoutes.sales);
                     },
                   ),
 
@@ -60,7 +65,7 @@ class TSidebar extends StatelessWidget {
                     itemName: "Salón Principal",
                     isActive: currentRoute == TRoutes.mainarea,
                     onTap: () {
-                      Navigator.pushNamed(context, TRoutes.mainarea);
+                      onItemSelected(TRoutes.mainarea);
                     },
                   ),
 
@@ -70,7 +75,7 @@ class TSidebar extends StatelessWidget {
                     itemName: "Caja",
                     isActive: currentRoute == TRoutes.caja,
                     onTap: () {
-                      Navigator.pushNamed(context, TRoutes.caja);
+                      onItemSelected(TRoutes.caja);
                     },
                   ),
 
@@ -80,7 +85,7 @@ class TSidebar extends StatelessWidget {
                     itemName: "Inventario",
                     isActive: currentRoute == TRoutes.inventory,
                     onTap: () {
-                      Navigator.pushNamed(context, TRoutes.inventory);
+                      onItemSelected(TRoutes.inventory);
                     },
                   ),
 
@@ -90,7 +95,7 @@ class TSidebar extends StatelessWidget {
                     itemName: "Proveedores",
                     isActive: currentRoute == TRoutes.providers,
                     onTap: () {
-                      Navigator.pushNamed(context, TRoutes.providers);
+                      onItemSelected(TRoutes.providers);
                     },
                   ),
 
@@ -100,7 +105,7 @@ class TSidebar extends StatelessWidget {
                     itemName: "Menú",
                     isActive: currentRoute == TRoutes.menu,
                     onTap: () {
-                      Navigator.pushNamed(context, TRoutes.menu);
+                      onItemSelected(TRoutes.menu);
                     },
                   ),
 
@@ -110,7 +115,7 @@ class TSidebar extends StatelessWidget {
                     itemName: "Empleados",
                     isActive: currentRoute == TRoutes.employees,
                     onTap: () {
-                      Navigator.pushNamed(context, TRoutes.employees);
+                      onItemSelected(TRoutes.employees);
                     },
                   ),
                   
@@ -120,7 +125,7 @@ class TSidebar extends StatelessWidget {
                     itemName: "Configuración",
                     isActive: currentRoute == TRoutes.config,
                     onTap: () {
-                      Navigator.pushNamed(context, TRoutes.config);
+                      onItemSelected(TRoutes.config);
                     },
                   ),
                 ],

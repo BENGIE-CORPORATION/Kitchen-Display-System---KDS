@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../routes/routes.dart';
+import 'widgets/module_card.dart';
+import '../../utils/constants/sizes.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -13,7 +15,7 @@ class HomePage extends StatelessWidget {
 
           return Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(40),
+              padding: const EdgeInsets.all(TSizes.xxl),
               child: Column(
                 children: [
                   const Text(
@@ -38,10 +40,10 @@ class HomePage extends StatelessWidget {
                     crossAxisSpacing: 24,
                     childAspectRatio: 0.8,
                     children: [
-
-                      _moduleCard(
+                      ModuleCard(
                         title: "App de Empleados",
-                        description: "Gestión de mesas, pedidos y pagos",
+                        description:
+                            "Gestión de mesas, pedidos y pagos",
                         color: Colors.blue,
                         icon: Icons.tablet,
                         onPressed: () {
@@ -49,8 +51,7 @@ class HomePage extends StatelessWidget {
                               context, TRoutes.employee);
                         },
                       ),
-
-                      _moduleCard(
+                      ModuleCard(
                         title: "Kitchen Display",
                         description: "Sistema para cocina",
                         color: Colors.orange,
@@ -60,8 +61,7 @@ class HomePage extends StatelessWidget {
                               context, TRoutes.kitchendisplay);
                         },
                       ),
-
-                      _moduleCard(
+                      ModuleCard(
                         title: "Administración",
                         description:
                             "Dashboard, inventario y configuración",
@@ -79,53 +79,6 @@ class HomePage extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _moduleCard({
-    required String title,
-    required String description,
-    required Color color,
-    required IconData icon,
-    required VoidCallback onPressed,
-  }) {
-    return Card(
-      elevation: 8,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            CircleAvatar(
-              radius: 40,
-              backgroundColor: color.withValues(),
-              child: Icon(
-                icon,
-                size: 40,
-                color: color,
-              ),
-            ),
-            Text(
-              title,
-              style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            Text(
-              description,
-              textAlign: TextAlign.center,
-            ),
-            ElevatedButton(
-              onPressed: onPressed,
-              child: const Text("Abrir Módulo"),
-            )
-          ],
-        ),
       ),
     );
   }

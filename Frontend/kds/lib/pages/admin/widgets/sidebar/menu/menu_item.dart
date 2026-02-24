@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../../utils/constants/colors.dart';
+import '../../../../../utils/constants/sizes.dart';
 
 class TMenuItem extends StatefulWidget {
   const TMenuItem({
@@ -37,11 +38,11 @@ class _TMenuItemState extends State<TMenuItem> {
         });
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        padding: const EdgeInsets.symmetric(vertical: TSizes.xs),
         child: Container(
           decoration: BoxDecoration(
             color: highlighted ? TColors.primary : Colors.transparent,
-            borderRadius: BorderRadius.circular(12.0),
+            borderRadius: BorderRadius.circular(TSizes.cardRadiusMd),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -49,10 +50,10 @@ class _TMenuItemState extends State<TMenuItem> {
 
               Padding(
                 padding: const EdgeInsets.only(
-                  left: 24,
-                  top: 16,
-                  bottom: 16,
-                  right: 16,
+                  left: TSizes.lg,
+                  top: TSizes.md,
+                  bottom: TSizes.md,
+                  right: TSizes.md,
                 ),
                 child: Icon(
                   widget.icon,
