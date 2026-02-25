@@ -10,7 +10,7 @@ import '../pages/admin/inventory/inventory_page.dart';
 import '../pages/admin/mainArea/mainArea_page.dart';
 import '../pages/admin/menu/menu_page.dart';
 import '../pages/admin/providers/providers_page.dart';
-import '../pages/admin/admin_layout.dart';
+//import '../pages/admin/admin_layout.dart';
 import 'routes.dart';
 
 class AppRoutes {
@@ -31,6 +31,6 @@ class AppRoutes {
     
 
     // SOLO ESTA
-    TRoutes.admin: (context) => const AdminLayout(),
+    //TRoutes.admin: (context) => const AdminLayout(),
   };
 }

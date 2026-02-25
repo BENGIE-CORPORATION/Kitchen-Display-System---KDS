@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../routes/routes.dart';
 import 'widgets/module_card.dart';
 import '../../utils/constants/sizes.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -47,8 +48,7 @@ class HomePage extends StatelessWidget {
                         color: Colors.blue,
                         icon: Icons.tablet,
                         onPressed: () {
-                          Navigator.pushNamed(
-                              context, TRoutes.employee);
+                          context.go(TRoutes.employee);
                         },
                       ),
                       ModuleCard(
@@ -57,9 +57,8 @@ class HomePage extends StatelessWidget {
                         color: Colors.orange,
                         icon: Icons.restaurant,
                         onPressed: () {
-                          Navigator.pushNamed(
-                              context, TRoutes.kitchendisplay);
-                        },
+                          context.go(TRoutes.kitchendisplay);
+                          },
                       ),
                       ModuleCard(
                         title: "Administración",
@@ -68,8 +67,7 @@ class HomePage extends StatelessWidget {
                         color: Colors.purple,
                         icon: Icons.dashboard,
                         onPressed: () {
-                          Navigator.pushNamed(
-                              context, TRoutes.admin);
+                          context.go(TRoutes.admin);
                         },
                       ),
                     ],
