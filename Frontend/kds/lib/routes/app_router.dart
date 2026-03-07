@@ -1,15 +1,16 @@
 import 'package:go_router/go_router.dart';
 
-import '../pages/admin/admin_layout.dart';
-import '../pages/admin/dashboard/dashboard_page.dart';
-import '../pages/admin/caja/caja_page.dart';
-import '../pages/admin/config/config_page.dart';
-import '../pages/admin/employees/employees_page.dart';
-import '../pages/admin/inventory/inventory_page.dart';
-import '../pages/admin/mainArea/mainArea_page.dart';
-import '../pages/admin/menu/menu_page.dart';
-import '../pages/admin/providers/providers_page.dart';
-import '../pages/admin/sales/sales_page.dart';
+import '../pages/adminPanel/admin_layout.dart';
+import '../pages/adminPanel/dashboard/dashboard_page.dart';
+import '../pages/adminPanel/caja/caja_page.dart';
+import '../pages/adminPanel/config/config_page.dart';
+import '../pages/adminPanel/employees/employees_page.dart';
+import '../pages/adminPanel/inventory/inventory_page.dart';
+import '../pages/adminPanel/mainArea/mainArea_page.dart';
+import '../pages/adminPanel/menu/menu_page.dart';
+import '../pages/adminPanel/suppliers/suppliers_page.dart';
+import '../pages/adminPanel/sales/sales_page.dart';
+import '../pages/adminPanel/page_wrappers.dart';
 import '../pages/home/home_page.dart';
 import '../routes/routes.dart';
 
@@ -29,39 +30,42 @@ final GoRouter appRouter = GoRouter(
       routes: [
         GoRoute(
           path: TRoutes.admin,
-          builder: (context, state) => const DashboardPage(),
+          builder: (context, state) => DashboardPage(key: state.pageKey),
         ),
         GoRoute(
           path: TRoutes.caja,
-          builder: (context, state) => const CajaPage(),
+          builder: (context, state) => CajaPage(key: state.pageKey),
         ),
         GoRoute(
           path: TRoutes.config,
-          builder: (context, state) => const ConfigPage(),
+          builder: (context, state) => ConfigPage(key: state.pageKey),
         ),
         GoRoute(
           path: TRoutes.employees,
-          builder: (context, state) => const EmployeesPage(),
-        ),
-        GoRoute(
-          path: TRoutes.inventory,
-          builder: (context, state) => const InventoryPage(),
-        ),
-        GoRoute(
-          path: TRoutes.mainarea,
-          builder: (context, state) => const MainAreaPage(),
+          builder: (context, state) => EmployeesPage(key: state.pageKey),
         ),
         GoRoute(
           path: TRoutes.menu,
-          builder: (context, state) => const MenuPage(),
+          builder: (context, state) => MenuPage(key: state.pageKey),
+        ),
+
+        // ── Pages con datos del backend ──────────────────────────────────
+        // Cada Screen registra su propio Provider y maneja loading/error
+        GoRoute(
+          path: TRoutes.inventory,
+          builder: (context, state) => InventoryScreen(key: state.pageKey),
+        ),
+        GoRoute(
+          path: TRoutes.mainarea,
+          builder: (context, state) => MainAreaScreen(key: state.pageKey),
         ),
         GoRoute(
           path: TRoutes.providers,
-          builder: (context, state) => const ProvidersPage(),
+          builder: (context, state) => ProvidersScreen(key: state.pageKey),
         ),
         GoRoute(
           path: TRoutes.sales,
-          builder: (context, state) => const SalesPage(),
+          builder: (context, state) => SalesScreen(key: state.pageKey),
         ),
       ],
     ),
