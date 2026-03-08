@@ -1,3 +1,4 @@
+from pydantic import BaseModel, Field, field_validator
 """
 Router de Autenticación.
 Endpoints públicos:   /login, /refresh, /register
@@ -292,3 +293,67 @@ def invite_empleado(
         "password_temporal": temp_password,
         "nota": "Comparte estas credenciales al empleado de forma segura.",
     }
+
+
+# ─── POST /auth/change-password ──────────────────────────────────────────────
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str = Field(min_length=8)
+    new_password: str = Field(min_length=8)
+
+    @field_validator("new_password")
+    @classmethod
+    def validate_strength(cls, v: str) -> str:
+        if not any(c.islower() for c in v):
+            raise ValueError("La contraseña debe tener al menos una minúscula")
+        if not any(c.isupper() for c in v):
+            raise ValueError("La contraseña debe tener al menos una mayúscula")
+        if not any(c.isdigit() for c in v):
+            raise ValueError("La contraseña debe tener al menos un número")
+        return v
+
+
+@router.post(
+    "/change-password",
+    response_model=MessageResponse,
+    summary="Cambiar contraseña",
+    description="""
+Permite al usuario cambiar su contraseña verificando la actual primero.
+Útil para empleados que recibieron una contraseña temporal via `/auth/invite`.
+
+**Requiere:** `Authorization: Bearer <access_token>`
+    """,
+)
+@limiter.limit("5/hour", key_func=get_user_id_from_token)  # 🚦 5 cambios por hora
+def change_password(
+    request: Request,
+    data: ChangePasswordRequest,
+    current_user: Annotated[dict, Depends(get_current_user)],
+    db: Annotated[Client, Depends(get_supabase)],
+    db_admin: Annotated[Client, Depends(get_supabase_admin)],
+) -> dict:
+    email = current_user.get("email")
+
+    # 1. Verificar que la contraseña actual es correcta
+    try:
+        db.auth.sign_in_with_password({"email": email, "password": data.current_password})
+    except Exception:
+        logger.warning("Change-password fallido (contraseña incorrecta) | email={email}", email=email)
+        raise BadRequestException("La contraseña actual es incorrecta")
+
+    # 2. Verificar que la nueva contraseña es distinta a la actual
+    if data.current_password == data.new_password:
+        raise BadRequestException("La nueva contraseña debe ser diferente a la actual")
+
+    # 3. Actualizar en Supabase Auth
+    try:
+        db_admin.auth.admin.update_user_by_id(
+            str(current_user["id"]),
+            {"password": data.new_password},
+        )
+    except Exception as e:
+        logger.error("Error cambiando contraseña | email={email} | error={error}", email=email, error=str(e))
+        raise BadRequestException(f"No se pudo cambiar la contraseña: {str(e)}")
+
+    logger.info("Contraseña cambiada | email={email}", email=email)
+    return {"message": "Contraseña actualizada correctamente"}

@@ -2,7 +2,8 @@ import platform
 import time
 from datetime import UTC, datetime
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from loguru import logger
@@ -16,8 +17,18 @@ from app.core.limiter import limiter
 from app.core.logger import setup_logger
 from app.core.middleware import RequestLoggingMiddleware
 
-# ── Inicializar logger PRIMERO — antes de cualquier otra cosa ─────────────────
+# ── Logger — debe ser lo primero ──────────────────────────────────────────────
 setup_logger(debug=settings.debug)
+
+# ── Validación de settings en producción ──────────────────────────────────────
+if settings.is_production:
+    errors = settings.validate_production_settings()
+    if errors:
+        for err in errors:
+            logger.critical("CONFIG ERROR: {err}", err=err)
+        raise RuntimeError(
+            f"Configuración inválida para producción:\n" + "\n".join(f"  - {e}" for e in errors)
+        )
 
 _START_TIME = time.time()
 
@@ -29,7 +40,7 @@ app = FastAPI(
 ## Backend KDS — API
 
 ### Módulos
-- **Auth** — Login, registro, invite, refresh, logout
+- **Auth** — Login, registro, invite, refresh, logout, change-password
 - **Empresas** — CRUD completo con soft/hard delete y paginación
 - **Sucursales** — CRUD con sincronización de asignaciones
 - **Perfiles de Usuario** — CRUD con control de roles y estados
@@ -38,22 +49,22 @@ app = FastAPI(
 ### Docs
 - Swagger UI: `/docs` | ReDoc: `/redoc` | Health: `/health`
     """,
-    docs_url="/docs",
-    redoc_url="/redoc",
+    docs_url="/docs" if not settings.is_production else None,   # desactivar docs en prod
+    redoc_url="/redoc" if not settings.is_production else None,
 )
 
-# ── Rate limiter — debe ir antes de los routers ───────────────────────────────
+# ── Rate limiter ──────────────────────────────────────────────────────────────
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(SlowAPIMiddleware)
 
-# ── Logging de requests — intercepta todo ────────────────────────────────────
+# ── Logging de requests ───────────────────────────────────────────────────────
 app.add_middleware(RequestLoggingMiddleware)
 
 # ── CORS ─────────────────────────────────────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # en producción reemplazar con dominios específicos
+    allow_origins=["*"],   # en producción: reemplazar con dominios reales
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -63,18 +74,73 @@ app.add_middleware(
 app.include_router(api_router)
 
 logger.info(
-    "Servidor iniciado | app={app} | v={version} | debug={debug}",
+    "Servidor iniciado | app={app} | v={version} | env={env} | debug={debug}",
     app=settings.app_name,
     version=settings.app_version,
+    env=settings.app_env,
     debug=settings.debug,
 )
+
+
+# ─── Exception handlers globales ─────────────────────────────────────────────
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """
+    Captura errores de validación de Pydantic (422).
+    Los formatea de forma consistente con el resto de errores de la app.
+    """
+    errors = []
+    for error in exc.errors():
+        field = " → ".join(str(loc) for loc in error["loc"] if loc != "body")
+        errors.append({"field": field, "message": error["msg"]})
+
+    logger.warning(
+        "Validación fallida | {method} {path} | errores={errors}",
+        method=request.method,
+        path=request.url.path,
+        errors=errors,
+    )
+
+    return JSONResponse(
+        status_code=422,
+        content={
+            "error": "VALIDATION_ERROR",
+            "detail": "Los datos enviados no son válidos",
+            "fields": errors,
+        },
+    )
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    """
+    Captura cualquier excepción no manejada.
+    - Loguea el stacktrace completo en errors.log
+    - Retorna 500 genérico al cliente (sin exponer internos)
+    """
+    logger.exception(
+        "Excepción no manejada | {method} {path} | {exc_type}: {exc}",
+        method=request.method,
+        path=request.url.path,
+        exc_type=type(exc).__name__,
+        exc=str(exc),
+    )
+
+    # En desarrollo muestra el error real, en producción respuesta genérica
+    detail = str(exc) if settings.debug else "Error interno del servidor"
+
+    return JSONResponse(
+        status_code=500,
+        content={"error": "INTERNAL_ERROR", "detail": detail},
+    )
 
 
 # ─── Ping ─────────────────────────────────────────────────────────────────────
 
 @app.get("/", tags=["Health"], include_in_schema=False)
 def root():
-    return {"status": "ok", "version": settings.app_version}
+    return {"status": "ok", "version": settings.app_version, "env": settings.app_env}
 
 
 # ─── Health check completo ────────────────────────────────────────────────────
@@ -82,11 +148,10 @@ def root():
 @app.get("/health", tags=["Health"], summary="Health check completo")
 def health_check():
     """
-    Estado de todos los componentes del sistema.
-
-    - `healthy`  → todo OK
-    - `degraded` → funciona pero algo falla (Auth caído, variable faltante)
-    - `unhealthy` → fallo crítico — HTTP 503
+    Estado de todos los componentes.
+    - `healthy`  → todo OK (HTTP 200)
+    - `degraded` → funciona con limitaciones (HTTP 200)
+    - `unhealthy` → fallo crítico (HTTP 503)
     """
     checks = {}
     overall = "healthy"
@@ -97,12 +162,11 @@ def health_check():
         db = get_supabase()
         t = time.time()
         db.table("empresas").select("id").limit(1).execute()
-        latency_ms = round((time.time() - t) * 1000, 2)
-        checks["supabase_db"] = {"status": "ok", "latency_ms": latency_ms}
+        checks["supabase_db"] = {"status": "ok", "latency_ms": round((time.time() - t) * 1000, 2)}
     except Exception as e:
         checks["supabase_db"] = {"status": "error", "message": str(e)[:120]}
         overall = "unhealthy"
-        logger.error("Health: Supabase DB caída | error={error}", error=str(e)[:120])
+        logger.error("Health: Supabase DB caída | {error}", error=str(e)[:120])
 
     # ── Supabase Auth ─────────────────────────────────────────────────────────
     try:
@@ -110,37 +174,29 @@ def health_check():
         db_admin = get_supabase_admin()
         t = time.time()
         db_admin.auth.admin.list_users()
-        latency_ms = round((time.time() - t) * 1000, 2)
-        checks["supabase_auth"] = {"status": "ok", "latency_ms": latency_ms}
+        checks["supabase_auth"] = {"status": "ok", "latency_ms": round((time.time() - t) * 1000, 2)}
     except Exception as e:
         checks["supabase_auth"] = {"status": "error", "message": str(e)[:120]}
         if overall == "healthy":
             overall = "degraded"
-        logger.warning("Health: Supabase Auth degradado | error={error}", error=str(e)[:120])
+        logger.warning("Health: Supabase Auth degradado | {error}", error=str(e)[:120])
 
-    # ── Variables de entorno críticas ─────────────────────────────────────────
-    issues = []
-    if not getattr(settings, "supabase_service_key", None):
-        issues.append("SUPABASE_SERVICE_KEY no definida")
-    if not getattr(settings, "supabase_jwt_secret", None):
-        issues.append("SUPABASE_JWT_SECRET no definida")
-    if getattr(settings, "secret_key", "cambia-esto") == "cambia-esto":
-        issues.append("SECRET_KEY usa valor por defecto — inseguro en producción")
-
-    if issues:
-        checks["config"] = {"status": "warning", "issues": issues}
+    # ── Config ────────────────────────────────────────────────────────────────
+    config_errors = settings.validate_production_settings() if settings.is_production else []
+    if config_errors:
+        checks["config"] = {"status": "warning", "issues": config_errors}
         if overall == "healthy":
             overall = "degraded"
     else:
         checks["config"] = {"status": "ok"}
 
-    # ── Tablas requeridas ─────────────────────────────────────────────────────
-    tablas_requeridas = ["empresas", "sucursales", "perfiles_usuario", "usuarios_sucursales"]
+    # ── Tablas ────────────────────────────────────────────────────────────────
+    tablas = ["empresas", "sucursales", "perfiles_usuario", "usuarios_sucursales"]
     faltantes = []
     try:
         from app.database import get_supabase
         db = get_supabase()
-        for tabla in tablas_requeridas:
+        for tabla in tablas:
             try:
                 db.table(tabla).select("id").limit(1).execute()
             except Exception:
@@ -148,9 +204,8 @@ def health_check():
         if faltantes:
             checks["tablas"] = {"status": "error", "faltantes": faltantes}
             overall = "unhealthy"
-            logger.error("Health: tablas faltantes | tablas={tablas}", tablas=faltantes)
         else:
-            checks["tablas"] = {"status": "ok", "count": len(tablas_requeridas)}
+            checks["tablas"] = {"status": "ok", "count": len(tablas)}
     except Exception as e:
         checks["tablas"] = {"status": "error", "message": str(e)[:120]}
 
@@ -158,22 +213,15 @@ def health_check():
     uptime_s = round(time.time() - _START_TIME, 1)
     system = {
         "python": platform.python_version(),
-        "platform": platform.system(),
-        "environment": "development" if settings.debug else "production",
+        "environment": settings.app_env,
         "uptime_seconds": uptime_s,
         "uptime_human": _fmt_uptime(uptime_s),
         "timestamp_utc": datetime.now(UTC).isoformat(),
     }
 
-    status_code = 503 if overall == "unhealthy" else 200
     return JSONResponse(
-        status_code=status_code,
-        content={
-            "status": overall,
-            "version": settings.app_version,
-            "components": checks,
-            "system": system,
-        },
+        status_code=503 if overall == "unhealthy" else 200,
+        content={"status": overall, "version": settings.app_version, "components": checks, "system": system},
     )
 
 

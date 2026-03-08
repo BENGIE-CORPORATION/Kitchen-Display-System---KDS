@@ -3,22 +3,24 @@ Router de Empresas — solo lógica HTTP.
 Toda la lógica de base de datos vive en app/crud/crud_empresa.py
 
 Seguridad:
-  - GET /empresas         → cualquier usuario autenticado
-  - GET /empresas/{id}    → autenticado + pertenece a esa empresa
-  - POST /empresas        → solo super_admin
-  - PATCH /empresas/{id}  → admin_empresa (su empresa) o super_admin
-  - DELETE /empresas/{id} → admin_empresa (su empresa) o super_admin
-  - DELETE /empresas/{id}/hard → solo super_admin
+  GET    /empresas/        → autenticado (empleado/admin ven solo su empresa, super_admin ve todas)
+  GET    /empresas/{id}    → autenticado + pertenece a esa empresa
+  POST   /empresas/        → solo super_admin
+  PATCH  /empresas/{id}    → admin_empresa (su empresa) o super_admin
+  DELETE /empresas/{id}    → admin_empresa (su empresa) o super_admin  [soft]
+  DELETE /empresas/{id}/hard → solo super_admin
 """
 
 from datetime import UTC, datetime
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query, Request, status
+from loguru import logger
 from supabase import Client
 
 from ...core.exceptions.http_exceptions import DuplicateValueException, NotFoundException
+from ...core.limiter import get_user_id_from_token, limiter
 from ...core.pagination import PaginatedResponse
 from ...core.security import (
     get_current_admin,
@@ -56,7 +58,9 @@ router = APIRouter(prefix="/empresas", tags=["Empresas"])
     summary="Crear empresa",
     description="Registra una nueva empresa en el sistema. **Solo super_admin.**",
 )
+@limiter.limit("20/hour", key_func=get_user_id_from_token)  # 🚦 creación de empresas es poco frecuente
 def write_empresa(
+    request: Request,
     empresa: EmpresaCreate,
     db: Annotated[Client, Depends(get_supabase)],
     current_user: Annotated[dict, Depends(get_current_superadmin)],  # 🔒 solo super_admin
@@ -67,7 +71,15 @@ def write_empresa(
         raise DuplicateValueException("El email ya está registrado")
 
     internal = EmpresaCreateInternal(**empresa.model_dump())
-    return create_empresa(db, internal)
+    nueva = create_empresa(db, internal)
+
+    logger.info(
+        "Empresa creada | id={id} | nombre={nombre} | por={admin}",
+        id=nueva.get("id"),
+        nombre=nueva.get("nombre_comercial"),
+        admin=current_user.get("email"),
+    )
+    return nueva
 
 
 # ─── GET /empresas ── cualquier usuario autenticado ───────────────────────────
@@ -76,7 +88,7 @@ def write_empresa(
     "/",
     response_model=PaginatedResponse[EmpresaRead],
     summary="Listar empresas",
-    description="Lista paginada de empresas. El empleado solo verá su empresa; super_admin ve todas.",
+    description="Lista paginada de empresas. Empleado/admin ven solo su empresa; super_admin ve todas.",
 )
 def read_empresas(
     db: Annotated[Client, Depends(get_supabase)],
@@ -89,7 +101,7 @@ def read_empresas(
     tipo_negocio: str | None = None,
     pais: str | None = None,
 ) -> dict:
-    # Empleados y admins solo ven SU empresa
+    # Empleados y admins solo ven SU empresa — super_admin ve todas
     empresa_id_filtro = None
     if current_user.get("rol_global") != "super_admin":
         empresa_id_filtro = current_user.get("empresa_id")
@@ -136,7 +148,9 @@ def read_empresa(
     summary="Actualizar empresa",
     description="Actualiza parcialmente una empresa. Requiere ser admin de esa empresa.",
 )
+@limiter.limit("30/hour", key_func=get_user_id_from_token)  # 🚦 escrituras moderadas
 def patch_empresa(
+    request: Request,
     empresa_id: UUID,
     values: EmpresaUpdate,
     db: Annotated[Client, Depends(get_supabase)],
@@ -159,10 +173,16 @@ def patch_empresa(
     updated = update_empresa(db, empresa_id, internal)
     if not updated:
         raise NotFoundException("No se pudo actualizar la empresa")
+
+    logger.info(
+        "Empresa actualizada | id={id} | por={admin}",
+        id=str(empresa_id),
+        admin=current_user.get("email"),
+    )
     return updated
 
 
-# ─── DELETE /empresas/{id} ── soft delete, admin de esa empresa ───────────────
+# ─── DELETE /empresas/{id} ── soft delete ─────────────────────────────────────
 
 @router.delete(
     "/{empresa_id}",
@@ -170,7 +190,9 @@ def patch_empresa(
     summary="Desactivar empresa (soft delete)",
     description="Marca la empresa como inactiva. Requiere ser admin de esa empresa.",
 )
+@limiter.limit("10/hour", key_func=get_user_id_from_token)  # 🚦 operación crítica
 def delete_empresa(
+    request: Request,
     empresa_id: UUID,
     db: Annotated[Client, Depends(get_supabase)],
     current_user: Annotated[dict, Depends(get_current_admin)],  # 🔒 admin o superior
@@ -181,6 +203,13 @@ def delete_empresa(
 
     verify_empresa_access(current_user, empresa_id)  # 🔒 verifica que sea su empresa
     soft_delete_empresa(db, empresa_id)
+
+    logger.warning(
+        "Empresa desactivada [soft] | id={id} | nombre={nombre} | por={admin}",
+        id=str(empresa_id),
+        nombre=empresa.get("nombre_comercial"),
+        admin=current_user.get("email"),
+    )
     return {"message": f"Empresa '{empresa['nombre_comercial']}' desactivada correctamente"}
 
 
@@ -192,13 +221,23 @@ def delete_empresa(
     summary="Eliminar empresa permanentemente",
     description="Borra físicamente el registro. **Solo super_admin. Irreversible.**",
 )
+@limiter.limit("5/hour", key_func=get_user_id_from_token)  # 🚦 operación irreversible — límite estricto
 def hard_delete_empresa_endpoint(
+    request: Request,
     empresa_id: UUID,
     db: Annotated[Client, Depends(get_supabase)],
     current_user: Annotated[dict, Depends(get_current_superadmin)],  # 🔒 solo super_admin
 ) -> dict:
-    if not empresa_exists(db, id=str(empresa_id)):
+    empresa = get_empresa(db, empresa_id)
+    if not empresa:
         raise NotFoundException("Empresa no encontrada")
 
     hard_delete_empresa(db, empresa_id)
+
+    logger.warning(
+        "Empresa ELIMINADA [hard] | id={id} | nombre={nombre} | por={admin}",
+        id=str(empresa_id),
+        nombre=empresa.get("nombre_comercial"),
+        admin=current_user.get("email"),
+    )
     return {"message": "Empresa eliminada permanentemente"}

@@ -21,25 +21,48 @@ source venv/bin/activate        # Mac/Linux
 pip install -e ".[dev]"
 
 # 3. Variables de entorno
-cp .env.example .env
-# Editar .env con las credenciales reales
+cp .env.development.example .env.development
+# Editar con las credenciales reales
 ```
 
-### Variables de entorno requeridas
+### Variables de entorno
 
+El ambiente se controla con `APP_ENV`. `config.py` carga automáticamente el archivo correspondiente:
+
+```bash
+APP_ENV=development make run   # carga .env.development (default)
+APP_ENV=production make run    # carga .env.production
+```
+
+**`.env.development`**
 ```env
-SUPABASE_URL=https://xxx.supabase.co
-SUPABASE_KEY=eyJ...              # anon key — para queries normales
-SUPABASE_SERVICE_KEY=eyJ...      # service_role key — para operaciones admin (invite, delete user)
-SUPABASE_JWT_SECRET=...          # Settings → API → JWT Settings en Supabase Dashboard
-SECRET_KEY=...                   # python -c "import secrets; print(secrets.token_hex(32))"
+APP_ENV=development
 DEBUG=True
+SECRET_KEY=dev-secret-key-no-usar-en-produccion
+
+SUPABASE_URL=https://xxx-dev.supabase.co
+SUPABASE_KEY=eyJ...anon-key-dev...
+SUPABASE_SERVICE_KEY=eyJ...service-role-key-dev...
+SUPABASE_JWT_SECRET=tu-jwt-secret-dev
 ```
 
-> `SUPABASE_SERVICE_KEY` se obtiene en Supabase Dashboard → Settings → API → `service_role`.
-> Nunca exponerla en el frontend.
+**`.env.production`**
+```env
+APP_ENV=production
+DEBUG=False
+SECRET_KEY=genera-con-python-c-import-secrets-print-secrets-token-hex-32
 
-### Levantar el servidor
+SUPABASE_URL=https://xxx-prod.supabase.co
+SUPABASE_KEY=eyJ...anon-key-prod...
+SUPABASE_SERVICE_KEY=eyJ...service-role-key-prod...
+SUPABASE_JWT_SECRET=tu-jwt-secret-prod
+```
+
+> `SUPABASE_SERVICE_KEY` → Supabase Dashboard → Settings → API → `service_role`. Nunca exponerla en el frontend.
+> En producción el servidor **no arranca** si `SECRET_KEY` es el valor por defecto, `DEBUG=True`, o faltan keys críticas.
+> Usar **dos proyectos Supabase distintos** — nunca apuntar al proyecto de producción desde local.
+
+### Comandos
 
 ```bash
 make run          # http://localhost:8000
@@ -49,7 +72,7 @@ make format       # ruff format
 make test         # pytest
 ```
 
-**Documentación interactiva:** `http://localhost:8000/docs`
+**Documentación interactiva:** `http://localhost:8000/docs` (desactivada automáticamente en producción)
 
 ---
 
@@ -97,12 +120,16 @@ app/
 │   └── usuario_sucursal.py
 ├── core/
 │   ├── security.py          # Dependencias de autenticación
+│   ├── sanitizer.py         # Limpieza de inputs de texto
+│   ├── limiter.py           # Rate limiting (slowapi)
+│   ├── logger.py            # Configuración de loguru
+│   ├── middleware.py        # Logging por request
 │   ├── pagination.py        # PaginatedResponse reutilizable
 │   └── exceptions/
 │       └── http_exceptions.py
-├── config.py                # Settings (lee versión de pyproject.toml)
+├── config.py                # Settings multi-ambiente
 ├── database.py              # Clientes Supabase (normal + admin)
-└── main.py                  # App FastAPI, routers, CORS
+└── main.py                  # App FastAPI, middlewares, exception handlers
 ```
 
 ---
@@ -111,20 +138,19 @@ app/
 
 Hay **dos clientes** en `app/database.py`:
 
-| Cliente | Función | Cuándo usarlo |
-|---------|---------|---------------|
-| `get_supabase()` | Queries normales (SELECT, INSERT, UPDATE) | La mayoría de endpoints |
-| `get_supabase_admin()` | Operaciones de auth admin | `invite`, `delete_user`, revocar sesiones |
+| Cliente | Key usada | Cuándo usarlo |
+|---------|-----------|---------------|
+| `get_supabase()` | `SUPABASE_KEY` (anon) | Queries normales — SELECT, INSERT, UPDATE |
+| `get_supabase_admin()` | `SUPABASE_SERVICE_KEY` (service_role) | `auth.admin.*` — invite, delete_user, revocar sesiones |
 
 ```python
-# Uso en un router
 def mi_endpoint(
     db: Annotated[Client, Depends(get_supabase)],
     db_admin: Annotated[Client, Depends(get_supabase_admin)],  # solo si necesitas auth.admin.*
 ):
 ```
 
-`get_supabase_admin()` usa `SUPABASE_SERVICE_KEY`. Sin esta key las operaciones como crear usuarios dan `"User not allowed"`.
+Sin `SUPABASE_SERVICE_KEY` las operaciones admin retornan `"User not allowed"`.
 
 ---
 
@@ -133,21 +159,19 @@ def mi_endpoint(
 ### Flujo de tokens
 
 ```
-Login → Supabase valida credenciales → retorna { access_token, refresh_token }
+Login → Supabase valida credenciales → { access_token, refresh_token }
 Cada request → Header: Authorization: Bearer <access_token>
-Token expira (1h por defecto) → POST /auth/refresh con refresh_token → nuevo access_token
+Token expira (1h) → POST /auth/refresh → nuevo access_token
 ```
 
 ### Dependencias de seguridad (`app/core/security.py`)
-
-Se inyectan con `Depends()` en los endpoints:
 
 ```python
 get_current_user       # JWT válido + perfil activo en perfiles_usuario
 get_current_admin      # rol_global = admin_empresa | super_admin
 get_current_superadmin # rol_global = super_admin únicamente
 
-verify_empresa_access(current_user, empresa_id)   # el recurso pertenece a tu empresa
+verify_empresa_access(current_user, empresa_id)        # recurso pertenece a tu empresa
 verify_sucursal_access(db, current_user, sucursal_id)  # tienes asignación en esa sucursal
 ```
 
@@ -166,6 +190,112 @@ auth.users (Supabase — NO tocar directamente)
      ↕ mismo UUID
 public.perfiles_usuario (tuya — aquí viven rol, empresa, estado)
 ```
+
+---
+
+## Errores — formato estándar
+
+Todas las excepciones retornan body estructurado con código de máquina:
+
+```json
+{ "error": "NOT_FOUND", "detail": "Empresa no encontrada" }
+{ "error": "VALIDATION_ERROR", "detail": "Datos inválidos", "fields": [...] }
+{ "error": "INTERNAL_ERROR", "detail": "Error interno del servidor" }
+```
+
+| Clase | HTTP | `error` |
+|-------|------|---------|
+| `NotFoundException` | 404 | `NOT_FOUND` |
+| `DuplicateValueException` | 409 | `DUPLICATE_VALUE` |
+| `ForbiddenException` | 403 | `FORBIDDEN` |
+| `UnauthorizedException` | 401 | `UNAUTHORIZED` |
+| `BadRequestException` | 400 | `BAD_REQUEST` |
+| `RateLimitException` | 429 | `RATE_LIMIT_EXCEEDED` |
+| `ServiceUnavailableException` | 503 | `SERVICE_UNAVAILABLE` |
+
+En desarrollo los errores 500 muestran el mensaje real. En producción siempre retornan `"Error interno del servidor"` y el stacktrace va a `logs/errors.log`.
+
+---
+
+## Rate limiting
+
+Definido en `app/core/limiter.py`. Límite global: **120 req/min por IP**.
+
+| Endpoint | Límite | Por |
+|----------|--------|-----|
+| `POST /auth/login` | 5 / minuto | IP |
+| `POST /auth/register` | 3 / hora | IP |
+| `POST /auth/refresh` | 20 / minuto | IP |
+| `POST /auth/invite` | 20 / hora | Usuario autenticado |
+| `POST /auth/logout` | 10 / minuto | Usuario autenticado |
+| `POST /auth/change-password` | 5 / hora | Usuario autenticado |
+| Resto de endpoints | 120 / minuto | IP (global) |
+
+Al superarse retorna `429` con `{ "error": "RATE_LIMIT_EXCEEDED" }`.
+
+Para agregar límite a un endpoint nuevo:
+```python
+from app.core.limiter import limiter, get_user_id_from_token
+
+@router.post("/mi-ruta")
+@limiter.limit("10/minute")                              # por IP
+@limiter.limit("5/hour", key_func=get_user_id_from_token)  # por usuario
+def mi_endpoint(request: Request, ...):   # Request debe ser primer parámetro
+```
+
+---
+
+## Logging
+
+Configurado en `app/core/logger.py`. Se inicializa en `main.py` antes de todo.
+
+| Archivo | Contenido | Rotación | Retención |
+|---------|-----------|----------|-----------|
+| Consola | Todo (coloreado) | — | — |
+| `logs/app.log` | INFO+ | 10 MB | 30 días |
+| `logs/errors.log` | ERROR+ con stacktrace | 5 MB | 90 días |
+
+Para loguear desde cualquier archivo:
+```python
+from app.core.logger import logger
+
+logger.info("Empresa creada | id={id}", id=empresa_id)
+logger.warning("Intento fallido | email={email}", email=email)
+logger.error("Fallo Supabase | error={error}", error=str(e))
+```
+
+El middleware en `app/core/middleware.py` loguea automáticamente cada request con método, path, status, latencia y usuario. Agrega `X-Request-ID` al response header para correlacionar logs.
+
+---
+
+## Sanitización de inputs
+
+`app/core/sanitizer.py` limpia texto antes de guardarlo. Úsarlo en `@field_validator` de los schemas:
+
+```python
+from app.core.sanitizer import sanitize_strict, sanitize_text
+from pydantic import field_validator
+
+class EmpresaCreate(BaseModel):
+    nombre_legal: str
+    descripcion: str | None = None
+
+    @field_validator("nombre_legal")
+    @classmethod
+    def clean_nombre(cls, v: str) -> str:
+        return sanitize_strict(v)   # elimina HTML, null bytes, caracteres especiales
+
+    @field_validator("descripcion")
+    @classmethod
+    def clean_desc(cls, v: str | None) -> str | None:
+        return sanitize_text(v) if v else None   # más permisivo, permite saltos de línea
+```
+
+| Función | Uso | Elimina |
+|---------|-----|---------|
+| `sanitize_strict()` | Nombres, códigos, identificaciones | HTML, null bytes, caracteres especiales, saltos de línea |
+| `sanitize_text()` | Descripciones, direcciones, notas | HTML, null bytes, espacios múltiples |
+| `sanitize_email()` | Emails | Espacios, convierte a lowercase |
 
 ---
 
@@ -207,8 +337,10 @@ Todos bajo `/api/v1/`. Requieren `Authorization: Bearer <token>` salvo `/auth/lo
 | GET | `/me` | Autenticado | Perfil propio + sucursales asignadas |
 | POST | `/logout` | Autenticado | Invalida sesión |
 | POST | `/invite` | admin_empresa · super_admin | Crea empleado con contraseña temporal |
+| POST | `/change-password` | Autenticado | Cambia contraseña verificando la actual |
 
-> `/invite` retorna `password_temporal` en la respuesta. El admin la comparte al empleado de forma segura fuera del sistema.
+> `/invite` retorna `password_temporal`. El admin la comparte al empleado fuera del sistema.
+> Los empleados deben usar `/change-password` al recibir su contraseña temporal.
 
 ### Empresas `/empresas`
 
@@ -262,7 +394,7 @@ Todos bajo `/api/v1/`. Requieren `Authorization: Bearer <token>` salvo `/auth/lo
 
 ## Sincronizaciones críticas
 
-Estas operaciones tienen efectos en cascada que el CRUD maneja automáticamente:
+El CRUD maneja estos efectos en cascada automáticamente:
 
 | Operación | Efecto en cascada |
 |-----------|------------------|
@@ -271,7 +403,7 @@ Estas operaciones tienen efectos en cascada que el CRUD maneja automáticamente:
 | Soft delete de **perfil** | Desactiva asignaciones + revoca sesiones activas en Supabase Auth |
 | Hard delete de **perfil** | Elimina asignaciones → perfil → `auth.users` en ese orden |
 | Desactivar **asignación principal** | Promueve automáticamente la siguiente asignación activa como principal |
-| Crear **primer invite** | La primera sucursal asignada se marca automáticamente como `es_principal = true` |
+| Crear **primer invite** | Primera sucursal asignada se marca como `es_principal = true` |
 
 ---
 
@@ -290,7 +422,6 @@ Seguir este orden:
 ### Skeleton mínimo de un CRUD
 
 ```python
-# app/crud/crud_mi_recurso.py
 from ..models.mi_recurso import TABLE_NAME
 
 def get_mi_recurso(db: Client, recurso_id: UUID) -> dict | None:
@@ -305,16 +436,17 @@ def create_mi_recurso(db: Client, data: MiRecursoCreateInternal) -> dict:
 ### Skeleton mínimo de un router
 
 ```python
-# app/api/v1/mi_recurso.py
 from ...core.security import get_current_user, get_current_admin
+from ...core.limiter import limiter
 
 router = APIRouter(prefix="/mi-recurso", tags=["Mi Recurso"])
 
 @router.get("/{id}", response_model=MiRecursoRead)
 def read_mi_recurso(
+    request: Request,
     id: UUID,
     db: Annotated[Client, Depends(get_supabase)],
-    current_user: Annotated[dict, Depends(get_current_user)],  # 🔒
+    current_user: Annotated[dict, Depends(get_current_user)],
 ) -> dict:
     recurso = get_mi_recurso(db, id)
     if not recurso:
@@ -333,16 +465,12 @@ La versión vive **únicamente** en `pyproject.toml`:
 version = "0.2.0"
 ```
 
-`app/config.py` la lee automáticamente. No hay que cambiarla en ningún otro lugar.
+`app/config.py` la lee automáticamente. No cambiarla en ningún otro lugar.
 
 ---
 
 ## Pendiente / Próximos pasos
 
-- [ ] Row Level Security (RLS) en Supabase — actualmente deshabilitado para desarrollo
-- [ ] Rate limiting con `slowapi`
-- [ ] Logging estructurado con `loguru`
-- [ ] Conversión a `async def` en todos los endpoints para mayor concurrencia
-- [ ] CI/CD con GitHub Actions
-- [ ] Variables de entorno separadas: `development` / `staging` / `production`
-- [ ] Monitoreo de errores con Sentry
+- [ ] Row Level Security (RLS) en Supabase — implementar antes de ir a producción
+- [ ] Sentry para monitoreo de errores en tiempo real
+- [ ] Redis para caché de endpoints de lectura frecuente (`/me`, `/sucursales/`)
