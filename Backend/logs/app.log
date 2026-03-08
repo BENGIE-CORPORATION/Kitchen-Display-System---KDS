@@ -1,0 +1,6 @@
+2026-03-07 20:18:48 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-03-07 20:18:48 | INFO     | app.main:65 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | debug=True
+2026-03-07 20:19:06 | INFO     | app.core.middleware:55 | → [ac773cbb] GET /api/v1/auth/me | ip=127.0.0.1 | user=anonymous
+2026-03-07 20:19:06 | WARNING  | app.core.middleware:102 | ⚠ [ac773cbb] GET /api/v1/auth/me | 401 | 47.54ms | user=anonymous
+2026-03-07 20:20:39 | INFO     | app.core.middleware:55 | → [54a523ff] GET /api/v1/empresas/?page=1&items_per_page=10&order_by=created_at&order_desc=true | ip=127.0.0.1 | user=anonymous
+2026-03-07 20:20:39 | WARNING  | app.core.middleware:102 | ⚠ [54a523ff] GET /api/v1/empresas/ | 401 | 2.78ms | user=anonymous
