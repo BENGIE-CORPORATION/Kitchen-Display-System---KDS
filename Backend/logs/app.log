@@ -2415,3 +2415,23 @@ postgrest.exceptions.APIError: {'message': 'insert or update on table "categoria
 2026-03-14 13:07:07 | INFO     | app.main:76 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
 2026-03-14 13:07:29 | INFO     | app.core.middleware:55 | → [3db76a31] GET /health | ip=127.0.0.1 | user=anonymous
 2026-03-14 13:07:32 | INFO     | app.core.middleware:102 | ← [3db76a31] GET /health | 200 | 2806.2ms | user=anonymous
+2026-03-16 22:27:41 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-03-16 22:27:41 | INFO     | app.main:76 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
+2026-03-16 22:30:30 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-03-16 22:30:30 | INFO     | app.main:76 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
+2026-03-16 22:30:31 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-03-16 22:30:31 | INFO     | app.main:76 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
+2026-03-16 22:30:45 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-03-16 22:30:45 | INFO     | app.main:76 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
+2026-03-16 22:30:45 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-03-16 22:30:46 | INFO     | app.main:76 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
+2026-03-16 22:30:56 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-03-16 22:30:56 | INFO     | app.main:76 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
+2026-03-16 22:30:56 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-03-16 22:30:56 | INFO     | app.main:76 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
+2026-03-16 22:31:04 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-03-16 22:31:04 | INFO     | app.main:76 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
+2026-03-16 22:31:05 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-03-16 22:31:05 | INFO     | app.main:76 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
+2026-03-16 22:31:37 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-03-16 22:31:37 | INFO     | app.main:76 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True

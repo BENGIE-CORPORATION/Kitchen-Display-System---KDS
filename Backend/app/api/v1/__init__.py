@@ -17,6 +17,8 @@ from .proveedores import router as proveedores_router
 from .recetas import router as recetas_router
 from .cajas import router as cajas_router
 from .clientes import router as clientes_router
+from .pagos import router as pagos_router
+from .pedidos import router as pedidos_router
 
 api_router = APIRouter(prefix="/api/v1")
 
@@ -37,3 +39,5 @@ api_router.include_router(proveedores_router)      # /api/v1/proveedores/*
 api_router.include_router(recetas_router)         # /api/v1/recetas/*
 api_router.include_router(cajas_router)         # /api/v1/cajas/*
 api_router.include_router(clientes_router)         # /api/v1/clientes/*
+api_router.include_router(pagos_router)         # /api/v1/pagos/*
+api_router.include_router(pedidos_router)         # /api/v1/pedidos/*
