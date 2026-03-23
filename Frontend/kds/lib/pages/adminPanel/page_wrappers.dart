@@ -1,16 +1,7 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// Wrappers de páginas para el router.
-// Cada wrapper:
-//   1. Registra su ChangeNotifierProvider
-//   2. Llama a load() en initState
-//   3. Maneja loading / error / data con Consumer
-//
-// El router solo importa este archivo.
-// ─────────────────────────────────────────────────────────────────────────────
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../common/providers/auth_provider.dart';
 import 'inventory/inventory_page.dart';
 import 'inventory/inventory_provider.dart';
 import 'mainArea/mainArea_page.dart';
@@ -26,16 +17,24 @@ class InventoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sucursalId = context.read<AuthProvider>().sucursalId;
+
+    if (sucursalId == null) return const _SinSucursalView();
+
     return ChangeNotifierProvider(
-      create: (_) => InventoryProvider()..load(),
+      create: (_) => InventoryProvider()..load(sucursalId),
       child: Consumer<InventoryProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading) return const _LoadingView();
-          if (provider.error != null) return _ErrorView(provider.error!);
-
+          if (provider.error != null) {
+            return _ErrorView(
+              provider.error!,
+              onRetry: () => provider.load(sucursalId, refresh: true),
+            );
+          }
           return InventoryPage(
-            items: provider.items,
-            onAdjust: (item) => provider.adjust(item.id, item.currentStock),
+            provider: provider,
+            sucursalId: sucursalId,
           );
         },
       ),
@@ -54,13 +53,12 @@ class MainAreaScreen extends StatelessWidget {
       child: Consumer<MainAreaProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading) return const _LoadingView();
-          if (provider.error != null) return _ErrorView(provider.error!);
-
+          if (provider.error != null) {
+            return _ErrorView(provider.error!, onRetry: provider.load);
+          }
           return MainAreaPage(
             tables: provider.tables,
-            onTableTap: (table) {
-              // TODO: navegar a detalle de mesa
-            },
+            onTableTap: (table) {},
           );
         },
       ),
@@ -79,16 +77,13 @@ class ProvidersScreen extends StatelessWidget {
       child: Consumer<SuppliersProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading) return const _LoadingView();
-          if (provider.error != null) return _ErrorView(provider.error!);
-
+          if (provider.error != null) {
+            return _ErrorView(provider.error!, onRetry: provider.load);
+          }
           return ProvidersPage(
             suppliers: provider.suppliers,
-            onViewSupplier: (supplier) {
-              // TODO: navegar a detalle de proveedor
-            },
-            onCreateOrder: () {
-              // TODO: navegar a nueva orden
-            },
+            onViewSupplier: (supplier) {},
+            onCreateOrder: () {},
           );
         },
       ),
@@ -107,8 +102,9 @@ class SalesScreen extends StatelessWidget {
       child: Consumer<SalesProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading) return const _LoadingView();
-          if (provider.error != null) return _ErrorView(provider.error!);
-
+          if (provider.error != null) {
+            return _ErrorView(provider.error!, onRetry: provider.loadProducts);
+          }
           return SalesPage(
             products: provider.products,
             initialItems: provider.currentItems,
@@ -136,7 +132,9 @@ class _LoadingView extends StatelessWidget {
 
 class _ErrorView extends StatelessWidget {
   final String message;
-  const _ErrorView(this.message);
+  final VoidCallback? onRetry;
+
+  const _ErrorView(this.message, {this.onRetry});
 
   @override
   Widget build(BuildContext context) {
@@ -148,9 +146,9 @@ class _ErrorView extends StatelessWidget {
           children: [
             const Icon(Icons.error_outline, color: Color(0xFFDC2626), size: 40),
             const SizedBox(height: 12),
-            Text(
+            const Text(
               'Error al cargar datos',
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF111827)),
@@ -159,10 +157,45 @@ class _ErrorView extends StatelessWidget {
             Text(message,
                 style: const TextStyle(
                     fontSize: 13, color: Color(0xFF6B7280))),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {}, // TODO: retry
-              child: const Text('Reintentar'),
+            if (onRetry != null) ...[
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: onRetry,
+                child: const Text('Reintentar'),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SinSucursalView extends StatelessWidget {
+  const _SinSucursalView();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      backgroundColor: Color(0xFFF9FAFB),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.store_outlined, color: Color(0xFF9CA3AF), size: 40),
+            SizedBox(height: 12),
+            Text(
+              'Sin sucursal asignada',
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF111827)),
+            ),
+            SizedBox(height: 4),
+            Text(
+              'Tu usuario no tiene una sucursal activa.\nContacta al administrador.',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 13, color: Color(0xFF6B7280)),
             ),
           ],
         ),

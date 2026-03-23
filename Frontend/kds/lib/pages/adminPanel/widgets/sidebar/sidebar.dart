@@ -4,6 +4,7 @@ import '../../../../routes/routes.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';
 import 'menu/menu_item.dart';
+import 'package:kds/common/widgets/sucursal_selector.dart';
 
 class TSidebar extends StatelessWidget {
   final String currentRoute;
@@ -49,6 +50,9 @@ class TSidebar extends StatelessWidget {
                     .bodySmall!
                     .apply(letterSpacingDelta: 1.2),
               ),
+
+              // selector de sucursal (solo visible para super_admin)
+              const SucursalSelector(),
 
               const SizedBox(height: 30),
 

@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
-import '../../../common/models/models.dart';
+import '../../../common/models/materia_prima_models.dart';
 import '../../../common/widgets/app_data_table.dart';
 import '../../../common/widgets/search_filter_bar.dart';
 import '../../../common/widgets/status_badge.dart';
+import 'inventory_provider.dart';
 
-/// Pantalla de Inventario.
-/// [items] viene del backend; el grid de categorías es dinámico.
+/// Pantalla de Inventario — Materias Primas por Sucursal.
 class InventoryPage extends StatefulWidget {
-  final List<InventoryItem> items;
-  final VoidCallback? onAddProduct;
-  final ValueChanged<InventoryItem>? onAdjust;
+  final InventoryProvider provider;
+  final String sucursalId;
 
   const InventoryPage({
     super.key,
-    required this.items,
-    this.onAddProduct,
-    this.onAdjust,
+    required this.provider,
+    required this.sucursalId,
   });
 
   @override
@@ -26,13 +24,13 @@ class _InventoryPageState extends State<InventoryPage> {
   final _searchCtrl = TextEditingController();
   String _searchQuery = '';
   String _categoryFilter = 'Todas';
+  bool _soloBajoMinimo = false;
 
   @override
   void initState() {
     super.initState();
-    _searchCtrl.addListener(() {
-      setState(() => _searchQuery = _searchCtrl.text.toLowerCase());
-    });
+    _searchCtrl.addListener(
+        () => setState(() => _searchQuery = _searchCtrl.text));
   }
 
   @override
@@ -41,65 +39,106 @@ class _InventoryPageState extends State<InventoryPage> {
     super.dispose();
   }
 
-  /// Categorías únicas extraídas dinámicamente de los items del backend
-  List<String> get _categories {
-    final cats = widget.items.map((i) => i.category).toSet().toList()..sort();
-    return ['Todas', ...cats];
-  }
-
-  List<InventoryItem> get _filtered {
-    return widget.items.where((item) {
-      final matchSearch = _searchQuery.isEmpty ||
-          item.name.toLowerCase().contains(_searchQuery) ||
-          item.category.toLowerCase().contains(_searchQuery);
-      final matchCat =
-          _categoryFilter == 'Todas' || item.category == _categoryFilter;
-      return matchSearch && matchCat;
-    }).toList();
+  void _showAjustarDialog(MateriaPrimaSucursalRead item) {
+    final ctrl =
+        TextEditingController(text: item.stockActual.toStringAsFixed(3));
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('Ajustar stock — ${item.nombre ?? ''}'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Stock actual: ${item.stockActual} ${item.unidadMedida ?? ''}',
+                style: const TextStyle(
+                    fontSize: 13, color: Color(0xFF6B7280))),
+            Text('Stock mínimo: ${item.stockMinimo} ${item.unidadMedida ?? ''}',
+                style: const TextStyle(
+                    fontSize: 13, color: Color(0xFF6B7280))),
+            const SizedBox(height: 16),
+            TextField(
+              controller: ctrl,
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              decoration: InputDecoration(
+                labelText: 'Nuevo stock',
+                suffix: Text(item.unidadMedida ?? ''),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8)),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancelar')),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2563EB)),
+            onPressed: () {
+              final nuevoStock = double.tryParse(ctrl.text);
+              if (nuevoStock == null || nuevoStock < 0) return;
+              Navigator.pop(context);
+              widget.provider.ajustarStock(item.id, nuevoStock);
+            },
+            child: const Text('Guardar',
+                style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final filtered = _filtered;
+    final provider = widget.provider;
+    final filtered = provider.filtrar(
+      query: _searchQuery,
+      categoria: _categoryFilter,
+      soloBajoMinimo: _soloBajoMinimo,
+    );
 
     final columns = [
       AppTableColumn(
         label: 'Producto',
-        key: 'name',
+        key: '_ref',
         flex: 3,
         cellBuilder: (value, row) {
-          final item = row['_ref'] as InventoryItem;
+          final item = value as MateriaPrimaSucursalRead;
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(item.name,
+              Text(item.nombre ?? '—',
                   style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
                       color: Color(0xFF111827))),
-              Text(item.unit,
-                  style: const TextStyle(
-                      fontSize: 11, color: Color(0xFF9CA3AF))),
+              if (item.codigo != null)
+                Text(item.codigo!,
+                    style: const TextStyle(
+                        fontSize: 11, color: Color(0xFF9CA3AF))),
             ],
           );
         },
       ),
-      const AppTableColumn(label: 'Categoría', key: 'category', flex: 2),
+      const AppTableColumn(label: 'Categoría', key: 'categoria', flex: 2),
       AppTableColumn(
         label: 'Stock Actual',
-        key: 'currentStock',
+        key: '_ref',
         flex: 2,
         align: TextAlign.center,
         cellBuilder: (value, row) {
-          final item = row['_ref'] as InventoryItem;
+          final item = value as MateriaPrimaSucursalRead;
           return Text(
-            '${item.currentStock}',
+            '${item.stockActual} ${item.unidadMedida ?? ''}',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: item.status == StockStatus.low
+              color: item.isBajoMinimo
                   ? const Color(0xFFDC2626)
                   : const Color(0xFF111827),
             ),
@@ -108,22 +147,26 @@ class _InventoryPageState extends State<InventoryPage> {
       ),
       AppTableColumn(
         label: 'Stock Mínimo',
-        key: 'minStock',
+        key: '_ref',
         flex: 2,
         align: TextAlign.center,
-        cellBuilder: (value, row) => Text(
-          '${(value as double).toInt()}',
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 13, color: Color(0xFF6B7280)),
-        ),
+        cellBuilder: (value, row) {
+          final item = value as MateriaPrimaSucursalRead;
+          return Text(
+            '${item.stockMinimo} ${item.unidadMedida ?? ''}',
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+                fontSize: 13, color: Color(0xFF6B7280)),
+          );
+        },
       ),
       AppTableColumn(
-        label: 'Costo/Unidad',
-        key: 'unitCost',
+        label: 'Costo Prom.',
+        key: 'costoPromedio',
         flex: 2,
         align: TextAlign.right,
         cellBuilder: (value, row) => Text(
-          '₡${(value as double).toStringAsFixed(0).replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (m) => ',')}',
+          '₡${(value as double).toStringAsFixed(2).replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (m) => ',')}',
           textAlign: TextAlign.right,
           style: const TextStyle(
               fontSize: 13,
@@ -133,11 +176,12 @@ class _InventoryPageState extends State<InventoryPage> {
       ),
       AppTableColumn(
         label: 'Estado',
-        key: 'status',
+        key: 'estado',
         flex: 2,
         align: TextAlign.center,
         cellBuilder: (value, row) => Center(
-          child: value == 'low' ? StatusBadge.low() : StatusBadge.available(),
+          child:
+              value == 'low' ? StatusBadge.low() : StatusBadge.available(),
         ),
       ),
       AppTableColumn(
@@ -146,13 +190,13 @@ class _InventoryPageState extends State<InventoryPage> {
         flex: 2,
         align: TextAlign.center,
         cellBuilder: (value, row) {
-          final item = value as InventoryItem;
+          final item = value as MateriaPrimaSucursalRead;
           return Center(
             child: GestureDetector(
-              onTap: () => widget.onAdjust?.call(item),
+              onTap: () => _showAjustarDialog(item),
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: const Color(0xFFF3F4F6),
                   borderRadius: BorderRadius.circular(6),
@@ -175,86 +219,105 @@ class _InventoryPageState extends State<InventoryPage> {
       ),
     ];
 
-    final rows = filtered
-        .map((item) => {
-              'name': item.name,
-              'category': item.category,
-              'currentStock': item.currentStock,
-              'minStock': item.minStock,
-              'unitCost': item.unitCost,
-              'status': item.status.name,
-              '_ref': item,
-            })
-        .toList();
+    final rows = filtered.map((item) => item.toTableRow()).toList();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF9FAFB),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text('Inventario',
-                        style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF111827))),
-                    SizedBox(height: 2),
-                    Text('Gestión de stock y productos',
-                        style: TextStyle(
-                            fontSize: 13, color: Color(0xFF6B7280))),
-                  ],
-                ),
-                GestureDetector(
-                  onTap: widget.onAddProduct,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF111827),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(Icons.add, size: 15, color: Colors.white),
-                        SizedBox(width: 8),
-                        Text('Agregar Producto',
+      body: RefreshIndicator(
+        onRefresh: () => provider.load(widget.sucursalId, refresh: true),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Inventario',
+                          style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF111827))),
+                      const SizedBox(height: 2),
+                      Text(
+                        '${provider.total} materias primas'
+                        '${provider.totalBajoMinimo > 0 ? ' · ${provider.totalBajoMinimo} bajo mínimo' : ''}',
+                        style: const TextStyle(
+                            fontSize: 13, color: Color(0xFF6B7280)),
+                      ),
+                    ],
+                  ),
+                  // Toggle: solo bajo mínimo
+                  GestureDetector(
+                    onTap: () => setState(
+                        () => _soloBajoMinimo = !_soloBajoMinimo),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: _soloBajoMinimo
+                            ? const Color(0xFFFEE2E2)
+                            : Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: _soloBajoMinimo
+                              ? const Color(0xFFFCA5A5)
+                              : const Color(0xFFD1D5DB),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.warning_amber_outlined,
+                              size: 15,
+                              color: _soloBajoMinimo
+                                  ? const Color(0xFFDC2626)
+                                  : const Color(0xFF6B7280)),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Bajo mínimo',
                             style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white)),
-                      ],
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              color: _soloBajoMinimo
+                                  ? const Color(0xFFDC2626)
+                                  : const Color(0xFF374151),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
+                ],
+              ),
+              const SizedBox(height: 24),
 
-            // Search + category pills (dinámicas desde backend)
-            SearchFilterBar(
-              controller: _searchCtrl,
-              placeholder: 'Buscar productos...',
-              filterOptions: _categories,
-              selectedFilter: _categoryFilter,
-              onFilterChanged: (v) => setState(() => _categoryFilter = v),
-            ),
-            const SizedBox(height: 16),
+              // Búsqueda + categorías dinámicas desde el BE
+              SearchFilterBar(
+                controller: _searchCtrl,
+                placeholder:
+                    'Buscar por nombre, código o categoría...',
+                filterOptions: provider.categorias,
+                selectedFilter: _categoryFilter,
+                onFilterChanged: (v) =>
+                    setState(() => _categoryFilter = v),
+              ),
+              const SizedBox(height: 16),
 
-            // Tabla
-            AppDataTable(
-              columns: columns,
-              rows: rows,
-              emptyMessage: 'No se encontraron productos',
-            ),
-          ],
+              // Tabla
+              AppDataTable(
+                columns: columns,
+                rows: rows,
+                emptyMessage: _soloBajoMinimo
+                    ? '¡Todo el stock está sobre el mínimo!'
+                    : 'No se encontraron materias primas',
+              ),
+            ],
+          ),
         ),
       ),
     );
