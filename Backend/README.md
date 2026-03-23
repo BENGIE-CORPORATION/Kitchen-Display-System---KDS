@@ -1,222 +1,476 @@
-<h1 align="center"> Benav Labs FastAPI boilerplate</h1>
-<p align="center" markdown=1>
-  <i><b>Batteries-included FastAPI starter</b> with production-ready defaults, optional modules, and clear docs.</i>
-</p>
+# KDS Backend — Guía de Desarrollo
 
-<p align="center">
-  <a href="https://benavlabs.github.io/FastAPI-boilerplate">
-    <img src="docs/assets/FastAPI-boilerplate.png" alt="Purple Rocket with FastAPI Logo as its window." width="25%" height="auto">
-  </a>
-</p>
+## Stack
 
-<p align="center">
-📚 <a href="https://benavlabs.github.io/FastAPI-boilerplate/">Docs</a> · 🧠 <a href="https://deepwiki.com/benavlabs/FastAPI-boilerplate">DeepWiki</a> · 💬 <a href="https://discord.com/invite/TEmPs22gqB">Discord</a>
-</p>
-
-<p align="center">
-  <a href="https://fastapi.tiangolo.com">
-      <img src="https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi" alt="FastAPI">
-  </a>
-  <a href="https://www.postgresql.org">
-      <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL">
-  </a>
-  <a href="https://redis.io">
-      <img src="https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=fff&style=for-the-badge" alt="Redis">
-  </a>
-  <a href="https://deepwiki.com/benavlabs/FastAPI-boilerplate">
-      <img src="https://img.shields.io/badge/DeepWiki-1F2937?style=for-the-badge&logoColor=white" alt="DeepWiki">
-  </a>
-</p>
-
-## Features
-
-* ⚡️ Fully async FastAPI + SQLAlchemy 2.0
-* 🧱 Pydantic v2 models & validation
-* 🔐 JWT auth (access + refresh), cookies for refresh
-* 👮 Rate limiter + tiers (free/pro/etc.)
-* 🧰 FastCRUD for efficient CRUD & pagination
-* 🧑‍💼 **CRUDAdmin**: minimal admin panel (optional)
-* 🚦 ARQ background jobs (Redis)
-* 🧊 Redis caching (server + client-side headers)
-* 🌐 Configurable CORS middleware for frontend integration
-* 🐳 One-command Docker Compose
-* 🚀 NGINX & Gunicorn recipes for prod
-
-## Why and When to use it
-
-**Perfect if you want:**
-
-* A pragmatic starter with auth, CRUD, jobs, caching and rate-limits
-* **Sensible defaults** with the freedom to opt-out of modules
-* **Docs over boilerplate** in README - depth lives in the site
-
-> **Not a fit** if you need a monorepo microservices scaffold - [see the docs](https://benavlabs.github.io/FastAPI-boilerplate/user-guide/project-structure/) for pointers.
-
-**What you get:**
-
-* **App**: FastAPI app factory, [env-aware docs](https://benavlabs.github.io/FastAPI-boilerplate/user-guide/development/) exposure
-* **Auth**: [JWT access/refresh](https://benavlabs.github.io/FastAPI-boilerplate/user-guide/authentication/), logout via token blacklist
-* **DB**: Postgres + SQLAlchemy 2.0, [Alembic migrations](https://benavlabs.github.io/FastAPI-boilerplate/user-guide/database/)
-* **CRUD**: [FastCRUD generics](https://benavlabs.github.io/FastAPI-boilerplate/user-guide/database/crud/) (get, get_multi, create, update, delete, joins)
-* **Caching**: [decorator-based endpoints cache](https://benavlabs.github.io/FastAPI-boilerplate/user-guide/caching/); client cache headers
-* **Queues**: [ARQ worker](https://benavlabs.github.io/FastAPI-boilerplate/user-guide/background-tasks/) (async jobs), Redis connection helpers
-* **Rate limits**: [per-tier + per-path rules](https://benavlabs.github.io/FastAPI-boilerplate/user-guide/rate-limiting/)
-* **Admin**: [CRUDAdmin views](https://benavlabs.github.io/FastAPI-boilerplate/user-guide/admin-panel/) for common models (optional)
-
-This is what we've been using in production apps. Several applications running in production started from this boilerplate as their foundation - from SaaS platforms to internal tools. It's proven, stable technology that works together reliably. Use this as the foundation for whatever you want to build on top.
-
-> **Building an AI SaaS?** Skip even more setup with [**FastroAI**](https://fastro.ai) - our production-ready template with AI integration, payments, and frontend included.
-
-## TL;DR - Quickstart
-
-Use the template on GitHub, create your repo, then:
-
-```bash
-git clone https://github.com/<you>/FastAPI-boilerplate
-cd FastAPI-boilerplate
-```
-
-**Quick setup:** Run the interactive setup script to choose your deployment configuration:
-
-```bash
-./setup.py
-```
-
-Or directly specify the deployment type: `./setup.py local`, `./setup.py staging`, or `./setup.py production`.
-
-The script copies the right files for your deployment scenario. Here's what each option sets up:
-
-### Option 1: Local development with Uvicorn
-
-Best for: **Development and testing**
-
-**Copies:**
-
-- `scripts/local_with_uvicorn/Dockerfile` → `Dockerfile`
-- `scripts/local_with_uvicorn/docker-compose.yml` → `docker-compose.yml`
-- `scripts/local_with_uvicorn/.env.example` → `src/.env`
-
-Sets up Uvicorn with auto-reload enabled. The example environment values work fine for development.
-
-**Manual setup:** `./setup.py local` or copy the files above manually.
-
-### Option 2: Staging with Gunicorn managing Uvicorn workers
-
-Best for: **Staging environments and load testing**
-
-**Copies:**
-
-- `scripts/gunicorn_managing_uvicorn_workers/Dockerfile` → `Dockerfile`
-- `scripts/gunicorn_managing_uvicorn_workers/docker-compose.yml` → `docker-compose.yml`
-- `scripts/gunicorn_managing_uvicorn_workers/.env.example` → `src/.env`
-
-Sets up Gunicorn managing multiple Uvicorn workers for production-like performance testing.
-
-> [!WARNING]
-> Change `SECRET_KEY` and passwords in the `.env` file for staging environments.
-
-**Manual setup:** `./setup.py staging` or copy the files above manually.
-
-### Option 3: Production with NGINX
-
-Best for: **Production deployments**
-
-**Copies:**
-
-- `scripts/production_with_nginx/Dockerfile` → `Dockerfile`
-- `scripts/production_with_nginx/docker-compose.yml` → `docker-compose.yml`
-- `scripts/production_with_nginx/.env.example` → `src/.env`
-
-Sets up NGINX as reverse proxy with Gunicorn + Uvicorn workers for production.
-
-> [!CAUTION]
-> You MUST change `SECRET_KEY`, all passwords, and sensitive values in the `.env` file before deploying!
-
-**Manual setup:** `./setup.py production` or copy the files above manually.
+- **Python 3.11** — FastAPI + Uvicorn
+- **Base de datos** — Supabase (PostgreSQL gestionado)
+- **Autenticación** — Supabase Auth (JWT)
+- **Versión** — `0.1.0` (fuente de verdad: `pyproject.toml`)
 
 ---
 
-**Start your application:**
+## Setup inicial
 
 ```bash
-docker compose up
+# 1. Entorno virtual
+python -m venv venv
+source venv/bin/activate        # Mac/Linux
+# venv\Scripts\activate         # Windows
+
+# 2. Instalar dependencias
+pip install -e ".[dev]"
+
+# 3. Variables de entorno
+cp .env.development.example .env.development
+# Editar con las credenciales reales
 ```
 
-**Access your app:**
-- **Local**: http://127.0.0.1:8000 (auto-reload enabled) → [API docs](http://127.0.0.1:8000/docs)
-- **Staging**: http://127.0.0.1:8000 (production-like performance)
-- **Production**: http://localhost (NGINX reverse proxy)
+### Variables de entorno
 
-### Next steps
-
-**Create your first admin user:**
-```bash
-docker compose run --rm create_superuser
-```
-
-**Run database migrations** (if you add models):
-```bash
-cd src && uv run alembic revision --autogenerate && uv run alembic upgrade head
-```
-
-**Test background jobs:**
-```bash
-curl -X POST 'http://127.0.0.1:8000/api/v1/tasks/task?message=hello'
-```
-
-**Or run locally without Docker:**
-```bash
-uv sync && uv run uvicorn src.app.main:app --reload
-```
-
-> Full setup (from-scratch, .env examples, PostgreSQL & Redis, gunicorn, nginx) lives in the [docs](https://benavlabs.github.io/FastAPI-boilerplate/getting-started/installation/).
-
-## Configuration (minimal)
-
-Create `src/.env` and set **app**, **database**, **JWT**, and **environment** settings. See the [docs](https://benavlabs.github.io/FastAPI-boilerplate/getting-started/configuration/) for a copy-pasteable example and production guidance.
-
-[https://benavlabs.github.io/FastAPI-boilerplate/getting-started/configuration/](https://benavlabs.github.io/FastAPI-boilerplate/getting-started/configuration/)
-
-* `ENVIRONMENT=local|staging|production` controls API docs exposure
-* Set `ADMIN_*` to enable the first admin user
-
-## Common tasks
+El ambiente se controla con `APP_ENV`. `config.py` carga automáticamente el archivo correspondiente:
 
 ```bash
-# run locally with reload (without Docker)
-uv sync && uv run uvicorn src.app.main:app --reload
-
-# run Alembic migrations
-cd src && uv run alembic revision --autogenerate && uv run alembic upgrade head
-
-# enqueue a background job (example endpoint)
-curl -X POST 'http://127.0.0.1:8000/api/v1/tasks/task?message=hello'
+APP_ENV=development make run   # carga .env.development (default)
+APP_ENV=production make run    # carga .env.production
 ```
 
-More examples (superuser creation, tiers, rate limits, admin usage) in the [docs](https://benavlabs.github.io/FastAPI-boilerplate/getting-started/first-run/).
+**`.env.development`**
+```env
+APP_ENV=development
+DEBUG=True
+SECRET_KEY=dev-secret-key-no-usar-en-produccion
 
-## Contributing
+SUPABASE_URL=https://xxx-dev.supabase.co
+SUPABASE_KEY=eyJ...anon-key-dev...
+SUPABASE_SERVICE_KEY=eyJ...service-role-key-dev...
+SUPABASE_JWT_SECRET=tu-jwt-secret-dev
+```
 
-Read [contributing](CONTRIBUTING.md).
+**`.env.production`**
+```env
+APP_ENV=production
+DEBUG=False
+SECRET_KEY=genera-con-python-c-import-secrets-print-secrets-token-hex-32
 
-## References
+SUPABASE_URL=https://xxx-prod.supabase.co
+SUPABASE_KEY=eyJ...anon-key-prod...
+SUPABASE_SERVICE_KEY=eyJ...service-role-key-prod...
+SUPABASE_JWT_SECRET=tu-jwt-secret-prod
+```
 
-This project was inspired by a few projects, it's based on them with things changed to the way I like (and pydantic, sqlalchemy updated)
+> `SUPABASE_SERVICE_KEY` → Supabase Dashboard → Settings → API → `service_role`. Nunca exponerla en el frontend.
+> En producción el servidor **no arranca** si `SECRET_KEY` es el valor por defecto, `DEBUG=True`, o faltan keys críticas.
+> Usar **dos proyectos Supabase distintos** — nunca apuntar al proyecto de producción desde local.
 
-- [`Full Stack FastAPI and PostgreSQL`](https://github.com/tiangolo/full-stack-fastapi-postgresql) by @tiangolo himself
-- [`FastAPI Microservices`](https://github.com/Kludex/fastapi-microservices) by @kludex which heavily inspired this boilerplate
-- [`Async Web API with FastAPI + SQLAlchemy 2.0`](https://github.com/rhoboro/async-fastapi-sqlalchemy) for sqlalchemy 2.0 ORM examples
-- [`FastaAPI Rocket Boilerplate`](https://github.com/asacristani/fastapi-rocket-boilerplate/tree/main) for docker compose
+### Comandos
 
-## License
+```bash
+make run          # http://localhost:8000
+make install-dev  # instalar/actualizar dependencias
+make lint         # ruff check
+make format       # ruff format
+make test         # pytest
+```
 
-[`MIT`](LICENSE.md)
+**Documentación interactiva:** `http://localhost:8000/docs` (desactivada automáticamente en producción)
 
-## Contact
+---
 
-Benav Labs – [benav.io](https://benav.io), [discord server](https://discord.com/invite/TEmPs22gqB)
+## Arquitectura
 
-<hr>
-<a href="https://benav.io">
-  <img src="https://github.com/benavlabs/fastcrud/raw/main/docs/assets/benav_labs_banner.png" alt="Powered by Benav Labs - benav.io"/>
-</a>
+```
+Cliente HTTP
+     ↓
+Router  (app/api/v1/)        — solo lógica HTTP, sin SQL
+     ↓
+CRUD    (app/crud/)           — toda la lógica de Supabase
+     ↓
+Supabase Client (app/database.py)
+     ↓
+Supabase (PostgreSQL)
+```
+
+**Regla fundamental:** los routers no contienen queries. Todo acceso a datos va en la capa CRUD.
+
+### Estructura de carpetas
+
+```
+app/
+├── api/v1/                  # Routers — un archivo por recurso
+│   ├── auth.py
+│   ├── empresas.py
+│   ├── sucursales.py
+│   ├── perfiles.py
+│   └── usuarios_sucursales.py
+├── crud/                    # Lógica de base de datos
+│   ├── crud_empresa.py
+│   ├── crud_sucursales.py
+│   ├── crud_perfiles_usuario.py
+│   └── crud_usuarios_sucursales.py
+├── schemas/                 # Validación Pydantic (entrada/salida HTTP)
+│   ├── auth.py
+│   ├── empresa.py
+│   ├── sucursal.py
+│   ├── perfil.py
+│   └── usuario_sucursal.py
+├── models/                  # Constantes: TABLE_NAME, columnas permitidas
+│   ├── empresa.py
+│   ├── sucursal.py
+│   ├── perfil.py
+│   └── usuario_sucursal.py
+├── core/
+│   ├── security.py          # Dependencias de autenticación
+│   ├── sanitizer.py         # Limpieza de inputs de texto
+│   ├── limiter.py           # Rate limiting (slowapi)
+│   ├── logger.py            # Configuración de loguru
+│   ├── middleware.py        # Logging por request
+│   ├── pagination.py        # PaginatedResponse reutilizable
+│   └── exceptions/
+│       └── http_exceptions.py
+├── config.py                # Settings multi-ambiente
+├── database.py              # Clientes Supabase (normal + admin)
+└── main.py                  # App FastAPI, middlewares, exception handlers
+```
+
+---
+
+## Clientes de Supabase
+
+Hay **dos clientes** en `app/database.py`:
+
+| Cliente | Key usada | Cuándo usarlo |
+|---------|-----------|---------------|
+| `get_supabase()` | `SUPABASE_KEY` (anon) | Queries normales — SELECT, INSERT, UPDATE |
+| `get_supabase_admin()` | `SUPABASE_SERVICE_KEY` (service_role) | `auth.admin.*` — invite, delete_user, revocar sesiones |
+
+```python
+def mi_endpoint(
+    db: Annotated[Client, Depends(get_supabase)],
+    db_admin: Annotated[Client, Depends(get_supabase_admin)],  # solo si necesitas auth.admin.*
+):
+```
+
+Sin `SUPABASE_SERVICE_KEY` las operaciones admin retornan `"User not allowed"`.
+
+---
+
+## Sistema de autenticación
+
+### Flujo de tokens
+
+```
+Login → Supabase valida credenciales → { access_token, refresh_token }
+Cada request → Header: Authorization: Bearer <access_token>
+Token expira (1h) → POST /auth/refresh → nuevo access_token
+```
+
+### Dependencias de seguridad (`app/core/security.py`)
+
+```python
+get_current_user       # JWT válido + perfil activo en perfiles_usuario
+get_current_admin      # rol_global = admin_empresa | super_admin
+get_current_superadmin # rol_global = super_admin únicamente
+
+verify_empresa_access(current_user, empresa_id)        # recurso pertenece a tu empresa
+verify_sucursal_access(db, current_user, sucursal_id)  # tienes asignación en esa sucursal
+```
+
+### Roles
+
+| Rol | Acceso |
+|-----|--------|
+| `super_admin` | Todo el sistema, todas las empresas |
+| `admin_empresa` | Todo lo de su empresa (sucursales, perfiles, asignaciones) |
+| `empleado` | Solo sus sucursales asignadas en `usuarios_sucursales` |
+
+### Tablas de Supabase Auth
+
+```
+auth.users (Supabase — NO tocar directamente)
+     ↕ mismo UUID
+public.perfiles_usuario (tuya — aquí viven rol, empresa, estado)
+```
+
+---
+
+## Errores — formato estándar
+
+Todas las excepciones retornan body estructurado con código de máquina:
+
+```json
+{ "error": "NOT_FOUND", "detail": "Empresa no encontrada" }
+{ "error": "VALIDATION_ERROR", "detail": "Datos inválidos", "fields": [...] }
+{ "error": "INTERNAL_ERROR", "detail": "Error interno del servidor" }
+```
+
+| Clase | HTTP | `error` |
+|-------|------|---------|
+| `NotFoundException` | 404 | `NOT_FOUND` |
+| `DuplicateValueException` | 409 | `DUPLICATE_VALUE` |
+| `ForbiddenException` | 403 | `FORBIDDEN` |
+| `UnauthorizedException` | 401 | `UNAUTHORIZED` |
+| `BadRequestException` | 400 | `BAD_REQUEST` |
+| `RateLimitException` | 429 | `RATE_LIMIT_EXCEEDED` |
+| `ServiceUnavailableException` | 503 | `SERVICE_UNAVAILABLE` |
+
+En desarrollo los errores 500 muestran el mensaje real. En producción siempre retornan `"Error interno del servidor"` y el stacktrace va a `logs/errors.log`.
+
+---
+
+## Rate limiting
+
+Definido en `app/core/limiter.py`. Límite global: **120 req/min por IP**.
+
+| Endpoint | Límite | Por |
+|----------|--------|-----|
+| `POST /auth/login` | 5 / minuto | IP |
+| `POST /auth/register` | 3 / hora | IP |
+| `POST /auth/refresh` | 20 / minuto | IP |
+| `POST /auth/invite` | 20 / hora | Usuario autenticado |
+| `POST /auth/logout` | 10 / minuto | Usuario autenticado |
+| `POST /auth/change-password` | 5 / hora | Usuario autenticado |
+| Resto de endpoints | 120 / minuto | IP (global) |
+
+Al superarse retorna `429` con `{ "error": "RATE_LIMIT_EXCEEDED" }`.
+
+Para agregar límite a un endpoint nuevo:
+```python
+from app.core.limiter import limiter, get_user_id_from_token
+
+@router.post("/mi-ruta")
+@limiter.limit("10/minute")                              # por IP
+@limiter.limit("5/hour", key_func=get_user_id_from_token)  # por usuario
+def mi_endpoint(request: Request, ...):   # Request debe ser primer parámetro
+```
+
+---
+
+## Logging
+
+Configurado en `app/core/logger.py`. Se inicializa en `main.py` antes de todo.
+
+| Archivo | Contenido | Rotación | Retención |
+|---------|-----------|----------|-----------|
+| Consola | Todo (coloreado) | — | — |
+| `logs/app.log` | INFO+ | 10 MB | 30 días |
+| `logs/errors.log` | ERROR+ con stacktrace | 5 MB | 90 días |
+
+Para loguear desde cualquier archivo:
+```python
+from app.core.logger import logger
+
+logger.info("Empresa creada | id={id}", id=empresa_id)
+logger.warning("Intento fallido | email={email}", email=email)
+logger.error("Fallo Supabase | error={error}", error=str(e))
+```
+
+El middleware en `app/core/middleware.py` loguea automáticamente cada request con método, path, status, latencia y usuario. Agrega `X-Request-ID` al response header para correlacionar logs.
+
+---
+
+## Sanitización de inputs
+
+`app/core/sanitizer.py` limpia texto antes de guardarlo. Úsarlo en `@field_validator` de los schemas:
+
+```python
+from app.core.sanitizer import sanitize_strict, sanitize_text
+from pydantic import field_validator
+
+class EmpresaCreate(BaseModel):
+    nombre_legal: str
+    descripcion: str | None = None
+
+    @field_validator("nombre_legal")
+    @classmethod
+    def clean_nombre(cls, v: str) -> str:
+        return sanitize_strict(v)   # elimina HTML, null bytes, caracteres especiales
+
+    @field_validator("descripcion")
+    @classmethod
+    def clean_desc(cls, v: str | None) -> str | None:
+        return sanitize_text(v) if v else None   # más permisivo, permite saltos de línea
+```
+
+| Función | Uso | Elimina |
+|---------|-----|---------|
+| `sanitize_strict()` | Nombres, códigos, identificaciones | HTML, null bytes, caracteres especiales, saltos de línea |
+| `sanitize_text()` | Descripciones, direcciones, notas | HTML, null bytes, espacios múltiples |
+| `sanitize_email()` | Emails | Espacios, convierte a lowercase |
+
+---
+
+## Modelos de datos
+
+### Tablas en Supabase
+
+```
+empresas
+  └── sucursales (empresa_id FK)
+        └── usuarios_sucursales (sucursal_id FK)
+              └── perfiles_usuario (usuario_id FK → auth.users)
+```
+
+### Estados válidos
+
+| Tabla | Estados |
+|-------|---------|
+| `empresas` | `activo` · `suspendido` · `inactivo` |
+| `sucursales` | `activo` · `inactivo` · `mantenimiento` |
+| `perfiles_usuario` | `activo` · `inactivo` · `suspendido` |
+| `usuarios_sucursales` | `activo` · `inactivo` |
+
+**Soft delete:** ninguna tabla se borra físicamente. El estado `inactivo` es el delete lógico. Los endpoints `DELETE /recurso/{id}/hard` hacen borrado físico y son exclusivos de `super_admin`.
+
+---
+
+## Endpoints
+
+Todos bajo `/api/v1/`. Requieren `Authorization: Bearer <token>` salvo `/auth/login` y `/auth/refresh`.
+
+### Auth `/auth`
+
+| Método | Ruta | Acceso | Descripción |
+|--------|------|--------|-------------|
+| POST | `/login` | Público | Retorna access_token + refresh_token |
+| POST | `/refresh` | Público | Renueva el access_token |
+| POST | `/register` | Público | Crea admin_empresa + perfil |
+| GET | `/me` | Autenticado | Perfil propio + sucursales asignadas |
+| POST | `/logout` | Autenticado | Invalida sesión |
+| POST | `/invite` | admin_empresa · super_admin | Crea empleado con contraseña temporal |
+| POST | `/change-password` | Autenticado | Cambia contraseña verificando la actual |
+
+> `/invite` retorna `password_temporal`. El admin la comparte al empleado fuera del sistema.
+> Los empleados deben usar `/change-password` al recibir su contraseña temporal.
+
+### Empresas `/empresas`
+
+| Método | Ruta | Acceso |
+|--------|------|--------|
+| GET | `/` | Autenticado (filtra por empresa propia) |
+| GET | `/{id}` | Autenticado + misma empresa |
+| POST | `/` | super_admin |
+| PATCH | `/{id}` | admin_empresa · super_admin |
+| DELETE | `/{id}` | admin_empresa · super_admin (soft) |
+| DELETE | `/{id}/hard` | super_admin |
+
+### Sucursales `/sucursales`
+
+| Método | Ruta | Acceso |
+|--------|------|--------|
+| GET | `/` | Autenticado (filtra por empresa propia) |
+| GET | `/empresa/{empresa_id}` | Autenticado + misma empresa |
+| GET | `/{id}` | Autenticado + acceso a esa sucursal |
+| POST | `/` | admin_empresa · super_admin |
+| PATCH | `/{id}` | admin_empresa · super_admin |
+| DELETE | `/{id}` | admin_empresa · super_admin (soft) |
+| DELETE | `/{id}/hard` | super_admin |
+
+### Perfiles `/perfiles`
+
+| Método | Ruta | Acceso |
+|--------|------|--------|
+| GET | `/me` | Autenticado (propio perfil) |
+| PATCH | `/me` | Autenticado (solo nombre, teléfono, avatar) |
+| GET | `/` | admin_empresa · super_admin |
+| GET | `/empresa/{empresa_id}` | admin_empresa · super_admin |
+| GET | `/{id}` | admin_empresa · super_admin |
+| PATCH | `/{id}/rol` | super_admin |
+| PATCH | `/{id}/estado` | admin_empresa · super_admin |
+| DELETE | `/{id}` | admin_empresa · super_admin (soft) |
+| DELETE | `/{id}/hard` | super_admin |
+
+### Usuarios × Sucursales `/usuarios-sucursales`
+
+| Método | Ruta | Acceso |
+|--------|------|--------|
+| GET | `/sucursal/{id}` | admin_empresa · super_admin |
+| GET | `/usuario/{id}` | Propio usuario · admin · super_admin |
+| POST | `/` | admin_empresa · super_admin |
+| PATCH | `/{id}` | admin_empresa · super_admin |
+| DELETE | `/{id}` | admin_empresa · super_admin (soft) |
+| DELETE | `/{id}/hard` | admin_empresa · super_admin |
+
+---
+
+## Sincronizaciones críticas
+
+El CRUD maneja estos efectos en cascada automáticamente:
+
+| Operación | Efecto en cascada |
+|-----------|------------------|
+| Soft delete de **sucursal** | Desactiva todas las asignaciones `usuarios_sucursales` de esa sucursal |
+| Hard delete de **sucursal** | Elimina asignaciones primero (FK constraint) |
+| Soft delete de **perfil** | Desactiva asignaciones + revoca sesiones activas en Supabase Auth |
+| Hard delete de **perfil** | Elimina asignaciones → perfil → `auth.users` en ese orden |
+| Desactivar **asignación principal** | Promueve automáticamente la siguiente asignación activa como principal |
+| Crear **primer invite** | Primera sucursal asignada se marca como `es_principal = true` |
+
+---
+
+## Crear un nuevo módulo
+
+Seguir este orden:
+
+```
+1. app/models/mi_recurso.py       → TABLE_NAME, SORTABLE_COLUMNS
+2. app/schemas/mi_recurso.py      → Base, Read, Create, CreateInternal, Update, UpdateInternal
+3. app/crud/crud_mi_recurso.py    → exists, create, get, get_multi, update, soft_delete, hard_delete
+4. app/api/v1/mi_recurso.py       → router con Depends de seguridad apropiados
+5. app/api/v1/__init__.py         → include_router(mi_recurso_router)
+```
+
+### Skeleton mínimo de un CRUD
+
+```python
+from ..models.mi_recurso import TABLE_NAME
+
+def get_mi_recurso(db: Client, recurso_id: UUID) -> dict | None:
+    result = db.table(TABLE_NAME).select("*").eq("id", str(recurso_id)).limit(1).execute()
+    return result.data[0] if result.data else None
+
+def create_mi_recurso(db: Client, data: MiRecursoCreateInternal) -> dict:
+    result = db.table(TABLE_NAME).insert(data.model_dump()).execute()
+    return result.data[0]
+```
+
+### Skeleton mínimo de un router
+
+```python
+from ...core.security import get_current_user, get_current_admin
+from ...core.limiter import limiter
+
+router = APIRouter(prefix="/mi-recurso", tags=["Mi Recurso"])
+
+@router.get("/{id}", response_model=MiRecursoRead)
+def read_mi_recurso(
+    request: Request,
+    id: UUID,
+    db: Annotated[Client, Depends(get_supabase)],
+    current_user: Annotated[dict, Depends(get_current_user)],
+) -> dict:
+    recurso = get_mi_recurso(db, id)
+    if not recurso:
+        raise NotFoundException("Recurso no encontrado")
+    return recurso
+```
+
+---
+
+## Gestión de versiones
+
+La versión vive **únicamente** en `pyproject.toml`:
+
+```toml
+[project]
+version = "0.2.0"
+```
+
+`app/config.py` la lee automáticamente. No cambiarla en ningún otro lugar.
+
+---
+
+## Pendiente / Próximos pasos
+
+- [ ] Row Level Security (RLS) en Supabase — implementar antes de ir a producción
+- [ ] Sentry para monitoreo de errores en tiempo real
+- [ ] Redis para caché de endpoints de lectura frecuente (`/me`, `/sucursales/`)
