@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// Footer de la pantalla de ventas: campo de cliente + total + botón cobrar.
-class SaleFooter extends StatelessWidget {
+class SaleFooter extends StatefulWidget {
   final String cliente;
   final double total;
   final bool hasItems;
@@ -18,6 +18,41 @@ class SaleFooter extends StatelessWidget {
     required this.onCancelar,
     this.onCobrar,
   });
+
+  @override
+  State<SaleFooter> createState() => _SaleFooterState();
+}
+
+class _SaleFooterState extends State<SaleFooter> {
+  late TextEditingController _clienteController;
+
+  @override
+  void initState() {
+    super.initState();
+    _clienteController = TextEditingController(text: widget.cliente);
+    _clienteController.selection = TextSelection.fromPosition(
+      TextPosition(offset: _clienteController.text.length),
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant SaleFooter oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Solo actualiza si el cambio vino de afuera (ej: cancelar venta),
+    // no mientras el usuario está escribiendo
+    if (widget.cliente != _clienteController.text) {
+      _clienteController.text = widget.cliente;
+      _clienteController.selection = TextSelection.fromPosition(
+        TextPosition(offset: _clienteController.text.length),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _clienteController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +87,8 @@ class SaleFooter extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 TextField(
-                  onChanged: onClienteChanged,
-                  controller: TextEditingController(text: cliente),
+                  controller: _clienteController,
+                  onChanged: widget.onClienteChanged,
                   decoration: InputDecoration(
                     hintText: 'Nombre del cliente (opcional)',
                     hintStyle: const TextStyle(
@@ -62,13 +97,11 @@ class SaleFooter extends StatelessWidget {
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide:
-                          const BorderSide(color: Color(0xFFD1D5DB)),
+                      borderSide: const BorderSide(color: Color(0xFFD1D5DB)),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide:
-                          const BorderSide(color: Color(0xFFD1D5DB)),
+                      borderSide: const BorderSide(color: Color(0xFFD1D5DB)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -88,7 +121,7 @@ class SaleFooter extends StatelessWidget {
                     const SizedBox(width: 8),
                     _FooterBtn(
                       label: 'Cancelar',
-                      onTap: onCancelar,
+                      onTap: widget.onCancelar,
                       bgColor: const Color(0xFFFEF2F2),
                       textColor: const Color(0xFFDC2626),
                       icon: Icons.close,
@@ -130,7 +163,7 @@ class SaleFooter extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '₡${total.toStringAsFixed(0).replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (m) => ',')}',
+                      '₡${widget.total.toStringAsFixed(0).replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (m) => ',')}',
                       style: const TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
@@ -143,9 +176,9 @@ class SaleFooter extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: onCobrar,
+                    onPressed: widget.onCobrar,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: onCobrar != null
+                      backgroundColor: widget.onCobrar != null
                           ? const Color(0xFF16A34A)
                           : const Color(0xFFD1D5DB),
                       padding: const EdgeInsets.symmetric(vertical: 16),
