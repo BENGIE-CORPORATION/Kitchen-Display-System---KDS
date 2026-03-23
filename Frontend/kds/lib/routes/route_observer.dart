@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'routes.dart';
-import '../pages/admin/widgets/sidebar/sidebar_controller.dart';
+import '../pages/adminPanel/widgets/sidebar/sidebar_controller.dart';
 
 class AppRouteObserver extends RouteObserver<ModalRoute<void>> {
 
