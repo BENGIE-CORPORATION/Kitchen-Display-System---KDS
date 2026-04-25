@@ -20,6 +20,7 @@ class TRoutes {
   static const employees = '/admin/employees';
   static const config = '/admin/config';
   static const profile = '/admin/profile';
+  static const ordenes = '/admin/ordenes';
 
   static List sidebarMenuItems = [
     dashboard, 
@@ -31,6 +32,7 @@ class TRoutes {
     menu, 
     employees, 
     config, 
-    profile
+    profile,
+    ordenes
   ];
 }

@@ -12,7 +12,7 @@ const _kExpiresAt    = 'expires_at'; // epoch en segundos
 class AuthService {
   //static const String _baseUrl = BASE_URL;
   static final String _baseUrl = 
-    dotenv.env['BASE_URL'] ?? 'http://localhost:8000';
+    dotenv.env['BASE_URL'] ?? 'http://127.0.0.1:8000';
   static const _storage = FlutterSecureStorage();
 
   // ── Login ──────────────────────────────────────────────────────────────────
@@ -30,7 +30,7 @@ class AuthService {
     }
 
     final body = jsonDecode(response.body);
-    throw AuthException(body['detail'] ?? 'Email o contraseña incorrectos');
+    throw AuthException(body['detail'] ?? 'Email o contraseña incorrectos: $_baseUrl/api/v1/auth/login');
   }
 
   // ── Logout ─────────────────────────────────────────────────────────────────

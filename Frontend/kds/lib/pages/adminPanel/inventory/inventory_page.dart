@@ -4,6 +4,8 @@ import '../../../common/widgets/app_data_table.dart';
 import '../../../common/widgets/search_filter_bar.dart';
 import '../../../common/widgets/status_badge.dart';
 import 'inventory_provider.dart';
+import 'widgets/add_inventory_modal.dart';
+import 'widgets/edit_inventory_modal.dart';
 
 /// Pantalla de Inventario — Materias Primas por Sucursal.
 class InventoryPage extends StatefulWidget {
@@ -39,57 +41,15 @@ class _InventoryPageState extends State<InventoryPage> {
     super.dispose();
   }
 
-  void _showAjustarDialog(MateriaPrimaSucursalRead item) {
-    final ctrl =
-        TextEditingController(text: item.stockActual.toStringAsFixed(3));
+  void _showEditDialog(MateriaPrimaSucursalRead item) {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text('Ajustar stock — ${item.nombre ?? ''}'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Stock actual: ${item.stockActual} ${item.unidadMedida ?? ''}',
-                style: const TextStyle(
-                    fontSize: 13, color: Color(0xFF6B7280))),
-            Text('Stock mínimo: ${item.stockMinimo} ${item.unidadMedida ?? ''}',
-                style: const TextStyle(
-                    fontSize: 13, color: Color(0xFF6B7280))),
-            const SizedBox(height: 16),
-            TextField(
-              controller: ctrl,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              decoration: InputDecoration(
-                labelText: 'Nuevo stock',
-                suffix: Text(item.unidadMedida ?? ''),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8)),
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar')),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2563EB)),
-            onPressed: () {
-              final nuevoStock = double.tryParse(ctrl.text);
-              if (nuevoStock == null || nuevoStock < 0) return;
-              Navigator.pop(context);
-              widget.provider.ajustarStock(item.id, nuevoStock);
-            },
-            child: const Text('Guardar',
-                style: TextStyle(color: Colors.white)),
-          ),
-        ],
+      builder: (_) => EditInventoryModal(
+        item: item,
+        onSuccess: () => widget.provider.load(widget.sucursalId, refresh: true),
       ),
     );
-  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -180,8 +140,9 @@ class _InventoryPageState extends State<InventoryPage> {
         flex: 2,
         align: TextAlign.center,
         cellBuilder: (value, row) => Center(
-          child:
-              value == 'low' ? StatusBadge.low() : StatusBadge.available(),
+          child: value == 'low'
+              ? StatusBadge.low()
+              : StatusBadge.available(),
         ),
       ),
       AppTableColumn(
@@ -193,7 +154,7 @@ class _InventoryPageState extends State<InventoryPage> {
           final item = value as MateriaPrimaSucursalRead;
           return Center(
             child: GestureDetector(
-              onTap: () => _showAjustarDialog(item),
+              onTap: () => _showEditDialog(item),
               child: Container(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 12, vertical: 6),
@@ -252,45 +213,81 @@ class _InventoryPageState extends State<InventoryPage> {
                       ),
                     ],
                   ),
-                  // Toggle: solo bajo mínimo
-                  GestureDetector(
-                    onTap: () => setState(
-                        () => _soloBajoMinimo = !_soloBajoMinimo),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: _soloBajoMinimo
-                            ? const Color(0xFFFEE2E2)
-                            : Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: _soloBajoMinimo
-                              ? const Color(0xFFFCA5A5)
-                              : const Color(0xFFD1D5DB),
+                  Row(
+                    children: [
+                      // Botón agregar
+                      GestureDetector(
+                        onTap: () => showDialog(
+                          context: context,
+                          builder: (_) => AddInventoryModal(
+                            onSuccess: () => provider.load(
+                                widget.sucursalId,
+                                refresh: true),
+                          ),
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF111827),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Row(
+                            children: [
+                              Icon(Icons.add,
+                                  size: 15, color: Colors.white),
+                              SizedBox(width: 8),
+                              Text('Agregar Producto',
+                                  style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white)),
+                            ],
+                          ),
                         ),
                       ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.warning_amber_outlined,
-                              size: 15,
+                      const SizedBox(width: 12),
+                      // Toggle bajo mínimo
+                      GestureDetector(
+                        onTap: () => setState(
+                            () => _soloBajoMinimo = !_soloBajoMinimo),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: _soloBajoMinimo
+                                ? const Color(0xFFFEE2E2)
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
                               color: _soloBajoMinimo
-                                  ? const Color(0xFFDC2626)
-                                  : const Color(0xFF6B7280)),
-                          const SizedBox(width: 6),
-                          Text(
-                            'Bajo mínimo',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                              color: _soloBajoMinimo
-                                  ? const Color(0xFFDC2626)
-                                  : const Color(0xFF374151),
+                                  ? const Color(0xFFFCA5A5)
+                                  : const Color(0xFFD1D5DB),
                             ),
                           ),
-                        ],
+                          child: Row(
+                            children: [
+                              Icon(Icons.warning_amber_outlined,
+                                  size: 15,
+                                  color: _soloBajoMinimo
+                                      ? const Color(0xFFDC2626)
+                                      : const Color(0xFF6B7280)),
+                              const SizedBox(width: 6),
+                              Text(
+                                'Bajo mínimo',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                  color: _soloBajoMinimo
+                                      ? const Color(0xFFDC2626)
+                                      : const Color(0xFF374151),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),
@@ -299,8 +296,7 @@ class _InventoryPageState extends State<InventoryPage> {
               // Búsqueda + categorías dinámicas desde el BE
               SearchFilterBar(
                 controller: _searchCtrl,
-                placeholder:
-                    'Buscar por nombre, código o categoría...',
+                placeholder: 'Buscar por nombre, código o categoría...',
                 filterOptions: provider.categorias,
                 selectedFilter: _categoryFilter,
                 onFilterChanged: (v) =>

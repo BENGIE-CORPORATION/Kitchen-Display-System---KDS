@@ -33,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     if (success && mounted) {
-      context.go(TRoutes.admin);
+      context.go(TRoutes.home);
     }
   }
 

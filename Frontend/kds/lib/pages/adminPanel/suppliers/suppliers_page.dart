@@ -1,42 +1,33 @@
 import 'package:flutter/material.dart';
-import '../../../common/models/models.dart';
+import '../../../common/models/proveedor_models.dart';
 import '../../../common/widgets/app_data_table.dart';
-import '../../../common/widgets/kpi_card.dart';
 import '../../../common/widgets/search_filter_bar.dart';
 import '../../../common/widgets/status_badge.dart';
+import 'suppliers_provider.dart';
+import 'widgets/add_supplier_modal.dart';
+import 'widgets/edit_supplier_modal.dart';
+import '../../../common/services/api_service.dart';
 
-/// Pantalla de Gestión de Proveedores.
-/// [suppliers] y [kpis] vienen del backend.
-class ProvidersPage extends StatefulWidget {
-  final List<Supplier> suppliers;
-  final ValueChanged<Supplier>? onViewSupplier;
-  final VoidCallback? onCreateOrder;
-  final VoidCallback? onNewSupplier;
+class SuppliersPage extends StatefulWidget {
+  final SuppliersProvider provider;
 
-  const ProvidersPage({
-    super.key,
-    required this.suppliers,
-    this.onViewSupplier,
-    this.onCreateOrder,
-    this.onNewSupplier,
-  });
+  const SuppliersPage({super.key, required this.provider});
 
   @override
-  State<ProvidersPage> createState() => _ProvidersPageState();
+  State<SuppliersPage> createState() => _SuppliersPageState();
 }
 
-class _ProvidersPageState extends State<ProvidersPage> {
+class _SuppliersPageState extends State<SuppliersPage> {
   final _searchCtrl = TextEditingController();
-  String _statusFilter = 'all';
-  String _categoryFilter = 'all';
   String _searchQuery = '';
+  String _tipoFilter = 'Todos';
+  String _pagoFilter = 'Todas';
 
   @override
   void initState() {
     super.initState();
-    _searchCtrl.addListener(() {
-      setState(() => _searchQuery = _searchCtrl.text.toLowerCase());
-    });
+    _searchCtrl.addListener(
+        () => setState(() => _searchQuery = _searchCtrl.text));
   }
 
   @override
@@ -45,105 +36,161 @@ class _ProvidersPageState extends State<ProvidersPage> {
     super.dispose();
   }
 
-  List<Supplier> get _filtered {
-    return widget.suppliers.where((s) {
-      final q = _searchQuery;
-      final matchSearch = q.isEmpty ||
-          s.name.toLowerCase().contains(q) ||
-          s.legalId.contains(q) ||
-          s.email.toLowerCase().contains(q);
-      final matchStatus = _statusFilter == 'all' ||
-          (_statusFilter == 'active' && s.status == SupplierStatus.active) ||
-          (_statusFilter == 'inactive' && s.status == SupplierStatus.inactive);
-      final matchCat =
-          _categoryFilter == 'all' || s.category == _categoryFilter;
-      return matchSearch && matchStatus && matchCat;
-    }).toList();
+  void _showAddModal() {
+    showDialog(
+      context: context,
+      builder: (_) => AddSupplierModal(
+        onSuccess: widget.provider.reload,
+      ),
+    );
   }
 
-  List<String> get _categories {
-    final cats = widget.suppliers.map((s) => s.category).toSet().toList();
-    return ['all', ...cats];
+  void _showEditModal(ProveedorRead item) {
+    showDialog(
+      context: context,
+      builder: (_) => EditSupplierModal(
+        item: item,
+        onSuccess: widget.provider.reload,
+      ),
+    );
   }
 
-  // KPIs calculados desde los datos del backend
-  int get _activeCount =>
-      widget.suppliers.where((s) => s.status == SupplierStatus.active).length;
+  Future<void> _confirmDelete(ProveedorRead item) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        title: const Text('Desactivar proveedor',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        content: Text(
+          '¿Deseas desactivar a "${item.nombreLegal}"? '
+          'Podrás reactivarlo posteriormente.',
+          style: const TextStyle(fontSize: 13, color: Color(0xFF6B7280)),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogCtx).pop(false),
+            child: const Text('Cancelar',
+                style: TextStyle(color: Color(0xFF6B7280))),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFDC2626),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+            ),
+            onPressed: () => Navigator.of(dialogCtx).pop(true),
+            child: const Text('Desactivar',
+                style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
 
-  double get _totalMonthly => widget.suppliers
-      .where((s) => s.status == SupplierStatus.active)
-      .fold(0, (sum, s) => sum + s.monthlyTotal);
+    if (confirmed == true) {
+      try {
+        await SuppliersService.deleteProveedor(item.id);
+        widget.provider.reload();
+      } on ApiException catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message)),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final filtered = _filtered;
+    final provider = widget.provider;
+    final filtered = provider.filtrar(
+      query: _searchQuery,
+      tipoProveedor: _tipoFilter,
+      condicionPago: _pagoFilter,
+    );
 
     final columns = [
-      const AppTableColumn(label: 'Proveedor', key: 'name', flex: 3),
-      const AppTableColumn(label: 'Cédula Jurídica', key: 'legalId', flex: 2),
-      const AppTableColumn(label: 'Contacto', key: '_ref', flex: 2),
-      const AppTableColumn(label: 'Categoría', key: 'category', flex: 2),
       AppTableColumn(
-        label: 'Estado',
-        key: 'status',
-        flex: 1,
-        align: TextAlign.center,
-        cellBuilder: (value, row) => Center(
-          child: value == 'active'
-              ? StatusBadge.active()
-              : StatusBadge.inactive(),
-        ),
-      ),
-      AppTableColumn(
-        label: 'Última Compra',
-        key: 'lastPurchase',
-        flex: 2,
+        label: 'Proveedor',
+        key: '_ref',
+        flex: 3,
         cellBuilder: (value, row) {
-          final ref = row['_ref'] as Supplier;
-          return Text(
-            '${ref.lastPurchase.day.toString().padLeft(2, '0')} '
-            '${_monthName(ref.lastPurchase.month)} '
-            '${ref.lastPurchase.year}',
-            style:
-                const TextStyle(fontSize: 13, color: Color(0xFF374151)),
+          final item = value as ProveedorRead;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                item.nombreLegal,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFF111827),
+                ),
+              ),
+              if (item.nombreComercial != null)
+                Text(
+                  item.nombreComercial!,
+                  style: const TextStyle(
+                      fontSize: 11, color: Color(0xFF9CA3AF)),
+                ),
+            ],
           );
         },
       ),
+      const AppTableColumn(
+          label: 'Identificación', key: 'identificacion', flex: 2),
       AppTableColumn(
-        label: 'Total Mes',
-        key: 'monthlyTotal',
+        label: 'Tipo',
+        key: 'tipoProveedor',
         flex: 2,
-        align: TextAlign.right,
         cellBuilder: (value, row) => Text(
-          '₡${(value as double).toStringAsFixed(0).replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (m) => ',')}',
-          textAlign: TextAlign.right,
-          style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF111827)),
+          _labelTipo(value as String),
+          style: const TextStyle(fontSize: 13, color: Color(0xFF374151)),
+        ),
+      ),
+      AppTableColumn(
+        label: 'Condición pago',
+        key: 'condicionPago',
+        flex: 2,
+        cellBuilder: (value, row) => Text(
+          _labelPago(value as String),
+          style: const TextStyle(fontSize: 13, color: Color(0xFF374151)),
+        ),
+      ),
+      const AppTableColumn(label: 'Teléfono', key: 'telefono', flex: 2),
+      const AppTableColumn(label: 'Ciudad', key: 'ciudad', flex: 2),
+      AppTableColumn(
+        label: 'Estado',
+        key: 'estado',
+        flex: 2,
+        align: TextAlign.center,
+        cellBuilder: (value, row) => Center(
+          child: _estadoBadge(value as String),
         ),
       ),
       AppTableColumn(
         label: 'Acciones',
         key: '_ref',
-        flex: 1,
+        flex: 2,
         align: TextAlign.center,
         cellBuilder: (value, row) {
-          final sup = value as Supplier;
+          final item = value as ProveedorRead;
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              IconButton(
-                icon: const Icon(Icons.visibility_outlined,
-                    size: 16, color: Color(0xFF2563EB)),
-                onPressed: () => widget.onViewSupplier?.call(sup),
-                tooltip: 'Ver detalles',
+              _ActionButton(
+                icon: Icons.edit_outlined,
+                label: 'Editar',
+                onTap: () => _showEditModal(item),
               ),
-              IconButton(
-                icon: const Icon(Icons.edit_outlined,
-                    size: 16, color: Color(0xFF6B7280)),
-                onPressed: () {},
-                tooltip: 'Editar',
+              const SizedBox(width: 8),
+              _ActionButton(
+                icon: Icons.block_outlined,
+                label: 'Desactivar',
+                color: const Color(0xFFDC2626),
+                bgColor: const Color(0xFFFEE2E2),
+                onTap: () => _confirmDelete(item),
               ),
             ],
           );
@@ -151,237 +198,152 @@ class _ProvidersPageState extends State<ProvidersPage> {
       ),
     ];
 
-    final rows = filtered.map((s) => {
-          'name': s.name,
-          'legalId': s.legalId,
-          '_ref': s,
-          'category': s.category,
-          'status': s.status.name,
-          'lastPurchase': s.lastPurchase,
-          'monthlyTotal': s.monthlyTotal,
-        }).toList();
+    final rows = filtered.map((p) => p.toTableRow()).toList();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF9FAFB),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text('Gestión de Proveedores',
+      body: RefreshIndicator(
+        onRefresh: provider.reload,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Proveedores',
                         style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF111827))),
-                    SizedBox(height: 2),
-                    Text('Control y seguimiento de proveedores',
-                        style: TextStyle(
-                            fontSize: 13, color: Color(0xFF6B7280))),
-                  ],
-                ),
-                Row(
-                  children: [
-                    _ActionBtn(
-                      label: 'Nueva Orden de Compra',
-                      icon: Icons.shopping_cart_outlined,
-                      color: const Color(0xFF2563EB),
-                      onTap: widget.onCreateOrder ?? () {},
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF111827),
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '${provider.total} proveedores registrados',
+                        style: const TextStyle(
+                            fontSize: 13, color: Color(0xFF6B7280)),
+                      ),
+                    ],
+                  ),
+                  GestureDetector(
+                    onTap: _showAddModal,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF111827),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.add, size: 15, color: Colors.white),
+                          SizedBox(width: 8),
+                          Text(
+                            'Agregar Proveedor',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(width: 12),
-                    _ActionBtn(
-                      label: 'Nuevo Proveedor',
-                      icon: Icons.add,
-                      color: const Color(0xFF111827),
-                      onTap: widget.onNewSupplier ?? () {},
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-
-            // KPI Cards dinámicas
-            Row(
-              children: [
-                Expanded(
-                  child: KpiCard(
-                    icon: Icons.trending_up,
-                    iconBgColor: const Color(0xFFDCFCE7),
-                    iconColor: const Color(0xFF16A34A),
-                    title: 'Total Comprado (Mes)',
-                    value:
-                        '₡${(_totalMonthly / 1000000).toStringAsFixed(1)}M',
-                    subtitle: 'Mes actual',
                   ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: KpiCard(
-                    icon: Icons.people_outline,
-                    iconBgColor: const Color(0xFFDBEAFE),
-                    iconColor: const Color(0xFF2563EB),
-                    title: 'Proveedores Activos',
-                    value: '$_activeCount',
-                    subtitle: '${widget.suppliers.length} registrados',
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: KpiCard(
-                    icon: Icons.shopping_cart_outlined,
-                    iconBgColor: const Color(0xFFF3E8FF),
-                    iconColor: const Color(0xFF7C3AED),
-                    title: 'Órdenes Pendientes',
-                    value: '—', // viene del backend
-                    subtitle: 'Por recibir',
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: KpiCard(
-                    icon: Icons.warning_amber_outlined,
-                    iconBgColor: const Color(0xFFFFF7ED),
-                    iconColor: const Color(0xFFD97706),
-                    title: 'Monto Pendiente',
-                    value: '—', // viene del backend
-                    subtitle: 'Por pagar',
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
+                ],
+              ),
+              const SizedBox(height: 24),
 
-            // Búsqueda
-            SearchFilterBar(
-              controller: _searchCtrl,
-              placeholder: 'Buscar por nombre, cédula jurídica o correo...',
-            ),
-            const SizedBox(height: 8),
+              SearchFilterBar(
+                controller: _searchCtrl,
+                placeholder:
+                    'Buscar por nombre, identificación o email...',
+                filterOptions: provider.tiposProveedor,
+                selectedFilter: _tipoFilter,
+                onFilterChanged: (v) =>
+                    setState(() => _tipoFilter = v),
+              ),
+              const SizedBox(height: 16),
 
-            // Filtros de estado y categoría
-            Row(
-              children: [
-                _DropdownFilter(
-                  value: _statusFilter,
-                  items: const {
-                    'all': 'Todos los estados',
-                    'active': 'Activos',
-                    'inactive': 'Inactivos',
-                  },
-                  onChanged: (v) => setState(() => _statusFilter = v),
-                ),
-                const SizedBox(width: 12),
-                _DropdownFilter(
-                  value: _categoryFilter,
-                  items: {
-                    for (final c in _categories)
-                      c: c == 'all' ? 'Todas las categorías' : c
-                  },
-                  onChanged: (v) => setState(() => _categoryFilter = v),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            // Tabla
-            AppDataTable(
-              columns: columns,
-              rows: rows,
-              headerColor: const Color(0xFFF9FAFB),
-              emptyMessage: 'No se encontraron proveedores',
-            ),
-            const SizedBox(height: 8),
-
-            // Conteo
-            Text(
-              'Mostrando ${filtered.length} de ${widget.suppliers.length} proveedores',
-              style: const TextStyle(fontSize: 13, color: Color(0xFF6B7280)),
-            ),
-          ],
+              AppDataTable(
+                columns: columns,
+                rows: rows,
+                emptyMessage: 'No se encontraron proveedores',
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  String _monthName(int month) {
-    const names = [
-      '', 'ene', 'feb', 'mar', 'abr', 'may', 'jun',
-      'jul', 'ago', 'sep', 'oct', 'nov', 'dic'
-    ];
-    return names[month];
-  }
+  String _labelTipo(String tipo) => const {
+        'productos': 'Productos',
+        'servicios': 'Servicios',
+        'materias_primas': 'Materias Primas',
+        'mixto': 'Mixto',
+      }[tipo] ??
+      tipo;
+
+  String _labelPago(String pago) => const {
+        'contado': 'Contado',
+        'credito_15': 'Crédito 15d',
+        'credito_30': 'Crédito 30d',
+        'credito_60': 'Crédito 60d',
+        'credito_90': 'Crédito 90d',
+      }[pago] ??
+      pago;
+
+  Widget _estadoBadge(String estado) => switch (estado) {
+        'activo' => StatusBadge.available(),
+        'bloqueado' => StatusBadge.low(),
+        _ => StatusBadge.low(),
+      };
 }
 
-class _ActionBtn extends StatelessWidget {
-  final String label;
+// ── Botón de acción reutilizable en la tabla ───────────────────────────────
+class _ActionButton extends StatelessWidget {
   final IconData icon;
-  final Color color;
+  final String label;
   final VoidCallback onTap;
+  final Color color;
+  final Color bgColor;
 
-  const _ActionBtn(
-      {required this.label,
-      required this.icon,
-      required this.color,
-      required this.onTap});
+  const _ActionButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.color = const Color(0xFF374151),
+    this.bgColor = const Color(0xFFF3F4F6),
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        padding:
+            const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(8),
+          color: bgColor,
+          borderRadius: BorderRadius.circular(6),
         ),
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 15, color: Colors.white),
-            const SizedBox(width: 8),
+            Icon(icon, size: 13, color: color),
+            const SizedBox(width: 4),
             Text(label,
-                style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white)),
+                style: TextStyle(fontSize: 12, color: color)),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _DropdownFilter extends StatelessWidget {
-  final String value;
-  final Map<String, String> items;
-  final ValueChanged<String> onChanged;
-
-  const _DropdownFilter(
-      {required this.value, required this.items, required this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFFD1D5DB)),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: value,
-          style: const TextStyle(fontSize: 13, color: Color(0xFF374151)),
-          items: items.entries
-              .map((e) => DropdownMenuItem(value: e.key, child: Text(e.value)))
-              .toList(),
-          onChanged: (v) => onChanged(v!),
         ),
       ),
     );

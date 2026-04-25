@@ -18,7 +18,7 @@ class SucursalSelector extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
@@ -27,12 +27,16 @@ class SucursalSelector extends StatelessWidget {
       child: DropdownButtonHideUnderline(
         child: DropdownButton<SucursalRead>(
           value: auth.sucursalSeleccionada,
-          hint: const Text('Seleccionar sucursal',
-              style: TextStyle(fontSize: 13, color: Color(0xFF9CA3AF))),
+          isExpanded: true, // ← clave: ocupa el ancho disponible sin desbordar
+          hint: const Text(
+            'Seleccionar sucursal',
+            style: TextStyle(fontSize: 12, color: Color(0xFF9CA3AF)),
+            overflow: TextOverflow.ellipsis,
+          ),
           icon: const Icon(Icons.store_outlined,
-              size: 16, color: Color(0xFF6B7280)),
+              size: 14, color: Color(0xFF6B7280)),
           style: const TextStyle(
-              fontSize: 13,
+              fontSize: 12,
               color: Color(0xFF111827),
               fontWeight: FontWeight.w500),
           items: auth.todasLasSucursales
@@ -43,7 +47,7 @@ class SucursalSelector extends StatelessWidget {
                         Container(
                           width: 6,
                           height: 6,
-                          margin: const EdgeInsets.only(right: 8),
+                          margin: const EdgeInsets.only(right: 6),
                           decoration: BoxDecoration(
                             color: s.estado == 'activo'
                                 ? const Color(0xFF16A34A)
@@ -51,18 +55,19 @@ class SucursalSelector extends StatelessWidget {
                             shape: BoxShape.circle,
                           ),
                         ),
-                        Text(
-                          '${s.nombre} · ${s.codigo}',
-                          style: const TextStyle(fontSize: 13),
+                        Expanded(
+                          child: Text(
+                            s.nombre,
+                            style: const TextStyle(fontSize: 12),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ],
                     ),
                   ))
               .toList(),
           onChanged: (sucursal) {
-            if (sucursal != null) {
-              auth.seleccionarSucursal(sucursal);
-            }
+            if (sucursal != null) auth.seleccionarSucursal(sucursal);
           },
         ),
       ),

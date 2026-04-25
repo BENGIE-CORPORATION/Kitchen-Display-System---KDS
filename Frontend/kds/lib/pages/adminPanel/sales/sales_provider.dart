@@ -1,127 +1,123 @@
 import 'package:flutter/material.dart';
-import '../../../common/models/models.dart';
-import '../../../common/mock/mock_data.dart';
+import '../../../common/models/pedido_models.dart';
+import '../../../common/models/pago_models.dart';
+import '../../../common/providers/auth_provider.dart';
 import '../../../common/services/api_service.dart';
 
-// ─── Cambia a false cuando el BE esté listo ───────────────────────────────────
-const bool useMock = true;
-
 class SalesService {
-  static Future<List<Product>> getProducts() async {
-    if (useMock) {
-      await Future.delayed(const Duration(milliseconds: 400));
-      return SalesMock.products;
-    }
-    final data = await ApiService.get('/products');
-    return (data as List).map((j) => Product.fromJson(j)).toList();
+  static Future<PaginatedPedidos> getPedidos({
+    required AuthProvider auth,
+    int page = 1,
+    int itemsPerPage = 50,
+    String? estado,
+    String? estadoPago,
+    String? tipoPedido,
+  }) async {
+    final empresaId = auth.isSuperAdmin
+        ? auth.sucursalSeleccionada?.empresaId ?? auth.empresaId
+        : auth.empresaId;
+    final sucursalId = auth.isSuperAdmin
+        ? auth.sucursalSeleccionada?.id
+        : auth.sucursalId;
+
+    if (empresaId == null)
+      throw ApiException(400, 'No se pudo determinar la empresa');
+
+    final params = StringBuffer(
+        '/api/v1/pedidos/?empresa_id=$empresaId&page=$page&items_per_page=$itemsPerPage');
+    if (sucursalId != null) params.write('&sucursal_id=$sucursalId');
+    if (estado != null) params.write('&estado=$estado');
+    if (estadoPago != null) params.write('&estado_pago=$estadoPago');
+    if (tipoPedido != null) params.write('&tipo_pedido=$tipoPedido');
+
+    final data = await ApiService.get(params.toString());
+    return PaginatedPedidos.fromJson(data);
   }
 
-  static Future<void> processSale({
-    required List<SaleItem> items,
-    required String cliente,
+  static Future<PedidoReadDetalle> getPedidoDetalle(String id) async {
+    final data = await ApiService.get('/api/v1/pedidos/$id/detalle');
+    return PedidoReadDetalle.fromJson(data);
+  }
+
+  static Future<PedidoRead> cambiarEstado(
+    String id,
+    String nuevoEstado, {
+    String? motivoCancelacion,
+    String? sesionCajaId,
+    String? estadoPago,
   }) async {
-    if (useMock) {
-      await Future.delayed(const Duration(milliseconds: 600));
-      return;
-    }
-    await ApiService.post('/sales', {
-      'cliente': cliente,
-      'items': items.map((i) => {
-        'clave': i.clave,
-        'cantidad': i.cantidad,
-        'precio': i.precio,
-      }).toList(),
-    });
+    final body = <String, dynamic>{'estado': nuevoEstado};
+    if (motivoCancelacion != null) body['motivo_cancelacion'] = motivoCancelacion;
+    if (sesionCajaId != null) body['sesion_caja_id'] = sesionCajaId;
+    if (estadoPago != null) body['estado_pago'] = estadoPago;
+    final data = await ApiService.patch('/api/v1/pedidos/$id/estado', body);
+    return PedidoRead.fromJson(data);
+  }
+
+  static Future<List<PagoRead>> getPagosPedido(String pedidoId) async {
+    final data = await ApiService.get('/api/v1/pedidos/$pedidoId/pagos');
+    return (data as List<dynamic>)
+        .map((i) => PagoRead.fromJson(i as Map<String, dynamic>))
+        .toList();
   }
 }
 
-// ─── Provider ─────────────────────────────────────────────────────────────────
 class SalesProvider extends ChangeNotifier {
-  List<Product> products = [];
-  List<SaleItem> currentItems = [];
-  String cliente = '';
+  List<PedidoRead> pedidos = [];
+  int total = 0;
   bool isLoading = false;
-  bool isProcessing = false;
   String? error;
+  String _estadoFilter = 'Todos';
 
-  Future<void> loadProducts() async {
+  AuthProvider? _auth;
+
+  void init(AuthProvider auth) => _auth = auth;
+
+  String get estadoFilter => _estadoFilter;
+
+  Future<void> load({bool refresh = false}) async {
+    if (_auth == null) return;
+    if (refresh) pedidos = [];
+
     isLoading = true;
     error = null;
     notifyListeners();
 
     try {
-      products = await SalesService.getProducts();
-    } catch (e) {
-      error = e.toString();
+      final result = await SalesService.getPedidos(
+        auth: _auth!,
+        estado: _estadoFilter == 'Todos' ? null : _estadoFilter,
+      );
+      pedidos = result.items;
+      total = result.total;
+    } on ApiException catch (e) {
+      error = e.message;
+    } catch (_) {
+      error = 'Error al cargar los pedidos';
     } finally {
       isLoading = false;
       notifyListeners();
     }
   }
 
-  void addProduct(Product product) {
-    final idx = currentItems.indexWhere((i) => i.clave == product.clave);
-    if (idx >= 0) {
-      currentItems[idx].cantidad++;
-    } else {
-      currentItems.add(SaleItem(
-        id: UniqueKey().toString(),
-        clave: product.clave,
-        nombre: product.nombre,
-        cantidad: 1,
-        precio: product.precio,
-      ));
-    }
-    notifyListeners();
+  Future<void> reload() => load(refresh: true);
+
+  void setEstadoFilter(String estado) {
+    _estadoFilter = estado;
+    load(refresh: true);
   }
 
-  void changeQty(String id, int delta) {
-    final idx = currentItems.indexWhere((i) => i.id == id);
-    if (idx >= 0) {
-      final newQty = currentItems[idx].cantidad + delta;
-      if (newQty < 1) return;
-      currentItems[idx].cantidad = newQty;
-      notifyListeners();
-    }
+  List<PedidoRead> filtrar({String query = ''}) {
+    if (query.isEmpty) return pedidos;
+    final q = query.toLowerCase();
+    return pedidos.where((p) =>
+        p.numeroPedido.toLowerCase().contains(q) ||
+        (p.nombreCliente?.toLowerCase().contains(q) ?? false)).toList();
   }
 
-  void removeItem(String id) {
-    currentItems.removeWhere((i) => i.id == id);
-    notifyListeners();
-  }
+  int get totalActivos => pedidos.where((p) => !p.esFinal).length;
 
-  void setCliente(String value) {
-    cliente = value;
-    notifyListeners();
-  }
-
-  void clearSale() {
-    currentItems.clear();
-    cliente = '';
-    notifyListeners();
-  }
-
-  Future<bool> processSale() async {
-    if (currentItems.isEmpty) return false;
-    isProcessing = true;
-    notifyListeners();
-
-    try {
-      await SalesService.processSale(items: currentItems, cliente: cliente);
-      clearSale();
-      return true;
-    } catch (e) {
-      error = e.toString();
-      return false;
-    } finally {
-      isProcessing = false;
-      notifyListeners();
-    }
-  }
-
-  double get total =>
-      currentItems.fold(0, (sum, i) => sum + i.total);
-
-  int get totalItems =>
-      currentItems.fold(0, (sum, i) => sum + i.cantidad);
+  double get totalVentasHoy => pedidos
+      .where((p) => p.estado == 'facturado')
+      .fold(0, (s, p) => s + p.total);
 }

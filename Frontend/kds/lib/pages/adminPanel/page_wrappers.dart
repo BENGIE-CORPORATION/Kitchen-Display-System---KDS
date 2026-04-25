@@ -10,6 +10,13 @@ import 'suppliers/suppliers_page.dart';
 import 'suppliers/suppliers_provider.dart';
 import 'sales/sales_page.dart';
 import 'sales/sales_provider.dart';
+import 'ordenes_compra/ordenes_compra_page.dart';
+import 'ordenes_compra/ordenes_compra_provider.dart';
+import 'employees/employees_page.dart';
+import 'employees/employees_provider.dart';
+import 'config/config_page.dart';
+import 'config/config_provider.dart';
+
 
 // ── Inventory ─────────────────────────────────────────────────────────────────
 class InventoryScreen extends StatelessWidget {
@@ -66,25 +73,30 @@ class MainAreaScreen extends StatelessWidget {
   }
 }
 
-// ── Providers (Suppliers) ─────────────────────────────────────────────────────
-class ProvidersScreen extends StatelessWidget {
-  const ProvidersScreen({super.key});
+// ── Suppliers ─────────────────────────────────────────────────────────────────
+class SuppliersScreen extends StatelessWidget {
+  const SuppliersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final auth = context.read<AuthProvider>();
+
     return ChangeNotifierProvider(
-      create: (_) => SuppliersProvider()..load(),
+      // init() inyecta el AuthProvider antes de load() para que
+      // SuppliersService pueda resolver empresa_id correctamente.
+      create: (_) => SuppliersProvider()
+        ..init(auth)
+        ..load(),
       child: Consumer<SuppliersProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading) return const _LoadingView();
           if (provider.error != null) {
-            return _ErrorView(provider.error!, onRetry: provider.load);
+            return _ErrorView(
+              provider.error!,
+              onRetry: provider.reload,
+            );
           }
-          return ProvidersPage(
-            suppliers: provider.suppliers,
-            onViewSupplier: (supplier) {},
-            onCreateOrder: () {},
-          );
+          return SuppliersPage(provider: provider);
         },
       ),
     );
@@ -97,18 +109,100 @@ class SalesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = context.read<AuthProvider>();
+
     return ChangeNotifierProvider(
-      create: (_) => SalesProvider()..loadProducts(),
+      create: (_) => SalesProvider()
+        ..init(auth)
+        ..load(),
       child: Consumer<SalesProvider>(
         builder: (context, provider, _) {
           if (provider.isLoading) return const _LoadingView();
           if (provider.error != null) {
-            return _ErrorView(provider.error!, onRetry: provider.loadProducts);
+            return _ErrorView(
+              provider.error!,
+              onRetry: provider.reload,
+            );
           }
-          return SalesPage(
-            products: provider.products,
-            initialItems: provider.currentItems,
-          );
+          return SalesPage(provider: provider);
+        },
+      ),
+    );
+  }
+}
+
+// ── Órdenes de Compra ─────────────────────────────────────────────────────────
+class OrdenesCompraScreen extends StatelessWidget {
+  const OrdenesCompraScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final auth = context.read<AuthProvider>();
+
+    return ChangeNotifierProvider(
+      create: (_) => OrdenesCompraProvider()
+        ..init(auth)
+        ..load(),
+      child: Consumer<OrdenesCompraProvider>(
+        builder: (context, provider, _) {
+          if (provider.isLoading) return const _LoadingView();
+          if (provider.error != null) {
+            return _ErrorView(
+              provider.error!,
+              onRetry: provider.reload,
+            );
+          }
+          return OrdenesCompraPage(provider: provider);
+        },
+      ),
+    );
+  }
+}
+
+// ── Empleados ─────────────────────────────────────────────────────────────────
+class EmployeesScreen extends StatelessWidget {
+  const EmployeesScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final auth = context.read<AuthProvider>();
+
+    return ChangeNotifierProvider(
+      create: (_) => EmployeesProvider()
+        ..init(auth)
+        ..load(),
+      child: Consumer<EmployeesProvider>(
+        builder: (context, provider, _) {
+          if (provider.isLoading) return const _LoadingView();
+          if (provider.error != null) {
+            return _ErrorView(provider.error!, onRetry: provider.reload);
+          }
+          return EmployeesPage(provider: provider);
+        },
+      ),
+    );
+  }
+}
+
+// ── Configuración ─────────────────────────────────────────────────────────────
+class ConfigScreen extends StatelessWidget {
+  const ConfigScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final auth = context.read<AuthProvider>();
+
+    return ChangeNotifierProvider(
+      create: (_) => ConfigProvider()
+        ..init(auth)
+        ..load(),
+      child: Consumer<ConfigProvider>(
+        builder: (context, provider, _) {
+          if (provider.isLoading) return const _LoadingView();
+          if (provider.error != null) {
+            return _ErrorView(provider.error!, onRetry: provider.reload);
+          }
+          return ConfigPage(provider: provider);
         },
       ),
     );
@@ -144,7 +238,8 @@ class _ErrorView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.error_outline, color: Color(0xFFDC2626), size: 40),
+            const Icon(Icons.error_outline,
+                color: Color(0xFFDC2626), size: 40),
             const SizedBox(height: 12),
             const Text(
               'Error al cargar datos',
@@ -154,9 +249,10 @@ class _ErrorView extends StatelessWidget {
                   color: Color(0xFF111827)),
             ),
             const SizedBox(height: 4),
-            Text(message,
-                style: const TextStyle(
-                    fontSize: 13, color: Color(0xFF6B7280))),
+            Text(
+              message,
+              style: const TextStyle(fontSize: 13, color: Color(0xFF6B7280)),
+            ),
             if (onRetry != null) ...[
               const SizedBox(height: 16),
               ElevatedButton(

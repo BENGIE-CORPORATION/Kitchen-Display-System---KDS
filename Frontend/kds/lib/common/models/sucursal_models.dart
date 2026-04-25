@@ -42,11 +42,11 @@ class PaginatedSucursales {
 
   const PaginatedSucursales({required this.items, required this.total});
 
-  factory PaginatedSucursales.fromJson(Map<String, dynamic> json) =>
-      PaginatedSucursales(
-        items: (json['items'] as List<dynamic>)
-            .map((i) => SucursalRead.fromJson(i))
-            .toList(),
-        total: json['total'] ?? 0,
-      );
+  factory PaginatedSucursales.fromJson(Map<String, dynamic> json) {
+    final list = (json['data'] ?? json['items']) as List<dynamic>;
+    return PaginatedSucursales(
+      items: list.map((i) => SucursalRead.fromJson(i as Map<String, dynamic>)).toList(),
+      total: json['total'] ?? 0,
+    );
+  }
 }

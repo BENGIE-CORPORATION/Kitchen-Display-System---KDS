@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+//import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
+//import 'package:provider/provider.dart';
 
 import '../pages/adminPanel/admin_layout.dart';
 import '../pages/adminPanel/dashboard/dashboard_page.dart';
@@ -61,11 +61,11 @@ GoRouter createRouter(AuthProvider authProvider) {
           ),
           GoRoute(
             path: TRoutes.config,
-            builder: (context, state) => ConfigPage(key: state.pageKey),
+            builder: (context, state) => ConfigScreen(key: state.pageKey),
           ),
           GoRoute(
             path: TRoutes.employees,
-            builder: (context, state) => EmployeesPage(key: state.pageKey),
+            builder: (context, state) => EmployeesScreen(key: state.pageKey),
           ),
           GoRoute(
             path: TRoutes.menu,
@@ -81,11 +81,15 @@ GoRouter createRouter(AuthProvider authProvider) {
           ),
           GoRoute(
             path: TRoutes.providers,
-            builder: (context, state) => ProvidersScreen(key: state.pageKey),
+            builder: (context, state) => SuppliersScreen(key: state.pageKey),
           ),
           GoRoute(
             path: TRoutes.sales,
             builder: (context, state) => SalesScreen(key: state.pageKey),
+          ),
+          GoRoute(
+            path: TRoutes.ordenes,
+            builder: (context, state) => OrdenesCompraScreen(key: state.pageKey),
           ),
         ],
       ),

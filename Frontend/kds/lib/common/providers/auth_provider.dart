@@ -121,15 +121,17 @@ class AuthProvider extends ChangeNotifier {
   Future<void> _loadTodasLasSucursales() async {
     try {
       final data = await ApiService.get(
-          '/api/v1/sucursales/');
+          '/api/v1/sucursales/?items_per_page=100&estado=activo');
+      
       final paginated = PaginatedSucursales.fromJson(data);
       todasLasSucursales = paginated.items;
 
       // Selecciona la primera por defecto
-      if (todasLasSucursales.isNotEmpty && sucursalSeleccionada == null) {
-        sucursalSeleccionada = todasLasSucursales.first;
-      }
-    } catch (_) {
+      //if (todasLasSucursales.isNotEmpty && sucursalSeleccionada == null) {
+      // sucursalSeleccionada = todasLasSucursales.first;
+      //}
+    } catch (e) {
+      print('Error sucursales: $e');
       todasLasSucursales = [];
     }
   }

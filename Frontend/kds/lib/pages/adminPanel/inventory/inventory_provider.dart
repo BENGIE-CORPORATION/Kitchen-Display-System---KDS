@@ -4,14 +4,15 @@ import '../../../common/services/api_service.dart';
 
 // ─── Service ──────────────────────────────────────────────────────────────────
 class InventoryService {
-  /// GET /materias-primas/sucursal/{sucursal_id}
+  // GET /materias-primas/sucursal/{sucursal_id} — lista TODAS las materias
+  // primas con stock de una sucursal, con join a materias_primas incluido.
   static Future<PaginatedMateriaPrimas> getMaterisPrimasPorSucursal({
     required String sucursalId,
     int page = 1,
     int itemsPerPage = 50,
     bool bajoMinimo = false,
   }) async {
-    final query = '/materias-primas/sucursal/$sucursalId'
+    final query = '/api/v1/materias-primas/sucursal/$sucursalId'
         '?page=$page'
         '&items_per_page=$itemsPerPage'
         '&bajo_minimo=$bajoMinimo';
@@ -20,13 +21,13 @@ class InventoryService {
     return PaginatedMateriaPrimas.fromJson(data);
   }
 
-  /// PATCH /materias-primas/sucursales/{mps_id}
+  // PATCH /materias-primas/sucursales/{mps_id} — ajusta stock
   static Future<void> ajustarStock({
     required String mpsId,
     required double nuevoStock,
   }) async {
     await ApiService.patch(
-      '/materias-primas/sucursales/$mpsId',
+      '/api/v1/materias-primas/sucursales/$mpsId',
       {'stock_actual': nuevoStock},
     );
   }

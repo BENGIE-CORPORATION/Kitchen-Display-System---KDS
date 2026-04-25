@@ -95,7 +95,7 @@ def get_sucursal_by_codigo(db: Client, empresa_id: UUID, codigo: str) -> dict | 
 
 def get_sucursales(
     db: Client,
-    empresa_id: UUID,          # siempre filtramos por empresa
+    empresa_id: UUID | None,  # ← cambiar UUID a UUID | None
     page: int = 1,
     items_per_page: int = 10,
     order_by: str = "created_at",
@@ -109,9 +109,13 @@ def get_sucursales(
 
     query = (
         db.table(TABLE_NAME).select("*", count="exact")
-        .eq("empresa_id", str(empresa_id))
         .neq("estado", "inactivo")
     )
+
+    # ← solo filtrar por empresa si se especifica
+    if empresa_id is not None:
+        query = query.eq("empresa_id", str(empresa_id))
+
     if estado:
         query = query.eq("estado", estado)
     if tipo:
