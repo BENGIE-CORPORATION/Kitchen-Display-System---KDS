@@ -34,6 +34,7 @@ from ...core.exceptions.http_exceptions import (
     NotFoundException,
 )
 from ...core.limiter import get_user_id_from_token, limiter
+from ...core.metrics import pedido_estado_cambios, pedidos_creados
 from ...core.pagination import PaginatedResponse
 from ...core.security import (
     get_current_superadmin,
@@ -200,6 +201,7 @@ def write_pedido(
         tipo=nuevo.get("tipo_pedido"), total=nuevo.get("total"),
         admin=current_user.get("email"),
     )
+    pedidos_creados.labels(tipo_pedido=nuevo.get("tipo_pedido", "desconocido")).inc()
     return nuevo
 
 
@@ -264,6 +266,7 @@ def patch_estado_pedido(
         id=str(pedido_id), anterior=pedido["estado"],
         nuevo=values.estado, admin=current_user.get("email"),
     )
+    pedido_estado_cambios.labels(de=pedido["estado"], a=values.estado).inc()
     return updated
 
 

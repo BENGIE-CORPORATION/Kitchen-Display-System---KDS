@@ -1,0 +1,67 @@
+# ══════════════════════════════════════════════════════════════
+#  KDS — Docker Compose PRODUCCIÓN
+#
+#  Diferencias respecto a desarrollo:
+#  · Backend:  stage "production" — 2 workers, sin reload
+#  · Frontend: Flutter build --release (tree-shaking, mínimo tamaño)
+#  · Sin volúmenes de código — todo baked en la imagen
+#  · Restart: always (se reinician automáticamente tras reboot del host)
+#  · Logs del backend en volumen Docker nombrado (no bind mount)
+#
+#  Prerequisitos:
+#    cp Backend/.env.production.example Backend/.env.production
+#    # rellena todas las variables (SECRET_KEY, SUPABASE_*, etc.)
+#
+#  Uso:
+#    make prod-up         → arrancar producción
+#    make prod-rebuild    → reconstruir y arrancar
+#    make prod-down       → detener
+# ══════════════════════════════════════════════════════════════
+
+services:
+
+  # ── Backend ──────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./Backend
+      target: production           # stage "production" del Dockerfile
+    container_name: kds-backend-prod
+    ports:
+      - "8000:8000"
+    volumes:
+      # Logs en volumen Docker (no bind mount) — persisten entre deploys
+      - kds-logs-prod:/app/logs
+    env_file:
+      # Archivo con las keys reales de producción — NUNCA subir a git
+      - ./Backend/.env.production
+    environment:
+      - APP_ENV=production
+      - DEBUG=False
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # ── Frontend ──────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./Frontend/kds
+      args:
+        # URL pública del backend en producción.
+        # Ajustar al dominio/IP real del servidor.
+        API_URL: "${PROD_API_URL:-http://localhost:8000}"
+        BUILD_MODE: "release"    # tree-shaking completo, tamaño mínimo
+    container_name: kds-frontend-prod
+    ports:
+      - "80:80"
+    restart: always
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  kds-logs-prod:
+    name: kds-logs-prod

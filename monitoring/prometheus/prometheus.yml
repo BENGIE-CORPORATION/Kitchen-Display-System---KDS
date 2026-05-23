@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 15s       # cada cuánto recoge métricas
+  evaluation_interval: 15s   # cada cuánto evalúa reglas de alerta
+
+scrape_configs:
+  - job_name: "kds-backend"
+    metrics_path: "/metrics"
+    static_configs:
+      - targets: ["backend:8000"]   # nombre del servicio en docker-compose
+        labels:
+          service: "backend"
+          env: "development"

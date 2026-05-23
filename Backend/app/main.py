@@ -11,6 +11,8 @@ from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
+from prometheus_fastapi_instrumentator import Instrumentator
+
 from app.api.v1 import api_router
 from app.config import settings
 from app.core.limiter import limiter
@@ -72,6 +74,14 @@ app.add_middleware(
 
 # ── Routers ───────────────────────────────────────────────────────────────────
 app.include_router(api_router)
+
+# ── Prometheus metrics ────────────────────────────────────────────────────────
+# Instrumenta automáticamente todas las rutas HTTP (latencia, requests, status).
+# Expone GET /metrics en formato texto que Prometheus puede scrapear.
+Instrumentator(
+    should_group_status_codes=False,
+    excluded_handlers=["/metrics"],   # no medir el propio endpoint de métricas
+).instrument(app).expose(app, endpoint="/metrics", tags=["Observabilidad"])
 
 logger.info(
     "Servidor iniciado | app={app} | v={version} | env={env} | debug={debug}",

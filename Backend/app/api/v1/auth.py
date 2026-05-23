@@ -20,6 +20,7 @@ from ...core.exceptions.http_exceptions import (
     UnauthorizedException,
 )
 from ...core.limiter import get_user_id_from_token, limiter
+from ...core.metrics import auth_logins, auth_registros
 from ...core.security import get_current_user
 from ...crud.crud_perfiles import (
     create_perfil,
@@ -57,24 +58,29 @@ def login(
         })
     except Exception:
         logger.warning("Login fallido | email={email}", email=data.email)
+        auth_logins.labels(resultado="fallido").inc()
         raise UnauthorizedException("Email o contraseña incorrectos")
 
     if not auth_response.user or not auth_response.session:
         logger.warning("Login fallido (sin sesión) | email={email}", email=data.email)
+        auth_logins.labels(resultado="fallido").inc()
         raise UnauthorizedException("Email o contraseña incorrectos")
 
     perfil = get_perfil_by_email(db, data.email)
     if not perfil:
         logger.error("Login sin perfil | email={email} | UUID={uid}", email=data.email, uid=auth_response.user.id)
+        auth_logins.labels(resultado="fallido").inc()
         raise NotFoundException("Perfil no encontrado. Contacta al administrador.")
 
     if perfil.get("estado") != "activo":
         estado = perfil.get("estado")
         logger.warning("Login bloqueado | email={email} | estado={estado}", email=data.email, estado=estado)
+        auth_logins.labels(resultado="bloqueado").inc()
         raise UnauthorizedException(f"Tu cuenta está {estado}. Contacta al administrador.")
 
     update_ultimo_acceso(db, UUID(str(perfil["id"])))
     logger.info("Login exitoso | email={email} | rol={rol}", email=data.email, rol=perfil.get("rol_global"))
+    auth_logins.labels(resultado="exitoso").inc()
 
     session = auth_response.session
     return {
@@ -132,6 +138,7 @@ def register(
         raise BadRequestException(f"Error al crear perfil: {str(e)}")
 
     logger.info("Admin registrado | email={email} | empresa_id={empresa_id}", email=data.email, empresa_id=data.empresa_id)
+    auth_registros.labels(resultado="exitoso").inc()
 
     try:
         login_response = db.auth.sign_in_with_password({"email": data.email, "password": data.password})

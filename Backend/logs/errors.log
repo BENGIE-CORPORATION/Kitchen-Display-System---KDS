@@ -818,3 +818,83 @@ Traceback (most recent call last):
   File "/Users/samircabrera/Development/projects/BENJI/Kitchen-Display-System---KDS/Backend/venv/lib/python3.11/site-packages/postgrest/_sync/request_builder.py", line 53, in execute
     raise APIError(dict(json_obj))
 postgrest.exceptions.APIError: {'message': 'insert or update on table "categorias" violates foreign key constraint "fk_categorias_empresa"', 'code': '23503', 'hint': None, 'details': 'Key (empresa_id)=(3fa85f64-5717-4562-b3fc-2c963f66afa6) is not present in table "empresas".'}
+2026-05-23 19:05:43 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:05:43 | ERROR    | app.core.middleware:102 | ✗ [1fb59266] GET /health | 503 | 258.32ms | user=anonymous
+2026-05-23 19:05:48 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:05:48 | ERROR    | app.core.middleware:102 | ✗ [f71b69b7] GET /health | 503 | 13.78ms | user=anonymous
+2026-05-23 19:05:53 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:05:53 | ERROR    | app.core.middleware:102 | ✗ [bad567e9] GET /health | 503 | 15.88ms | user=anonymous
+2026-05-23 19:05:58 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:05:58 | ERROR    | app.core.middleware:102 | ✗ [2ed0a71c] GET /health | 503 | 16.63ms | user=anonymous
+2026-05-23 19:06:28 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:06:28 | ERROR    | app.core.middleware:102 | ✗ [4d99d3af] GET /health | 503 | 40.9ms | user=anonymous
+2026-05-23 19:06:58 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:06:58 | ERROR    | app.core.middleware:102 | ✗ [cc006a21] GET /health | 503 | 15.05ms | user=anonymous
+2026-05-23 19:07:28 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:07:28 | ERROR    | app.core.middleware:102 | ✗ [4342bb1b] GET /health | 503 | 18.52ms | user=anonymous
+2026-05-23 19:07:58 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:07:58 | ERROR    | app.core.middleware:102 | ✗ [ac29762a] GET /health | 503 | 13.76ms | user=anonymous
+2026-05-23 19:08:28 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:08:28 | ERROR    | app.core.middleware:102 | ✗ [b56fac6d] GET /health | 503 | 13.22ms | user=anonymous
+2026-05-23 19:08:58 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:08:58 | ERROR    | app.core.middleware:102 | ✗ [763afdcd] GET /health | 503 | 11.59ms | user=anonymous
+2026-05-23 19:09:28 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:09:28 | ERROR    | app.core.middleware:102 | ✗ [f64b76f0] GET /health | 503 | 12.4ms | user=anonymous
+2026-05-23 19:09:58 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:09:58 | ERROR    | app.core.middleware:102 | ✗ [efa91763] GET /health | 503 | 13.02ms | user=anonymous
+2026-05-23 19:10:29 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:10:29 | ERROR    | app.core.middleware:102 | ✗ [667c6b72] GET /health | 503 | 180.42ms | user=anonymous
+2026-05-23 19:10:59 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:10:59 | ERROR    | app.core.middleware:102 | ✗ [25992e77] GET /health | 503 | 12.8ms | user=anonymous
+2026-05-23 19:11:29 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:11:29 | ERROR    | app.core.middleware:102 | ✗ [605251a0] GET /health | 503 | 16.39ms | user=anonymous
+2026-05-23 19:11:59 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:11:59 | ERROR    | app.core.middleware:102 | ✗ [9dd60c4b] GET /health | 503 | 180.34ms | user=anonymous
+2026-05-23 19:12:29 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:12:29 | ERROR    | app.core.middleware:102 | ✗ [50285fe3] GET /health | 503 | 15.22ms | user=anonymous
+2026-05-23 19:12:59 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:12:59 | ERROR    | app.core.middleware:102 | ✗ [f64353b1] GET /health | 503 | 15.46ms | user=anonymous
+2026-05-23 19:13:29 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:13:29 | ERROR    | app.core.middleware:102 | ✗ [126827db] GET /health | 503 | 184.47ms | user=anonymous
+2026-05-23 19:13:59 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:13:59 | ERROR    | app.core.middleware:102 | ✗ [decc5f6a] GET /health | 503 | 12.86ms | user=anonymous
+2026-05-23 19:14:30 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:14:30 | ERROR    | app.core.middleware:102 | ✗ [3218adbc] GET /health | 503 | 17.5ms | user=anonymous
+2026-05-23 19:15:00 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:15:00 | ERROR    | app.core.middleware:102 | ✗ [ae4735ee] GET /health | 503 | 186.22ms | user=anonymous
+2026-05-23 19:15:30 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:15:30 | ERROR    | app.core.middleware:102 | ✗ [ad2d59b0] GET /health | 503 | 16.59ms | user=anonymous
+2026-05-23 19:16:00 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:16:00 | ERROR    | app.core.middleware:102 | ✗ [c3c0214d] GET /health | 503 | 12.55ms | user=anonymous
+2026-05-23 19:16:30 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:16:30 | ERROR    | app.core.middleware:102 | ✗ [4a2e1094] GET /health | 503 | 193.15ms | user=anonymous
+2026-05-23 19:17:00 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:17:00 | ERROR    | app.core.middleware:102 | ✗ [27661e65] GET /health | 503 | 18.34ms | user=anonymous
+2026-05-23 19:17:31 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:17:31 | ERROR    | app.core.middleware:102 | ✗ [9bc48c79] GET /health | 503 | 196.25ms | user=anonymous
+2026-05-23 19:33:25 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:33:25 | ERROR    | app.core.middleware:102 | ✗ [926e1527] GET /health | 503 | 15.99ms | user=anonymous
+2026-05-23 19:33:55 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:33:55 | ERROR    | app.core.middleware:102 | ✗ [2768c4a6] GET /health | 503 | 189.47ms | user=anonymous
+2026-05-23 19:49:28 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:49:28 | ERROR    | app.core.middleware:102 | ✗ [4944d3c2] GET /health | 503 | 12.0ms | user=anonymous
+2026-05-23 19:49:58 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:49:58 | ERROR    | app.core.middleware:102 | ✗ [62d195f1] GET /health | 503 | 17.33ms | user=anonymous
+2026-05-23 19:50:28 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:50:28 | ERROR    | app.core.middleware:102 | ✗ [783f63a8] GET /health | 503 | 222.75ms | user=anonymous
+2026-05-23 19:50:58 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:50:58 | ERROR    | app.core.middleware:102 | ✗ [af4a6b5b] GET /health | 503 | 14.56ms | user=anonymous
+2026-05-23 19:51:28 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:51:28 | ERROR    | app.core.middleware:102 | ✗ [2ad267eb] GET /health | 503 | 13.79ms | user=anonymous
+2026-05-23 19:51:59 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:51:59 | ERROR    | app.core.middleware:102 | ✗ [d0a6df6a] GET /health | 503 | 174.35ms | user=anonymous
+2026-05-23 19:52:29 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:52:29 | ERROR    | app.core.middleware:102 | ✗ [244bde12] GET /health | 503 | 13.59ms | user=anonymous
+2026-05-23 19:52:59 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:52:59 | ERROR    | app.core.middleware:102 | ✗ [203d3f26] GET /health | 503 | 13.35ms | user=anonymous
+2026-05-23 19:53:29 | ERROR    | app.main:181 | Health: Supabase DB caída | {'message': 'JSON could not be generated', 'code': 521, 'hint': 'Refer to full message for details', 'details': 'b\'<!DO
+2026-05-23 19:53:30 | ERROR    | app.core.middleware:102 | ✗ [4cd55204] GET /health | 503 | 1402.61ms | user=anonymous
+2026-05-23 19:54:01 | ERROR    | app.main:181 | Health: Supabase DB caída | {'message': "Could not find the table 'public.empresas' in the schema cache", 'code': 'PGRST205', 'hint': None, 'details
+2026-05-23 19:54:02 | ERROR    | app.core.middleware:102 | ✗ [2d499800] GET /health | 503 | 1380.48ms | user=anonymous
+2026-05-23 19:54:32 | ERROR    | app.main:181 | Health: Supabase DB caída | {'message': "Could not find the table 'public.empresas' in the schema cache", 'code': 'PGRST205', 'hint': None, 'details
+2026-05-23 19:54:33 | ERROR    | app.core.middleware:102 | ✗ [07b2f606] GET /health | 503 | 1237.68ms | user=anonymous

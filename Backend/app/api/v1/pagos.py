@@ -30,6 +30,7 @@ from ...core.exceptions.http_exceptions import (
     NotFoundException,
 )
 from ...core.limiter import get_user_id_from_token, limiter
+from ...core.metrics import pagos_monto_acumulado, pagos_registrados, pagos_reversados
 from ...core.pagination import PaginatedResponse
 from ...core.security import (
     get_current_admin,
@@ -149,6 +150,8 @@ def write_pago(
         ped=str(pedido_id), met=data.metodo_pago,
         monto=str(data.monto), admin=current_user.get("email"),
     )
+    pagos_registrados.labels(metodo_pago=data.metodo_pago).inc()
+    pagos_monto_acumulado.inc(float(data.monto))
     return nuevo
 
 
@@ -187,6 +190,7 @@ def patch_estado_pago(
         id=str(pago_id), anterior=pago["estado"],
         nuevo=values.estado, admin=current_user.get("email"),
     )
+    pagos_reversados.labels(estado=values.estado).inc()
     return updated
 
 
