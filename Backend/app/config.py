@@ -10,7 +10,8 @@ El archivo .env se carga según APP_ENV:
   production  → .env.production  (con fallback a .env)
 
 Variables requeridas (deben estar en el .env correspondiente):
-  SUPABASE_URL, SUPABASE_KEY, SUPABASE_SERVICE_KEY, SUPABASE_JWT_SECRET, SECRET_KEY
+  SUPABASE_URL, SUPABASE_KEY, SUPABASE_SERVICE_KEY, SUPABASE_JWT_SECRET,
+  SECRET_KEY, CORS_ORIGINS
 """
 
 import os
@@ -71,6 +72,17 @@ class Settings(BaseSettings):
     debug: bool = False
     secret_key: str = "cambia-esto"
 
+    # ── CORS ──────────────────────────────────────────────────────────────────
+    # En desarrollo:  CORS_ORIGINS=http://localhost:3000,http://localhost:8000
+    # En producción:  CORS_ORIGINS=https://tudominio.com
+    # Acepta lista separada por comas — pydantic-settings lo lee como str puro.
+    cors_origins: str = "http://localhost:3000,http://localhost:8000"
+
+    @property
+    def cors_origins_list(self) -> list[str]:
+        """Parsea cors_origins (separado por comas) a lista de strings."""
+        return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+
     # ── Supabase ──────────────────────────────────────────────────────────────
     supabase_url: str
     supabase_key: str
@@ -100,6 +112,11 @@ class Settings(BaseSettings):
             errors.append("SUPABASE_JWT_SECRET no definida — autenticación no funcionará")
         if self.debug:
             errors.append("DEBUG=True en producción — desactívalo")
+        origins = self.cors_origins_list
+        if not origins or "*" in origins:
+            errors.append("CORS_ORIGINS no configurado — define los dominios permitidos (ej: https://tudominio.com)")
+        elif any("localhost" in o for o in origins):
+            errors.append("CORS_ORIGINS contiene 'localhost' — reemplaza con tu dominio real en producción")
         return errors
 
 

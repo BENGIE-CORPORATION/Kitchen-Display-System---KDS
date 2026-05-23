@@ -3,19 +3,24 @@
 #
 #  Diferencias respecto a desarrollo:
 #  · Backend:  stage "production" — 2 workers, sin reload
-#  · Frontend: Flutter build --release (tree-shaking, mínimo tamaño)
-#  · Sin volúmenes de código — todo baked en la imagen
-#  · Restart: always (se reinician automáticamente tras reboot del host)
-#  · Logs del backend en volumen Docker nombrado (no bind mount)
+#  · Frontend: Flutter build --release (tamaño mínimo)
+#  · Caddy:    reverse proxy + SSL automático (Let's Encrypt)
+#  · Sin puertos expuestos en backend/frontend — solo Caddy al exterior
+#  · Prometheus + Grafana incluidos (accesibles en el servidor)
 #
 #  Prerequisitos:
-#    cp Backend/.env.production.example Backend/.env.production
-#    # rellena todas las variables (SECRET_KEY, SUPABASE_*, etc.)
+#    1. cp Backend/.env.production.example Backend/.env.production
+#       # Rellenar SUPABASE_*, SECRET_KEY, CORS_ORIGINS=https://tudominio.com
+#    2. cp .env.example .env
+#       # Rellenar DOMAIN, API_DOMAIN, PROD_API_URL
+#    3. El DNS de DOMAIN y API_DOMAIN debe apuntar a la IP del servidor
 #
-#  Uso:
-#    make prod-up         → arrancar producción
-#    make prod-rebuild    → reconstruir y arrancar
-#    make prod-down       → detener
+#  Primer deploy:
+#    make prod-up
+#    # Caddy obtiene el certificado SSL automáticamente
+#
+#  Deploys siguientes:
+#    make prod-rebuild
 # ══════════════════════════════════════════════════════════════
 
 services:
@@ -24,15 +29,14 @@ services:
   backend:
     build:
       context: ./Backend
-      target: production           # stage "production" del Dockerfile
+      target: production
     container_name: kds-backend-prod
-    ports:
-      - "8000:8000"
+    # Sin ports — solo accesible internamente a través de Caddy
+    expose:
+      - "8000"
     volumes:
-      # Logs en volumen Docker (no bind mount) — persisten entre deploys
       - kds-logs-prod:/app/logs
     env_file:
-      # Archivo con las keys reales de producción — NUNCA subir a git
       - ./Backend/.env.production
     environment:
       - APP_ENV=production
@@ -50,18 +54,84 @@ services:
     build:
       context: ./Frontend/kds
       args:
-        # URL pública del backend en producción.
-        # Ajustar al dominio/IP real del servidor.
-        API_URL: "${PROD_API_URL:-http://localhost:8000}"
-        BUILD_MODE: "release"    # tree-shaking completo, tamaño mínimo
+        API_URL: "${PROD_API_URL:-https://api.tudominio.com}"
+        BUILD_MODE: "release"
     container_name: kds-frontend-prod
-    ports:
-      - "80:80"
+    # Sin ports — solo accesible internamente a través de Caddy
+    expose:
+      - "80"
     restart: always
     depends_on:
       backend:
         condition: service_healthy
 
+  # ── Caddy — reverse proxy + SSL ───────────────────────────────
+  caddy:
+    image: caddy:2-alpine
+    container_name: kds-caddy-prod
+    ports:
+      - "80:80"      # HTTP → redirige automáticamente a HTTPS
+      - "443:443"    # HTTPS
+      - "443:443/udp" # HTTP/3
+    volumes:
+      - ./monitoring/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data         # certificados SSL (persistentes)
+      - caddy-config:/config     # config cache de Caddy
+    environment:
+      # Estos valores se leen en el Caddyfile como {$DOMAIN} y {$API_DOMAIN}
+      - DOMAIN=${DOMAIN:-tudominio.com}
+      - API_DOMAIN=${API_DOMAIN:-api.tudominio.com}
+    restart: always
+    depends_on:
+      - backend
+      - frontend
+
+  # ── Prometheus ────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: kds-prometheus-prod
+    expose:
+      - "9090"      # solo interno — acceder via SSH tunnel o abrir con firewall
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data-prod:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=90d"   # 90 días en prod
+      - "--web.enable-lifecycle"
+    restart: always
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  # ── Grafana ───────────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:latest
+    container_name: kds-grafana-prod
+    expose:
+      - "3000"      # solo interno — acceder via SSH tunnel: ssh -L 3001:localhost:3000 user@server
+    volumes:
+      - grafana-data-prod:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/etc/grafana/dashboards:ro
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-cambia-esto-en-prod}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=http://localhost:3001
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/dashboards/kds.json
+    restart: always
+    depends_on:
+      - prometheus
+
 volumes:
   kds-logs-prod:
     name: kds-logs-prod
+  caddy-data:
+    name: kds-caddy-data
+  caddy-config:
+    name: kds-caddy-config
+  prometheus-data-prod:
+    name: kds-prometheus-data-prod
+  grafana-data-prod:
+    name: kds-grafana-data-prod

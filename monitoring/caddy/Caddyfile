@@ -1,0 +1,42 @@
+# ══════════════════════════════════════════════════════════════
+#  KDS — Caddyfile (producción)
+#
+#  Caddy lee las variables de entorno del proceso con {$VAR}.
+#  Todas se definen en docker-compose.prod.yml → environment.
+#
+#  Variables requeridas:
+#    DOMAIN      → dominio principal del frontend (ej: tudominio.com)
+#    API_DOMAIN  → subdominio del backend         (ej: api.tudominio.com)
+#
+#  SSL:
+#    Caddy obtiene y renueva los certificados de Let's Encrypt
+#    automáticamente. No hay configuración adicional.
+#    Requisito: el dominio debe apuntar a la IP del servidor (DNS).
+# ══════════════════════════════════════════════════════════════
+
+# ── Frontend ─────────────────────────────────────────────────
+{$DOMAIN} {
+    reverse_proxy frontend:80
+
+    encode gzip
+
+    header {
+        # Seguridad básica en headers
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        Referrer-Policy strict-origin-when-cross-origin
+        -Server
+    }
+}
+
+# ── Backend API ───────────────────────────────────────────────
+{$API_DOMAIN} {
+    reverse_proxy backend:8000
+
+    encode gzip
+
+    header {
+        X-Content-Type-Options nosniff
+        -Server
+    }
+}

@@ -146,11 +146,15 @@ add-backend-dep: ## Agregar dependencia Python: make add-backend-dep pkg=<nombre
 
 ## ── Producción ───────────────────────────────────────────────────────────────
 
-prod-up: ## Arrancar stack de producción
+prod-up: ## Arrancar stack de producción (con Caddy + SSL)
 	$(DC_PROD) up -d
 	@echo ""
-	@echo "  Frontend  →  http://localhost:80"
-	@echo "  Backend   →  http://localhost:8000"
+	@echo "  ┌──────────────────────────────────────────────────────────────┐"
+	@echo "  │  Frontend    →  https://$$DOMAIN                             │"
+	@echo "  │  Backend     →  https://$$API_DOMAIN                         │"
+	@echo "  │  API Docs    →  desactivado en producción                    │"
+	@echo "  │  Grafana     →  ssh -L 3001:localhost:3000 user@servidor     │"
+	@echo "  └──────────────────────────────────────────────────────────────┘"
 	@echo ""
 
 prod-down: ## Detener stack de producción
@@ -162,14 +166,26 @@ prod-rebuild: ## Reconstruir y arrancar stack de producción
 prod-logs: ## Seguir logs de producción
 	$(DC_PROD) logs -f
 
+prod-logs-caddy: ## Seguir logs de Caddy (SSL, requests)
+	$(DC_PROD) logs -f caddy
+
 prod-ps: ## Estado de los contenedores de producción
 	$(DC_PROD) ps
 
 prod-health: ## Health check en producción
-	@curl -s http://localhost:8000/health | python3 -m json.tool
+	@curl -sf https://$${API_DOMAIN:-localhost:8000}/health | python3 -m json.tool || \
+	 curl -sf http://localhost:8000/health | python3 -m json.tool
 
 prod-shell-backend: ## Shell bash en el contenedor backend de producción
 	$(DC_PROD) exec backend bash
+
+prod-reload-caddy: ## Recargar configuración de Caddy sin downtime
+	$(DC_PROD) exec caddy caddy reload --config /etc/caddy/Caddyfile
+
+prod-grafana-tunnel: ## Abrir tunnel SSH a Grafana de producción: make prod-grafana-tunnel HOST=user@servidor
+	@test -n "$(HOST)" || (echo "Uso: make prod-grafana-tunnel HOST=user@servidor" && exit 1)
+	@echo "Grafana disponible en http://localhost:3001 — Ctrl+C para cerrar"
+	ssh -N -L 3001:localhost:3000 $(HOST)
 
 ## ── Limpieza ─────────────────────────────────────────────────────────────────
 
