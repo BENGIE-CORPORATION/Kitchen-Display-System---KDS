@@ -2907,3 +2907,17 @@ For more info
 2026-05-23 22:03:17 | INFO     | app.core.middleware:102 | ← [943499aa] GET /metrics | 200 | 4.84ms | user=anonymous
 2026-05-23 22:03:32 | INFO     | app.core.middleware:55 | → [c31aa109] GET /metrics | ip=172.18.0.4 | user=anonymous
 2026-05-23 22:03:32 | INFO     | app.core.middleware:102 | ← [c31aa109] GET /metrics | 200 | 1.54ms | user=anonymous
+2026-05-23 22:45:14 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-05-23 22:45:14 | INFO     | app.main:89 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
+2026-05-23 22:45:15 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-05-23 22:45:15 | INFO     | app.main:89 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
+2026-05-23 22:45:18 | INFO     | app.core.middleware:55 | → [508de9de] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 22:45:20 | INFO     | app.core.middleware:102 | ← [508de9de] GET /health | 200 | 2058.4ms | user=anonymous
+2026-05-23 22:45:25 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-05-23 22:45:25 | INFO     | app.main:89 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
+2026-05-23 22:45:26 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-05-23 22:45:26 | INFO     | app.main:89 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
+2026-05-23 22:45:29 | INFO     | app.core.middleware:55 | → [c03b5d8f] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-23 22:45:29 | INFO     | app.core.middleware:102 | ← [c03b5d8f] GET /metrics | 200 | 5.18ms | user=anonymous
+2026-05-23 22:45:29 | INFO     | app.core.middleware:55 | → [0938e90f] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 22:45:31 | INFO     | app.core.middleware:102 | ← [0938e90f] GET /health | 200 | 1321.46ms | user=anonymous
