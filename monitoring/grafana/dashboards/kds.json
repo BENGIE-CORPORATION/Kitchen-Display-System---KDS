@@ -1,0 +1,403 @@
+{
+  "uid": "kds-main",
+  "title": "KDS — Kitchen Display System",
+  "tags": ["kds"],
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "10s",
+  "time": { "from": "now-1h", "to": "now" },
+  "panels": [
+
+    { "type": "row", "id": 1, "title": "Resumen HTTP", "gridPos": {"h":1,"w":24,"x":0,"y":0}, "collapsed": false },
+
+    {
+      "id": 2, "title": "Requests / segundo",
+      "type": "timeseries",
+      "gridPos": {"h":8,"w":12,"x":0,"y":1},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "sum(rate(http_requests_total[1m])) by (handler)",
+        "legendFormat": "{{handler}}"
+      }],
+      "fieldConfig": {
+        "defaults": { "unit": "reqps", "color": {"mode": "palette-classic"} }
+      },
+      "options": { "tooltip": {"mode": "multi"} }
+    },
+
+    {
+      "id": 3, "title": "Latencia p95 por endpoint (ms)",
+      "type": "timeseries",
+      "gridPos": {"h":8,"w":12,"x":12,"y":1},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[2m])) by (le, handler)) * 1000",
+        "legendFormat": "p95 {{handler}}"
+      }],
+      "fieldConfig": {
+        "defaults": { "unit": "ms", "color": {"mode": "palette-classic"} }
+      }
+    },
+
+    {
+      "id": 4, "title": "Tasa de errores 5xx (%)",
+      "type": "stat",
+      "gridPos": {"h":4,"w":6,"x":0,"y":9},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "sum(rate(http_requests_total{status=~\"5..\"}[5m])) / sum(rate(http_requests_total[5m])) * 100",
+        "legendFormat": "Error Rate"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 1},
+              {"color": "red", "value": 5}
+            ]
+          }
+        }
+      },
+      "options": { "reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background" }
+    },
+
+    {
+      "id": 5, "title": "Requests totales (última hora)",
+      "type": "stat",
+      "gridPos": {"h":4,"w":6,"x":6,"y":9},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "sum(increase(http_requests_total[1h]))",
+        "legendFormat": "Total"
+      }],
+      "fieldConfig": {
+        "defaults": { "unit": "short", "color": {"fixedColor": "blue", "mode": "fixed"} }
+      },
+      "options": { "reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background" }
+    },
+
+    {
+      "id": 6, "title": "RAM usada (MB)",
+      "type": "stat",
+      "gridPos": {"h":4,"w":6,"x":12,"y":9},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "process_resident_memory_bytes / 1024 / 1024",
+        "legendFormat": "RAM"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "decmbytes",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 256},
+              {"color": "red", "value": 512}
+            ]
+          }
+        }
+      },
+      "options": { "reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background" }
+    },
+
+    {
+      "id": 7, "title": "CPU (%)",
+      "type": "stat",
+      "gridPos": {"h":4,"w":6,"x":18,"y":9},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "rate(process_cpu_seconds_total[1m]) * 100",
+        "legendFormat": "CPU"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 50},
+              {"color": "red", "value": 80}
+            ]
+          }
+        }
+      },
+      "options": { "reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background" }
+    },
+
+    { "type": "row", "id": 10, "title": "Pedidos", "gridPos": {"h":1,"w":24,"x":0,"y":13}, "collapsed": false },
+
+    {
+      "id": 11, "title": "Pedidos creados / minuto",
+      "type": "timeseries",
+      "gridPos": {"h":8,"w":12,"x":0,"y":14},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "sum(rate(kds_pedidos_creados_total[1m])) by (tipo_pedido) * 60",
+        "legendFormat": "{{tipo_pedido}}"
+      }],
+      "fieldConfig": {
+        "defaults": { "unit": "short", "color": {"mode": "palette-classic"} }
+      },
+      "options": { "tooltip": {"mode": "multi"} }
+    },
+
+    {
+      "id": 12, "title": "Pedidos por tipo (acumulado)",
+      "type": "piechart",
+      "gridPos": {"h":8,"w":6,"x":12,"y":14},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "sum(kds_pedidos_creados_total) by (tipo_pedido)",
+        "legendFormat": "{{tipo_pedido}}"
+      }],
+      "options": { "pieType": "donut", "tooltip": {"mode": "multi"} }
+    },
+
+    {
+      "id": 13, "title": "Pedidos creados hoy",
+      "type": "stat",
+      "gridPos": {"h":4,"w":6,"x":18,"y":14},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "sum(increase(kds_pedidos_creados_total[24h]))",
+        "legendFormat": "Hoy"
+      }],
+      "fieldConfig": {
+        "defaults": { "unit": "short", "color": {"fixedColor": "orange", "mode": "fixed"} }
+      },
+      "options": { "reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background" }
+    },
+
+    {
+      "id": 14, "title": "Transiciones de estado más frecuentes",
+      "type": "barchart",
+      "gridPos": {"h":8,"w":12,"x":0,"y":22},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "topk(10, sum(kds_pedido_estado_cambios_total) by (de, a))",
+        "legendFormat": "{{de}} → {{a}}"
+      }],
+      "fieldConfig": {
+        "defaults": { "unit": "short", "color": {"mode": "palette-classic"} }
+      },
+      "options": { "xTickLabelRotation": -30 }
+    },
+
+    { "type": "row", "id": 20, "title": "Pagos", "gridPos": {"h":1,"w":24,"x":0,"y":30}, "collapsed": false },
+
+    {
+      "id": 21, "title": "Pagos por método de pago",
+      "type": "piechart",
+      "gridPos": {"h":8,"w":8,"x":0,"y":31},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "sum(kds_pagos_registrados_total) by (metodo_pago)",
+        "legendFormat": "{{metodo_pago}}"
+      }],
+      "options": { "pieType": "donut", "tooltip": {"mode": "multi"} }
+    },
+
+    {
+      "id": 22, "title": "Pagos registrados / minuto",
+      "type": "timeseries",
+      "gridPos": {"h":8,"w":8,"x":8,"y":31},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "sum(rate(kds_pagos_registrados_total[1m])) by (metodo_pago) * 60",
+        "legendFormat": "{{metodo_pago}}"
+      }],
+      "fieldConfig": {
+        "defaults": { "unit": "short", "color": {"mode": "palette-classic"} }
+      }
+    },
+
+    {
+      "id": 23, "title": "Monto total procesado",
+      "type": "stat",
+      "gridPos": {"h":4,"w":8,"x":16,"y":31},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "kds_pagos_monto_acumulado_total",
+        "legendFormat": "Total"
+      }],
+      "fieldConfig": {
+        "defaults": { "unit": "currencyUSD", "color": {"fixedColor": "green", "mode": "fixed"} }
+      },
+      "options": { "reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background" }
+    },
+
+    {
+      "id": 24, "title": "Reversas y rechazos",
+      "type": "stat",
+      "gridPos": {"h":4,"w":8,"x":16,"y":35},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "sum(kds_pagos_reversados_total)",
+        "legendFormat": "Total reversas"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 1},
+              {"color": "red", "value": 10}
+            ]
+          }
+        }
+      },
+      "options": { "reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background" }
+    },
+
+    { "type": "row", "id": 30, "title": "Auth", "gridPos": {"h":1,"w":24,"x":0,"y":39}, "collapsed": false },
+
+    {
+      "id": 31, "title": "Intentos de login por resultado",
+      "type": "timeseries",
+      "gridPos": {"h":8,"w":12,"x":0,"y":40},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "sum(rate(kds_auth_logins_total[2m])) by (resultado) * 60",
+        "legendFormat": "{{resultado}}"
+      }],
+      "fieldConfig": {
+        "defaults": { "unit": "short", "color": {"mode": "palette-classic"} },
+        "overrides": [
+          { "matcher": {"id": "byName", "options": "fallido"}, "properties": [{"id": "color", "value": {"fixedColor": "red", "mode": "fixed"}}] },
+          { "matcher": {"id": "byName", "options": "bloqueado"}, "properties": [{"id": "color", "value": {"fixedColor": "orange", "mode": "fixed"}}] },
+          { "matcher": {"id": "byName", "options": "exitoso"}, "properties": [{"id": "color", "value": {"fixedColor": "green", "mode": "fixed"}}] }
+        ]
+      },
+      "options": { "tooltip": {"mode": "multi"} }
+    },
+
+    {
+      "id": 32, "title": "Logins fallidos / bloqueados (última hora)",
+      "type": "stat",
+      "gridPos": {"h":4,"w":6,"x":12,"y":40},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "sum(increase(kds_auth_logins_total{resultado=~\"fallido|bloqueado\"}[1h]))",
+        "legendFormat": "Fallidos"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 5},
+              {"color": "red", "value": 20}
+            ]
+          }
+        }
+      },
+      "options": { "reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background" }
+    },
+
+    {
+      "id": 33, "title": "Registros de empresa (última hora)",
+      "type": "stat",
+      "gridPos": {"h":4,"w":6,"x":18,"y":40},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "sum(increase(kds_auth_registros_total{resultado=\"exitoso\"}[1h]))",
+        "legendFormat": "Registros"
+      }],
+      "fieldConfig": {
+        "defaults": { "unit": "short", "color": {"fixedColor": "blue", "mode": "fixed"} }
+      },
+      "options": { "reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background" }
+    },
+
+    { "type": "row", "id": 40, "title": "Cajas", "gridPos": {"h":1,"w":24,"x":0,"y":48}, "collapsed": false },
+
+    {
+      "id": 41, "title": "Sesiones de caja abiertas ahora",
+      "type": "gauge",
+      "gridPos": {"h":8,"w":6,"x":0,"y":49},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "kds_cajas_sesiones_abiertas_actual",
+        "legendFormat": "Sesiones"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "min": 0, "max": 20,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"color": "green", "value": null},
+              {"color": "yellow", "value": 10},
+              {"color": "red", "value": 15}
+            ]
+          }
+        }
+      },
+      "options": { "reduceOptions": {"calcs": ["lastNotNull"]} }
+    },
+
+    {
+      "id": 42, "title": "Aperturas de caja hoy",
+      "type": "stat",
+      "gridPos": {"h":4,"w":6,"x":6,"y":49},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "sum(increase(kds_cajas_aperturas_total[24h]))",
+        "legendFormat": "Aperturas"
+      }],
+      "fieldConfig": {
+        "defaults": { "unit": "short", "color": {"fixedColor": "green", "mode": "fixed"} }
+      },
+      "options": { "reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background" }
+    },
+
+    {
+      "id": 43, "title": "Cierres de caja hoy",
+      "type": "stat",
+      "gridPos": {"h":4,"w":6,"x":6,"y":53},
+      "targets": [{
+        "datasource": "Prometheus",
+        "expr": "sum(increase(kds_cajas_cierres_total[24h]))",
+        "legendFormat": "Cierres"
+      }],
+      "fieldConfig": {
+        "defaults": { "unit": "short", "color": {"fixedColor": "purple", "mode": "fixed"} }
+      },
+      "options": { "reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "background" }
+    },
+
+    {
+      "id": 44, "title": "Actividad de cajas (aperturas vs cierres)",
+      "type": "timeseries",
+      "gridPos": {"h":8,"w":12,"x":12,"y":49},
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum(rate(kds_cajas_aperturas_total[5m])) * 60",
+          "legendFormat": "Aperturas / min"
+        },
+        {
+          "datasource": "Prometheus",
+          "expr": "sum(rate(kds_cajas_cierres_total[5m])) * 60",
+          "legendFormat": "Cierres / min"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "short", "color": {"mode": "palette-classic"} }
+      },
+      "options": { "tooltip": {"mode": "multi"} }
+    }
+
+  ]
+}

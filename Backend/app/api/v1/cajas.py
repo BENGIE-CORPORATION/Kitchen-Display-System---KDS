@@ -42,6 +42,7 @@ from ...core.exceptions.http_exceptions import (
     NotFoundException,
 )
 from ...core.limiter import get_user_id_from_token, limiter
+from ...core.metrics import cajas_aperturas, cajas_cierres, cajas_sesiones_abiertas
 from ...core.pagination import PaginatedResponse
 from ...core.security import (
     get_current_admin,
@@ -296,6 +297,8 @@ def abrir_sesion_endpoint(
     logger.info("Sesión abierta | caja={caja} | numero={num} | monto={monto} | por={admin}",
                 caja=str(caja_id), num=data.numero_sesion,
                 monto=str(data.monto_apertura), admin=current_user.get("email"))
+    cajas_aperturas.inc()
+    cajas_sesiones_abiertas.inc()
     return nueva
 
 
@@ -324,6 +327,8 @@ def cerrar_sesion_endpoint(
     logger.warning("Sesión cerrada | id={id} | monto_cierre={monto} | diferencia={dif} | por={admin}",
                    id=str(sesion_id), monto=str(data.monto_cierre),
                    dif=str(updated.get("diferencia")), admin=current_user.get("email"))
+    cajas_cierres.inc()
+    cajas_sesiones_abiertas.dec()
     return updated
 
 

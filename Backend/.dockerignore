@@ -1,0 +1,26 @@
+# ── Python ────────────────────────────────────────────────────
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ── Entornos — nunca deben entrar a la imagen ─────────────────
+.env
+.env.*
+
+# ── Logs — se montan como volumen en dev, no se bakean ────────
+logs/
+
+# ── Git / editor ──────────────────────────────────────────────
+.git/
+.gitignore
+.DS_Store
+
+# ── Documentación ────────────────────────────────────────────
+# README.md se necesita porque pyproject.toml lo referencia en readme = "README.md"
+RUN.md
+PENDIENTES.md

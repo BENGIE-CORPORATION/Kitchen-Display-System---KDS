@@ -1,0 +1,98 @@
+# ══════════════════════════════════════════════════════════════
+#  KDS — Docker Compose DESARROLLO
+#
+#  Características:
+#  · Backend:    uvicorn --reload, código montado como volumen
+#  · Frontend:   Flutter web compilado en modo --profile (con DevTools)
+#  · Prometheus: scraping del backend cada 15s
+#  · Grafana:    dashboard KDS pre-configurado (admin/kds2024)
+#
+#  Uso:
+#    make up          → arrancar todo
+#    make rebuild     → reconstruir imágenes y arrancar
+#    make down        → detener y eliminar contenedores
+# ══════════════════════════════════════════════════════════════
+
+services:
+
+  # ── Backend ──────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./Backend
+      target: development        # stage "development" del Dockerfile
+    container_name: kds-backend-dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./Backend/app:/app/app   # hot reload
+      - ./Backend/logs:/app/logs # logs persistentes en el host
+    env_file:
+      - ./Backend/.env
+    environment:
+      - APP_ENV=development
+      - DEBUG=True
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # ── Frontend ──────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./Frontend/kds
+      args:
+        API_URL: "http://localhost:8000"
+        BUILD_MODE: "profile"
+    container_name: kds-frontend-dev
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  # ── Prometheus ────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: kds-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=30d"
+      - "--web.enable-lifecycle"   # permite recargar config sin reiniciar
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  # ── Grafana ───────────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:latest
+    container_name: kds-grafana
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/etc/grafana/dashboards:ro
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=kds2024
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/dashboards/kds.json
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+volumes:
+  prometheus-data:
+    name: kds-prometheus-data
+  grafana-data:
+    name: kds-grafana-data

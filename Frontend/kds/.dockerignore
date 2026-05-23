@@ -1,0 +1,25 @@
+# ── Flutter build output ──────────────────────────────────────
+build/
+
+# ── Dart / pub cache ──────────────────────────────────────────
+.dart_tool/
+.pub-cache/
+.pub/
+
+# ── Plataformas nativas — solo se compila web en Docker ───────
+android/
+ios/
+linux/
+macos/
+windows/
+
+# ── Tests — no se necesitan en la imagen ──────────────────────
+test/
+
+# ── Editor / CI ───────────────────────────────────────────────
+.DS_Store
+.git/
+.gitignore
+.metadata
+*.iml
+.idea/

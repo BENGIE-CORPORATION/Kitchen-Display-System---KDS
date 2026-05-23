@@ -2435,3 +2435,475 @@ postgrest.exceptions.APIError: {'message': 'insert or update on table "categoria
 2026-03-16 22:31:05 | INFO     | app.main:76 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
 2026-03-16 22:31:37 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
 2026-03-16 22:31:37 | INFO     | app.main:76 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
+2026-05-23 19:05:38 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-05-23 19:05:39 | INFO     | app.main:88 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
+2026-05-23 19:05:39 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-05-23 19:05:39 | INFO     | app.main:88 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
+2026-05-23 19:05:43 | INFO     | app.core.middleware:55 | → [1fb59266] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:05:43 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:05:43 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:05:43 | ERROR    | app.core.middleware:102 | ✗ [1fb59266] GET /health | 503 | 258.32ms | user=anonymous
+2026-05-23 19:05:48 | INFO     | app.core.middleware:55 | → [f71b69b7] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:05:48 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:05:48 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:05:48 | ERROR    | app.core.middleware:102 | ✗ [f71b69b7] GET /health | 503 | 13.78ms | user=anonymous
+2026-05-23 19:05:53 | INFO     | app.core.middleware:55 | → [bad567e9] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:05:53 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:05:53 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:05:53 | ERROR    | app.core.middleware:102 | ✗ [bad567e9] GET /health | 503 | 15.88ms | user=anonymous
+2026-05-23 19:05:58 | INFO     | app.core.middleware:55 | → [2ed0a71c] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:05:58 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:05:58 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:05:58 | ERROR    | app.core.middleware:102 | ✗ [2ed0a71c] GET /health | 503 | 16.63ms | user=anonymous
+2026-05-23 19:06:28 | INFO     | app.core.middleware:55 | → [4d99d3af] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:06:28 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:06:28 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:06:28 | ERROR    | app.core.middleware:102 | ✗ [4d99d3af] GET /health | 503 | 40.9ms | user=anonymous
+2026-05-23 19:06:58 | INFO     | app.core.middleware:55 | → [cc006a21] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:06:58 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:06:58 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:06:58 | ERROR    | app.core.middleware:102 | ✗ [cc006a21] GET /health | 503 | 15.05ms | user=anonymous
+2026-05-23 19:07:28 | INFO     | app.core.middleware:55 | → [4342bb1b] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:07:28 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:07:28 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:07:28 | ERROR    | app.core.middleware:102 | ✗ [4342bb1b] GET /health | 503 | 18.52ms | user=anonymous
+2026-05-23 19:07:58 | INFO     | app.core.middleware:55 | → [ac29762a] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:07:58 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:07:58 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:07:58 | ERROR    | app.core.middleware:102 | ✗ [ac29762a] GET /health | 503 | 13.76ms | user=anonymous
+2026-05-23 19:08:28 | INFO     | app.core.middleware:55 | → [b56fac6d] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:08:28 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:08:28 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:08:28 | ERROR    | app.core.middleware:102 | ✗ [b56fac6d] GET /health | 503 | 13.22ms | user=anonymous
+2026-05-23 19:08:58 | INFO     | app.core.middleware:55 | → [763afdcd] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:08:58 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:08:58 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:08:58 | ERROR    | app.core.middleware:102 | ✗ [763afdcd] GET /health | 503 | 11.59ms | user=anonymous
+2026-05-23 19:09:28 | INFO     | app.core.middleware:55 | → [f64b76f0] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:09:28 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:09:28 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:09:28 | ERROR    | app.core.middleware:102 | ✗ [f64b76f0] GET /health | 503 | 12.4ms | user=anonymous
+2026-05-23 19:09:58 | INFO     | app.core.middleware:55 | → [efa91763] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:09:58 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:09:58 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:09:58 | ERROR    | app.core.middleware:102 | ✗ [efa91763] GET /health | 503 | 13.02ms | user=anonymous
+2026-05-23 19:10:28 | INFO     | app.core.middleware:55 | → [667c6b72] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:10:29 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:10:29 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:10:29 | ERROR    | app.core.middleware:102 | ✗ [667c6b72] GET /health | 503 | 180.42ms | user=anonymous
+2026-05-23 19:10:59 | INFO     | app.core.middleware:55 | → [25992e77] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:10:59 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:10:59 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:10:59 | ERROR    | app.core.middleware:102 | ✗ [25992e77] GET /health | 503 | 12.8ms | user=anonymous
+2026-05-23 19:11:29 | INFO     | app.core.middleware:55 | → [605251a0] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:11:29 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:11:29 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:11:29 | ERROR    | app.core.middleware:102 | ✗ [605251a0] GET /health | 503 | 16.39ms | user=anonymous
+2026-05-23 19:11:59 | INFO     | app.core.middleware:55 | → [9dd60c4b] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:11:59 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:11:59 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:11:59 | ERROR    | app.core.middleware:102 | ✗ [9dd60c4b] GET /health | 503 | 180.34ms | user=anonymous
+2026-05-23 19:12:29 | INFO     | app.core.middleware:55 | → [50285fe3] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:12:29 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:12:29 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:12:29 | ERROR    | app.core.middleware:102 | ✗ [50285fe3] GET /health | 503 | 15.22ms | user=anonymous
+2026-05-23 19:12:59 | INFO     | app.core.middleware:55 | → [f64353b1] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:12:59 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:12:59 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:12:59 | ERROR    | app.core.middleware:102 | ✗ [f64353b1] GET /health | 503 | 15.46ms | user=anonymous
+2026-05-23 19:13:29 | INFO     | app.core.middleware:55 | → [126827db] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:13:29 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:13:29 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:13:29 | ERROR    | app.core.middleware:102 | ✗ [126827db] GET /health | 503 | 184.47ms | user=anonymous
+2026-05-23 19:13:59 | INFO     | app.core.middleware:55 | → [decc5f6a] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:13:59 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:13:59 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:13:59 | ERROR    | app.core.middleware:102 | ✗ [decc5f6a] GET /health | 503 | 12.86ms | user=anonymous
+2026-05-23 19:14:30 | INFO     | app.core.middleware:55 | → [3218adbc] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:14:30 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:14:30 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:14:30 | ERROR    | app.core.middleware:102 | ✗ [3218adbc] GET /health | 503 | 17.5ms | user=anonymous
+2026-05-23 19:15:00 | INFO     | app.core.middleware:55 | → [ae4735ee] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:15:00 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:15:00 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:15:00 | ERROR    | app.core.middleware:102 | ✗ [ae4735ee] GET /health | 503 | 186.22ms | user=anonymous
+2026-05-23 19:15:30 | INFO     | app.core.middleware:55 | → [ad2d59b0] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:15:30 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:15:30 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:15:30 | ERROR    | app.core.middleware:102 | ✗ [ad2d59b0] GET /health | 503 | 16.59ms | user=anonymous
+2026-05-23 19:16:00 | INFO     | app.core.middleware:55 | → [c3c0214d] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:16:00 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:16:00 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:16:00 | ERROR    | app.core.middleware:102 | ✗ [c3c0214d] GET /health | 503 | 12.55ms | user=anonymous
+2026-05-23 19:16:30 | INFO     | app.core.middleware:55 | → [4a2e1094] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:16:30 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:16:30 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:16:30 | ERROR    | app.core.middleware:102 | ✗ [4a2e1094] GET /health | 503 | 193.15ms | user=anonymous
+2026-05-23 19:17:00 | INFO     | app.core.middleware:55 | → [27661e65] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:17:00 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:17:00 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:17:00 | ERROR    | app.core.middleware:102 | ✗ [27661e65] GET /health | 503 | 18.34ms | user=anonymous
+2026-05-23 19:17:30 | INFO     | app.core.middleware:55 | → [9bc48c79] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:17:31 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:17:31 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:17:31 | ERROR    | app.core.middleware:102 | ✗ [9bc48c79] GET /health | 503 | 196.25ms | user=anonymous
+2026-05-23 19:33:25 | INFO     | app.core.middleware:55 | → [926e1527] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:33:25 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:33:25 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:33:25 | ERROR    | app.core.middleware:102 | ✗ [926e1527] GET /health | 503 | 15.99ms | user=anonymous
+2026-05-23 19:33:55 | INFO     | app.core.middleware:55 | → [2768c4a6] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:33:55 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:33:55 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:33:55 | ERROR    | app.core.middleware:102 | ✗ [2768c4a6] GET /health | 503 | 189.47ms | user=anonymous
+2026-05-23 19:49:28 | INFO     | app.core.middleware:55 | → [4944d3c2] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:49:28 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:49:28 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:49:28 | ERROR    | app.core.middleware:102 | ✗ [4944d3c2] GET /health | 503 | 12.0ms | user=anonymous
+2026-05-23 19:49:58 | INFO     | app.core.middleware:55 | → [62d195f1] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:49:58 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:49:58 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:49:58 | ERROR    | app.core.middleware:102 | ✗ [62d195f1] GET /health | 503 | 17.33ms | user=anonymous
+2026-05-23 19:50:28 | INFO     | app.core.middleware:55 | → [783f63a8] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:50:28 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:50:28 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:50:28 | ERROR    | app.core.middleware:102 | ✗ [783f63a8] GET /health | 503 | 222.75ms | user=anonymous
+2026-05-23 19:50:58 | INFO     | app.core.middleware:55 | → [af4a6b5b] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:50:58 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:50:58 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:50:58 | ERROR    | app.core.middleware:102 | ✗ [af4a6b5b] GET /health | 503 | 14.56ms | user=anonymous
+2026-05-23 19:51:28 | INFO     | app.core.middleware:55 | → [2ad267eb] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:51:28 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:51:28 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:51:28 | ERROR    | app.core.middleware:102 | ✗ [2ad267eb] GET /health | 503 | 13.79ms | user=anonymous
+2026-05-23 19:51:58 | INFO     | app.core.middleware:55 | → [d0a6df6a] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:51:59 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:51:59 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:51:59 | ERROR    | app.core.middleware:102 | ✗ [d0a6df6a] GET /health | 503 | 174.35ms | user=anonymous
+2026-05-23 19:52:29 | INFO     | app.core.middleware:55 | → [244bde12] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:52:29 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:52:29 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:52:29 | ERROR    | app.core.middleware:102 | ✗ [244bde12] GET /health | 503 | 13.59ms | user=anonymous
+2026-05-23 19:52:59 | INFO     | app.core.middleware:55 | → [203d3f26] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:52:59 | ERROR    | app.main:181 | Health: Supabase DB caída | [Errno -2] Name or service not known
+2026-05-23 19:52:59 | WARNING  | app.main:194 | Health: Supabase Auth degradado | [Errno -2] Name or service not known
+2026-05-23 19:52:59 | ERROR    | app.core.middleware:102 | ✗ [203d3f26] GET /health | 503 | 13.35ms | user=anonymous
+2026-05-23 19:53:29 | INFO     | app.core.middleware:55 | → [4cd55204] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:53:29 | ERROR    | app.main:181 | Health: Supabase DB caída | {'message': 'JSON could not be generated', 'code': 521, 'hint': 'Refer to full message for details', 'details': 'b\'<!DO
+2026-05-23 19:53:29 | WARNING  | app.main:194 | Health: Supabase Auth degradado | Server error '521 ' for url 'https://eukfguxafzdkdtclfabh.supabase.co/auth/v1/admin/users?page=&per_page='
+For more info
+2026-05-23 19:53:30 | ERROR    | app.core.middleware:102 | ✗ [4cd55204] GET /health | 503 | 1402.61ms | user=anonymous
+2026-05-23 19:54:00 | INFO     | app.core.middleware:55 | → [2d499800] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:54:01 | ERROR    | app.main:181 | Health: Supabase DB caída | {'message': "Could not find the table 'public.empresas' in the schema cache", 'code': 'PGRST205', 'hint': None, 'details
+2026-05-23 19:54:02 | ERROR    | app.core.middleware:102 | ✗ [2d499800] GET /health | 503 | 1380.48ms | user=anonymous
+2026-05-23 19:54:32 | INFO     | app.core.middleware:55 | → [07b2f606] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:54:32 | ERROR    | app.main:181 | Health: Supabase DB caída | {'message': "Could not find the table 'public.empresas' in the schema cache", 'code': 'PGRST205', 'hint': None, 'details
+2026-05-23 19:54:32 | WARNING  | app.main:194 | Health: Supabase Auth degradado | Database error finding users
+2026-05-23 19:54:33 | ERROR    | app.core.middleware:102 | ✗ [07b2f606] GET /health | 503 | 1237.68ms | user=anonymous
+2026-05-23 19:55:03 | INFO     | app.core.middleware:55 | → [0de3d324] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:55:04 | INFO     | app.core.middleware:102 | ← [0de3d324] GET /health | 200 | 1393.1ms | user=anonymous
+2026-05-23 19:55:34 | INFO     | app.core.middleware:55 | → [04e7d7c6] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:55:36 | INFO     | app.core.middleware:102 | ← [04e7d7c6] GET /health | 200 | 1202.46ms | user=anonymous
+2026-05-23 19:56:06 | INFO     | app.core.middleware:55 | → [2506703d] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:56:07 | INFO     | app.core.middleware:102 | ← [2506703d] GET /health | 200 | 1574.68ms | user=anonymous
+2026-05-23 19:56:37 | INFO     | app.core.middleware:55 | → [e77eeb36] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:56:38 | INFO     | app.core.middleware:102 | ← [e77eeb36] GET /health | 200 | 1255.13ms | user=anonymous
+2026-05-23 19:57:09 | INFO     | app.core.middleware:55 | → [80ea4d64] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:57:10 | INFO     | app.core.middleware:102 | ← [80ea4d64] GET /health | 200 | 1140.1ms | user=anonymous
+2026-05-23 19:57:40 | INFO     | app.core.middleware:55 | → [7c949aa7] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:57:41 | INFO     | app.core.middleware:102 | ← [7c949aa7] GET /health | 200 | 1103.34ms | user=anonymous
+2026-05-23 19:58:11 | INFO     | app.core.middleware:55 | → [0f88a9e3] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:58:12 | INFO     | app.core.middleware:102 | ← [0f88a9e3] GET /health | 200 | 1235.67ms | user=anonymous
+2026-05-23 19:58:42 | INFO     | app.core.middleware:55 | → [31a632ac] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:58:43 | INFO     | app.core.middleware:102 | ← [31a632ac] GET /health | 200 | 1073.23ms | user=anonymous
+2026-05-23 19:59:13 | INFO     | app.core.middleware:55 | → [95a8bfac] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:59:14 | INFO     | app.core.middleware:102 | ← [95a8bfac] GET /health | 200 | 1112.43ms | user=anonymous
+2026-05-23 19:59:45 | INFO     | app.core.middleware:55 | → [5a649275] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 19:59:46 | INFO     | app.core.middleware:102 | ← [5a649275] GET /health | 200 | 1122.91ms | user=anonymous
+2026-05-23 20:00:16 | INFO     | app.core.middleware:55 | → [5f2f2bdd] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:00:17 | INFO     | app.core.middleware:102 | ← [5f2f2bdd] GET /health | 200 | 1288.97ms | user=anonymous
+2026-05-23 20:00:47 | INFO     | app.core.middleware:55 | → [7441a885] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:00:48 | INFO     | app.core.middleware:102 | ← [7441a885] GET /health | 200 | 1085.66ms | user=anonymous
+2026-05-23 20:01:18 | INFO     | app.core.middleware:55 | → [815db802] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:01:19 | INFO     | app.core.middleware:102 | ← [815db802] GET /health | 200 | 1099.6ms | user=anonymous
+2026-05-23 20:01:49 | INFO     | app.core.middleware:55 | → [eaded515] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:01:50 | INFO     | app.core.middleware:102 | ← [eaded515] GET /health | 200 | 1056.83ms | user=anonymous
+2026-05-23 20:02:20 | INFO     | app.core.middleware:55 | → [c56db833] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:02:22 | INFO     | app.core.middleware:102 | ← [c56db833] GET /health | 200 | 1435.48ms | user=anonymous
+2026-05-23 20:02:52 | INFO     | app.core.middleware:55 | → [eeb6c390] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:02:53 | INFO     | app.core.middleware:102 | ← [eeb6c390] GET /health | 200 | 1081.48ms | user=anonymous
+2026-05-23 20:03:23 | INFO     | app.core.middleware:55 | → [b7df47c3] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:03:25 | INFO     | app.core.middleware:102 | ← [b7df47c3] GET /health | 200 | 1762.65ms | user=anonymous
+2026-05-23 20:03:55 | INFO     | app.core.middleware:55 | → [33d33d2f] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:03:57 | INFO     | app.core.middleware:102 | ← [33d33d2f] GET /health | 200 | 1672.24ms | user=anonymous
+2026-05-23 20:14:41 | INFO     | app.core.middleware:55 | → [7abc32c2] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:14:43 | INFO     | app.core.middleware:102 | ← [7abc32c2] GET /health | 200 | 1239.28ms | user=anonymous
+2026-05-23 20:18:54 | INFO     | app.core.middleware:55 | → [9c879c00] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:18:56 | INFO     | app.core.middleware:102 | ← [9c879c00] GET /health | 200 | 1438.84ms | user=anonymous
+2026-05-23 20:19:26 | INFO     | app.core.middleware:55 | → [7f2c901d] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:19:27 | INFO     | app.core.middleware:102 | ← [7f2c901d] GET /health | 200 | 1084.2ms | user=anonymous
+2026-05-23 20:19:57 | INFO     | app.core.middleware:55 | → [d79e88f0] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:19:58 | INFO     | app.core.middleware:102 | ← [d79e88f0] GET /health | 200 | 1137.15ms | user=anonymous
+2026-05-23 20:20:28 | INFO     | app.core.middleware:55 | → [74acebc8] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:20:29 | INFO     | app.core.middleware:102 | ← [74acebc8] GET /health | 200 | 1300.02ms | user=anonymous
+2026-05-23 20:20:59 | INFO     | app.core.middleware:55 | → [826a69f3] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:21:01 | INFO     | app.core.middleware:102 | ← [826a69f3] GET /health | 200 | 1059.2ms | user=anonymous
+2026-05-23 20:21:31 | INFO     | app.core.middleware:55 | → [21015461] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:21:32 | INFO     | app.core.middleware:102 | ← [21015461] GET /health | 200 | 1072.76ms | user=anonymous
+2026-05-23 20:21:56 | INFO     | app.core.middleware:55 | → [7da82639] GET /metrics│ | ip=142.251.210.91 | user=anonymous
+2026-05-23 20:21:56 | WARNING  | app.core.middleware:102 | ⚠ [7da82639] GET /metrics│ | 404 | 1.95ms | user=anonymous
+2026-05-23 20:22:00 | INFO     | app.core.middleware:55 | → [1ed256ec] GET /metrics | ip=142.251.210.91 | user=anonymous
+2026-05-23 20:22:00 | WARNING  | app.core.middleware:102 | ⚠ [1ed256ec] GET /metrics | 404 | 1.63ms | user=anonymous
+2026-05-23 20:22:02 | INFO     | app.core.middleware:55 | → [2e731d6c] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:22:03 | INFO     | app.core.middleware:102 | ← [2e731d6c] GET /health | 200 | 1049.01ms | user=anonymous
+2026-05-23 20:22:33 | INFO     | app.core.middleware:55 | → [321cabeb] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:22:34 | INFO     | app.core.middleware:102 | ← [321cabeb] GET /health | 200 | 1225.87ms | user=anonymous
+2026-05-23 20:23:04 | INFO     | app.core.middleware:55 | → [deb5430b] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:23:06 | INFO     | app.core.middleware:102 | ← [deb5430b] GET /health | 200 | 1680.16ms | user=anonymous
+2026-05-23 20:23:36 | INFO     | app.core.middleware:55 | → [e7cf9a2e] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:23:37 | INFO     | app.core.middleware:102 | ← [e7cf9a2e] GET /health | 200 | 1196.3ms | user=anonymous
+2026-05-23 20:24:07 | INFO     | app.core.middleware:55 | → [230d2bc1] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:24:08 | INFO     | app.core.middleware:102 | ← [230d2bc1] GET /health | 200 | 1111.95ms | user=anonymous
+2026-05-23 20:24:38 | INFO     | app.core.middleware:55 | → [bc5646f0] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:24:39 | INFO     | app.core.middleware:102 | ← [bc5646f0] GET /health | 200 | 1215.79ms | user=anonymous
+2026-05-23 20:25:10 | INFO     | app.core.middleware:55 | → [2a054f47] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:25:11 | INFO     | app.core.middleware:102 | ← [2a054f47] GET /health | 200 | 1156.79ms | user=anonymous
+2026-05-23 20:25:41 | INFO     | app.core.middleware:55 | → [335ec11e] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:25:42 | INFO     | app.core.middleware:102 | ← [335ec11e] GET /health | 200 | 1181.14ms | user=anonymous
+2026-05-23 20:26:12 | INFO     | app.core.middleware:55 | → [d526ab01] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:26:13 | INFO     | app.core.middleware:102 | ← [d526ab01] GET /health | 200 | 1102.76ms | user=anonymous
+2026-05-23 20:26:43 | INFO     | app.core.middleware:55 | → [17ad50e5] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:26:44 | INFO     | app.core.middleware:102 | ← [17ad50e5] GET /health | 200 | 1189.57ms | user=anonymous
+2026-05-23 20:27:14 | INFO     | app.core.middleware:55 | → [20d1483a] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:27:16 | INFO     | app.core.middleware:102 | ← [20d1483a] GET /health | 200 | 1148.94ms | user=anonymous
+2026-05-23 20:27:46 | INFO     | app.core.middleware:55 | → [3deb0f6f] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:27:47 | INFO     | app.core.middleware:102 | ← [3deb0f6f] GET /health | 200 | 1078.33ms | user=anonymous
+2026-05-23 20:28:17 | INFO     | app.core.middleware:55 | → [6d9e06ff] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:28:18 | INFO     | app.core.middleware:102 | ← [6d9e06ff] GET /health | 200 | 1065.37ms | user=anonymous
+2026-05-23 20:28:48 | INFO     | app.core.middleware:55 | → [d09eadc1] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:28:49 | INFO     | app.core.middleware:102 | ← [d09eadc1] GET /health | 200 | 1126.34ms | user=anonymous
+2026-05-23 20:29:19 | INFO     | app.core.middleware:55 | → [8a094ca2] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:29:20 | INFO     | app.core.middleware:102 | ← [8a094ca2] GET /health | 200 | 1087.18ms | user=anonymous
+2026-05-23 20:29:50 | INFO     | app.core.middleware:55 | → [b0880cda] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:29:51 | INFO     | app.core.middleware:102 | ← [b0880cda] GET /health | 200 | 1072.75ms | user=anonymous
+2026-05-23 20:30:21 | INFO     | app.core.middleware:55 | → [53d6072d] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:30:22 | INFO     | app.core.middleware:102 | ← [53d6072d] GET /health | 200 | 1104.87ms | user=anonymous
+2026-05-23 20:30:52 | INFO     | app.core.middleware:55 | → [ef5ef216] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:30:54 | INFO     | app.core.middleware:102 | ← [ef5ef216] GET /health | 200 | 1141.1ms | user=anonymous
+2026-05-23 20:31:24 | INFO     | app.core.middleware:55 | → [62ac73b1] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:31:25 | INFO     | app.core.middleware:102 | ← [62ac73b1] GET /health | 200 | 1075.64ms | user=anonymous
+2026-05-23 20:31:55 | INFO     | app.core.middleware:55 | → [5507aa5d] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:31:56 | INFO     | app.core.middleware:102 | ← [5507aa5d] GET /health | 200 | 1093.49ms | user=anonymous
+2026-05-23 20:32:26 | INFO     | app.core.middleware:55 | → [5fbf60ac] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:32:27 | INFO     | app.core.middleware:102 | ← [5fbf60ac] GET /health | 200 | 1090.87ms | user=anonymous
+2026-05-23 20:35:41 | INFO     | app.core.middleware:55 | → [f386bb16] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:35:43 | INFO     | app.core.middleware:102 | ← [f386bb16] GET /health | 200 | 1605.12ms | user=anonymous
+2026-05-23 20:51:33 | INFO     | app.core.middleware:55 | → [1b3662b9] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:51:35 | INFO     | app.core.middleware:102 | ← [1b3662b9] GET /health | 200 | 1564.67ms | user=anonymous
+2026-05-23 20:52:05 | INFO     | app.core.middleware:55 | → [f0f76dd0] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:52:06 | INFO     | app.core.middleware:102 | ← [f0f76dd0] GET /health | 200 | 1163.23ms | user=anonymous
+2026-05-23 20:54:20 | INFO     | app.core.middleware:55 | → [661aeeee] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:54:22 | INFO     | app.core.middleware:102 | ← [661aeeee] GET /health | 200 | 1268.17ms | user=anonymous
+2026-05-23 20:54:52 | INFO     | app.core.middleware:55 | → [b680f219] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:54:53 | INFO     | app.core.middleware:102 | ← [b680f219] GET /health | 200 | 1576.75ms | user=anonymous
+2026-05-23 20:55:23 | INFO     | app.core.middleware:55 | → [b4e0956e] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:55:25 | INFO     | app.core.middleware:102 | ← [b4e0956e] GET /health | 200 | 1289.38ms | user=anonymous
+2026-05-23 20:55:55 | INFO     | app.core.middleware:55 | → [97409e65] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:55:56 | INFO     | app.core.middleware:102 | ← [97409e65] GET /health | 200 | 1260.09ms | user=anonymous
+2026-05-23 20:56:26 | INFO     | app.core.middleware:55 | → [db939a30] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:56:27 | INFO     | app.core.middleware:102 | ← [db939a30] GET /health | 200 | 1343.32ms | user=anonymous
+2026-05-23 20:56:57 | INFO     | app.core.middleware:55 | → [49a71103] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:56:58 | INFO     | app.core.middleware:102 | ← [49a71103] GET /health | 200 | 1089.17ms | user=anonymous
+2026-05-23 20:57:29 | INFO     | app.core.middleware:55 | → [e010dc4f] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:57:30 | INFO     | app.core.middleware:102 | ← [e010dc4f] GET /health | 200 | 1136.59ms | user=anonymous
+2026-05-23 20:58:00 | INFO     | app.core.middleware:55 | → [f3edaa3f] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:58:01 | INFO     | app.core.middleware:102 | ← [f3edaa3f] GET /health | 200 | 1243.63ms | user=anonymous
+2026-05-23 20:58:31 | INFO     | app.core.middleware:55 | → [97d9efac] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:58:32 | INFO     | app.core.middleware:102 | ← [97d9efac] GET /health | 200 | 1183.83ms | user=anonymous
+2026-05-23 20:59:02 | INFO     | app.core.middleware:55 | → [ecbe9b22] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:59:03 | INFO     | app.core.middleware:102 | ← [ecbe9b22] GET /health | 200 | 1103.38ms | user=anonymous
+2026-05-23 20:59:33 | INFO     | app.core.middleware:55 | → [fcb9d3e5] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 20:59:34 | INFO     | app.core.middleware:102 | ← [fcb9d3e5] GET /health | 200 | 1096.6ms | user=anonymous
+2026-05-23 21:00:05 | INFO     | app.core.middleware:55 | → [eeec2f72] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:00:06 | INFO     | app.core.middleware:102 | ← [eeec2f72] GET /health | 200 | 1086.13ms | user=anonymous
+2026-05-23 21:00:36 | INFO     | app.core.middleware:55 | → [09de0dba] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:00:37 | INFO     | app.core.middleware:102 | ← [09de0dba] GET /health | 200 | 1160.15ms | user=anonymous
+2026-05-23 21:01:07 | INFO     | app.core.middleware:55 | → [135c49f8] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:01:08 | INFO     | app.core.middleware:102 | ← [135c49f8] GET /health | 200 | 1059.01ms | user=anonymous
+2026-05-23 21:01:38 | INFO     | app.core.middleware:55 | → [5dd30bc5] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:01:39 | INFO     | app.core.middleware:102 | ← [5dd30bc5] GET /health | 200 | 1057.19ms | user=anonymous
+2026-05-23 21:02:09 | INFO     | app.core.middleware:55 | → [1929fb98] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:02:10 | INFO     | app.core.middleware:102 | ← [1929fb98] GET /health | 200 | 1170.7ms | user=anonymous
+2026-05-23 21:02:40 | INFO     | app.core.middleware:55 | → [76e7014c] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:02:42 | INFO     | app.core.middleware:102 | ← [76e7014c] GET /health | 200 | 1383.95ms | user=anonymous
+2026-05-23 21:03:12 | INFO     | app.core.middleware:55 | → [f1147c83] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:03:13 | INFO     | app.core.middleware:102 | ← [f1147c83] GET /health | 200 | 1106.85ms | user=anonymous
+2026-05-23 21:03:43 | INFO     | app.core.middleware:55 | → [e290fff3] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:03:44 | INFO     | app.core.middleware:102 | ← [e290fff3] GET /health | 200 | 1263.18ms | user=anonymous
+2026-05-23 21:03:59 | INFO     | app.core.middleware:55 | → [af1af1a1] GET /metrics│ | ip=142.251.210.91 | user=anonymous
+2026-05-23 21:03:59 | WARNING  | app.core.middleware:102 | ⚠ [af1af1a1] GET /metrics│ | 404 | 1.43ms | user=anonymous
+2026-05-23 21:04:14 | INFO     | app.core.middleware:55 | → [0761b735] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:04:15 | INFO     | app.core.middleware:102 | ← [0761b735] GET /health | 200 | 1096.56ms | user=anonymous
+2026-05-23 21:04:29 | INFO     | app.core.middleware:55 | → [6ebf1975] GET /metrics | ip=142.251.210.91 | user=anonymous
+2026-05-23 21:04:29 | WARNING  | app.core.middleware:102 | ⚠ [6ebf1975] GET /metrics | 404 | 2.22ms | user=anonymous
+2026-05-23 21:04:30 | INFO     | app.core.middleware:55 | → [965679a4] GET /metrics | ip=142.251.210.91 | user=anonymous
+2026-05-23 21:04:30 | WARNING  | app.core.middleware:102 | ⚠ [965679a4] GET /metrics | 404 | 1.88ms | user=anonymous
+2026-05-23 21:04:31 | INFO     | app.core.middleware:55 | → [fd169aed] GET /metrics | ip=142.251.210.91 | user=anonymous
+2026-05-23 21:04:31 | WARNING  | app.core.middleware:102 | ⚠ [fd169aed] GET /metrics | 404 | 1.69ms | user=anonymous
+2026-05-23 21:04:45 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-05-23 21:04:45 | INFO     | app.main:86 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
+2026-05-23 21:04:45 | INFO     | app.core.middleware:55 | → [24482223] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:04:47 | INFO     | app.core.middleware:102 | ← [24482223] GET /health | 200 | 1370.55ms | user=anonymous
+2026-05-23 21:05:00 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-05-23 21:05:00 | INFO     | app.main:86 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
+2026-05-23 21:05:01 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-05-23 21:05:01 | INFO     | app.main:86 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
+2026-05-23 21:05:03 | INFO     | app.core.middleware:55 | → [20b79c4b] GET /metrics│ | ip=172.64.149.246 | user=anonymous
+2026-05-23 21:05:03 | WARNING  | app.core.middleware:102 | ⚠ [20b79c4b] GET /metrics│ | 404 | 1.05ms | user=anonymous
+2026-05-23 21:05:05 | INFO     | app.core.middleware:55 | → [6b5061b7] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:05:06 | INFO     | app.core.middleware:102 | ← [6b5061b7] GET /health | 200 | 1157.31ms | user=anonymous
+2026-05-23 21:05:06 | INFO     | app.core.middleware:55 | → [09aa706e] GET /metrics | ip=172.64.149.246 | user=anonymous
+2026-05-23 21:05:06 | INFO     | app.core.middleware:102 | ← [09aa706e] GET /metrics | 200 | 1.84ms | user=anonymous
+2026-05-23 21:05:36 | INFO     | app.core.middleware:55 | → [64814e0b] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:05:37 | INFO     | app.core.middleware:102 | ← [64814e0b] GET /health | 200 | 1047.99ms | user=anonymous
+2026-05-23 21:06:07 | INFO     | app.core.middleware:55 | → [31428cf4] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:06:08 | INFO     | app.core.middleware:102 | ← [31428cf4] GET /health | 200 | 1054.22ms | user=anonymous
+2026-05-23 21:06:38 | INFO     | app.core.middleware:55 | → [ddbc331d] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:06:39 | INFO     | app.core.middleware:102 | ← [ddbc331d] GET /health | 200 | 1187.5ms | user=anonymous
+2026-05-23 21:07:09 | INFO     | app.core.middleware:55 | → [bff72928] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:07:10 | INFO     | app.core.middleware:102 | ← [bff72928] GET /health | 200 | 1194.49ms | user=anonymous
+2026-05-23 21:07:40 | INFO     | app.core.middleware:55 | → [bef030d2] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:07:42 | INFO     | app.core.middleware:102 | ← [bef030d2] GET /health | 200 | 1072.56ms | user=anonymous
+2026-05-23 21:08:12 | INFO     | app.core.middleware:55 | → [1cd41243] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:08:13 | INFO     | app.core.middleware:102 | ← [1cd41243] GET /health | 200 | 1082.35ms | user=anonymous
+2026-05-23 21:08:43 | INFO     | app.core.middleware:55 | → [4bd489a1] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:08:44 | INFO     | app.core.middleware:102 | ← [4bd489a1] GET /health | 200 | 1145.15ms | user=anonymous
+2026-05-23 21:09:14 | INFO     | app.core.middleware:55 | → [971ea3ba] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:09:15 | INFO     | app.core.middleware:102 | ← [971ea3ba] GET /health | 200 | 1114.22ms | user=anonymous
+2026-05-23 21:09:45 | INFO     | app.core.middleware:55 | → [ec4119d5] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:09:46 | INFO     | app.core.middleware:102 | ← [ec4119d5] GET /health | 200 | 1097.22ms | user=anonymous
+2026-05-23 21:10:16 | INFO     | app.core.middleware:55 | → [b4ff677c] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:10:17 | INFO     | app.core.middleware:102 | ← [b4ff677c] GET /health | 200 | 1082.39ms | user=anonymous
+2026-05-23 21:10:47 | INFO     | app.core.middleware:55 | → [6905f1ae] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:10:49 | INFO     | app.core.middleware:102 | ← [6905f1ae] GET /health | 200 | 1227.99ms | user=anonymous
+2026-05-23 21:11:19 | INFO     | app.core.middleware:55 | → [65a68cf3] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:11:20 | INFO     | app.core.middleware:102 | ← [65a68cf3] GET /health | 200 | 1237.68ms | user=anonymous
+2026-05-23 21:11:50 | INFO     | app.core.middleware:55 | → [b97c3dbd] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:11:51 | INFO     | app.core.middleware:102 | ← [b97c3dbd] GET /health | 200 | 1115.5ms | user=anonymous
+2026-05-23 21:12:21 | INFO     | app.core.middleware:55 | → [b9bdce0e] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:12:22 | INFO     | app.core.middleware:102 | ← [b9bdce0e] GET /health | 200 | 1101.9ms | user=anonymous
+2026-05-23 21:12:52 | INFO     | app.core.middleware:55 | → [f206101a] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:13:32 | INFO     | app.core.middleware:55 | → [8ffeed39] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:14:09 | INFO     | app.core.middleware:102 | ← [8ffeed39] GET /health | 200 | 36469.7ms | user=anonymous
+2026-05-23 21:14:09 | INFO     | app.core.middleware:102 | ← [f206101a] GET /health | 200 | 76538.89ms | user=anonymous
+2026-05-23 21:14:12 | INFO     | app.core.middleware:55 | → [e55125fc] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:14:13 | INFO     | app.core.middleware:102 | ← [e55125fc] GET /health | 200 | 824.58ms | user=anonymous
+2026-05-23 21:14:43 | INFO     | app.core.middleware:55 | → [44d42281] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:14:44 | INFO     | app.core.middleware:102 | ← [44d42281] GET /health | 200 | 1130.27ms | user=anonymous
+2026-05-23 21:15:14 | INFO     | app.core.middleware:55 | → [bc0271f0] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:15:16 | INFO     | app.core.middleware:102 | ← [bc0271f0] GET /health | 200 | 1375.1ms | user=anonymous
+2026-05-23 21:15:46 | INFO     | app.core.middleware:55 | → [228fa8bf] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:15:47 | INFO     | app.core.middleware:102 | ← [228fa8bf] GET /health | 200 | 1121.95ms | user=anonymous
+2026-05-23 21:16:17 | INFO     | app.core.middleware:55 | → [dce68c67] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:16:18 | INFO     | app.core.middleware:102 | ← [dce68c67] GET /health | 200 | 1110.74ms | user=anonymous
+2026-05-23 21:16:48 | INFO     | app.core.middleware:55 | → [218c00fa] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:16:49 | INFO     | app.core.middleware:102 | ← [218c00fa] GET /health | 200 | 1123.84ms | user=anonymous
+2026-05-23 21:17:19 | INFO     | app.core.middleware:55 | → [7b519b9c] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:17:21 | INFO     | app.core.middleware:102 | ← [7b519b9c] GET /health | 200 | 1323.33ms | user=anonymous
+2026-05-23 21:17:51 | INFO     | app.core.middleware:55 | → [7224b0a6] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:17:52 | INFO     | app.core.middleware:102 | ← [7224b0a6] GET /health | 200 | 1153.19ms | user=anonymous
+2026-05-23 21:18:22 | INFO     | app.core.middleware:55 | → [13107573] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:18:23 | INFO     | app.core.middleware:102 | ← [13107573] GET /health | 200 | 1314.87ms | user=anonymous
+2026-05-23 21:18:53 | INFO     | app.core.middleware:55 | → [a6703e0a] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:18:54 | INFO     | app.core.middleware:102 | ← [a6703e0a] GET /health | 200 | 1041.51ms | user=anonymous
+2026-05-23 21:19:24 | INFO     | app.core.middleware:55 | → [87a82daf] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:19:26 | INFO     | app.core.middleware:102 | ← [87a82daf] GET /health | 200 | 1241.24ms | user=anonymous
+2026-05-23 21:19:56 | INFO     | app.core.middleware:55 | → [6d2a41aa] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:19:57 | INFO     | app.core.middleware:102 | ← [6d2a41aa] GET /health | 200 | 1128.71ms | user=anonymous
+2026-05-23 21:20:27 | INFO     | app.core.middleware:55 | → [757cdf4b] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:20:28 | INFO     | app.core.middleware:102 | ← [757cdf4b] GET /health | 200 | 1535.33ms | user=anonymous
+2026-05-23 21:20:59 | INFO     | app.core.middleware:55 | → [0c25dcd8] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:21:00 | INFO     | app.core.middleware:102 | ← [0c25dcd8] GET /health | 200 | 1216.35ms | user=anonymous
+2026-05-23 21:21:30 | INFO     | app.core.middleware:55 | → [1bf121b1] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:21:31 | INFO     | app.core.middleware:102 | ← [1bf121b1] GET /health | 200 | 1397.15ms | user=anonymous
+2026-05-23 21:22:01 | INFO     | app.core.middleware:55 | → [ddc92f6c] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:22:03 | INFO     | app.core.middleware:102 | ← [ddc92f6c] GET /health | 200 | 1431.27ms | user=anonymous
+2026-05-23 21:31:15 | INFO     | app.core.middleware:55 | → [b4b4df2f] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:31:17 | INFO     | app.core.middleware:102 | ← [b4b4df2f] GET /health | 200 | 1118.79ms | user=anonymous
+2026-05-23 21:31:47 | INFO     | app.core.middleware:55 | → [b495d0d6] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:31:48 | INFO     | app.core.middleware:102 | ← [b495d0d6] GET /health | 200 | 1074.38ms | user=anonymous
+2026-05-23 21:32:18 | INFO     | app.core.middleware:55 | → [f6ef6485] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:32:19 | INFO     | app.core.middleware:102 | ← [f6ef6485] GET /health | 200 | 1079.95ms | user=anonymous
+2026-05-23 21:32:49 | INFO     | app.core.middleware:55 | → [6075490f] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:32:50 | INFO     | app.core.middleware:102 | ← [6075490f] GET /health | 200 | 1201.48ms | user=anonymous
+2026-05-23 21:33:20 | INFO     | app.core.middleware:55 | → [1cb49075] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:33:21 | INFO     | app.core.middleware:102 | ← [1cb49075] GET /health | 200 | 1255.44ms | user=anonymous
+2026-05-23 21:33:51 | INFO     | app.core.middleware:55 | → [38ba0217] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:33:53 | INFO     | app.core.middleware:102 | ← [38ba0217] GET /health | 200 | 1956.81ms | user=anonymous
+2026-05-23 21:49:40 | INFO     | app.core.middleware:55 | → [1e44511d] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:49:42 | INFO     | app.core.middleware:102 | ← [1e44511d] GET /health | 200 | 1226.11ms | user=anonymous
+2026-05-23 21:50:12 | INFO     | app.core.middleware:55 | → [8674a469] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:50:13 | INFO     | app.core.middleware:102 | ← [8674a469] GET /health | 200 | 1313.33ms | user=anonymous
+2026-05-23 21:51:35 | INFO     | app.core.middleware:55 | → [01fd26f3] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:51:37 | INFO     | app.core.middleware:102 | ← [01fd26f3] GET /health | 200 | 1676.48ms | user=anonymous
+2026-05-23 21:52:07 | INFO     | app.core.middleware:55 | → [34074eb5] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:52:08 | INFO     | app.core.middleware:102 | ← [34074eb5] GET /health | 200 | 1173.49ms | user=anonymous
+2026-05-23 21:52:38 | INFO     | app.core.middleware:55 | → [150f3eb8] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:52:39 | INFO     | app.core.middleware:102 | ← [150f3eb8] GET /health | 200 | 1078.29ms | user=anonymous
+2026-05-23 21:53:09 | INFO     | app.core.middleware:55 | → [b44395b2] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:53:11 | INFO     | app.core.middleware:102 | ← [b44395b2] GET /health | 200 | 1713.31ms | user=anonymous
+2026-05-23 21:53:41 | INFO     | app.core.middleware:55 | → [966e376b] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:53:42 | INFO     | app.core.middleware:102 | ← [966e376b] GET /health | 200 | 1531.18ms | user=anonymous
+2026-05-23 21:54:12 | INFO     | app.core.middleware:55 | → [8247a05c] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:54:14 | INFO     | app.core.middleware:102 | ← [8247a05c] GET /health | 200 | 1278.07ms | user=anonymous
+2026-05-23 21:54:44 | INFO     | app.core.middleware:55 | → [28c93162] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:54:45 | INFO     | app.core.middleware:102 | ← [28c93162] GET /health | 200 | 1200.44ms | user=anonymous
+2026-05-23 21:55:15 | INFO     | app.core.middleware:55 | → [02596dee] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:55:16 | INFO     | app.core.middleware:102 | ← [02596dee] GET /health | 200 | 1304.12ms | user=anonymous
+2026-05-23 21:55:46 | INFO     | app.core.middleware:55 | → [4d58064d] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:55:48 | INFO     | app.core.middleware:102 | ← [4d58064d] GET /health | 200 | 1319.59ms | user=anonymous
+2026-05-23 21:56:18 | INFO     | app.core.middleware:55 | → [01c819b3] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:56:19 | INFO     | app.core.middleware:102 | ← [01c819b3] GET /health | 200 | 1158.57ms | user=anonymous
+2026-05-23 21:56:49 | INFO     | app.core.middleware:55 | → [4158db98] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:56:50 | INFO     | app.core.middleware:102 | ← [4158db98] GET /health | 200 | 1132.4ms | user=anonymous
+2026-05-23 21:57:20 | INFO     | app.core.middleware:55 | → [e1886d17] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:57:21 | INFO     | app.core.middleware:102 | ← [e1886d17] GET /health | 200 | 1250.45ms | user=anonymous
+2026-05-23 21:57:51 | INFO     | app.core.middleware:55 | → [f55d1092] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:57:53 | INFO     | app.core.middleware:102 | ← [f55d1092] GET /health | 200 | 1106.7ms | user=anonymous
+2026-05-23 21:58:23 | INFO     | app.core.middleware:55 | → [42327a03] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:58:24 | INFO     | app.core.middleware:102 | ← [42327a03] GET /health | 200 | 1078.2ms | user=anonymous
+2026-05-23 21:58:54 | INFO     | app.core.middleware:55 | → [6fecb521] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:58:55 | INFO     | app.core.middleware:102 | ← [6fecb521] GET /health | 200 | 1128.69ms | user=anonymous
+2026-05-23 21:59:25 | INFO     | app.core.middleware:55 | → [2f311371] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:59:26 | INFO     | app.core.middleware:102 | ← [2f311371] GET /health | 200 | 1196.98ms | user=anonymous
+2026-05-23 21:59:56 | INFO     | app.core.middleware:55 | → [0bb51585] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 21:59:57 | INFO     | app.core.middleware:102 | ← [0bb51585] GET /health | 200 | 1107.67ms | user=anonymous
+2026-05-23 22:00:27 | INFO     | app.core.middleware:55 | → [1f3594c5] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 22:00:28 | INFO     | app.core.middleware:102 | ← [1f3594c5] GET /health | 200 | 1083.47ms | user=anonymous
+2026-05-23 22:00:58 | INFO     | app.core.middleware:55 | → [f1427577] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 22:01:01 | INFO     | app.core.middleware:102 | ← [f1427577] GET /health | 200 | 2244.82ms | user=anonymous
+2026-05-23 22:01:31 | INFO     | app.core.middleware:55 | → [c8d11414] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 22:01:32 | INFO     | app.core.middleware:102 | ← [c8d11414] GET /health | 200 | 1239.67ms | user=anonymous
+2026-05-23 22:01:47 | INFO     | app.core.middleware:55 | → [4e8e6c95] GET /metrics | ip=172.18.0.4 | user=anonymous
+2026-05-23 22:01:47 | INFO     | app.core.middleware:102 | ← [4e8e6c95] GET /metrics | 200 | 5.64ms | user=anonymous
+2026-05-23 22:02:02 | INFO     | app.core.middleware:55 | → [4638c054] GET /metrics | ip=172.18.0.4 | user=anonymous
+2026-05-23 22:02:02 | INFO     | app.core.middleware:102 | ← [4638c054] GET /metrics | 200 | 4.82ms | user=anonymous
+2026-05-23 22:02:02 | INFO     | app.core.middleware:55 | → [a9d6d0db] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 22:02:03 | INFO     | app.core.middleware:102 | ← [a9d6d0db] GET /health | 200 | 1261.34ms | user=anonymous
+2026-05-23 22:02:17 | INFO     | app.core.middleware:55 | → [a7c353fc] GET /metrics | ip=172.18.0.4 | user=anonymous
+2026-05-23 22:02:17 | INFO     | app.core.middleware:102 | ← [a7c353fc] GET /metrics | 200 | 4.61ms | user=anonymous
+2026-05-23 22:02:32 | INFO     | app.core.middleware:55 | → [aa558ee1] GET /metrics | ip=172.18.0.4 | user=anonymous
+2026-05-23 22:02:32 | INFO     | app.core.middleware:102 | ← [aa558ee1] GET /metrics | 200 | 3.25ms | user=anonymous
+2026-05-23 22:02:33 | INFO     | app.core.middleware:55 | → [8ff32ae8] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 22:02:35 | INFO     | app.core.middleware:102 | ← [8ff32ae8] GET /health | 200 | 1224.21ms | user=anonymous
+2026-05-23 22:02:47 | INFO     | app.core.middleware:55 | → [72d0cf92] GET /metrics | ip=172.18.0.4 | user=anonymous
+2026-05-23 22:02:47 | INFO     | app.core.middleware:102 | ← [72d0cf92] GET /metrics | 200 | 3.26ms | user=anonymous
+2026-05-23 22:03:02 | INFO     | app.core.middleware:55 | → [2033ad43] GET /metrics | ip=172.18.0.4 | user=anonymous
+2026-05-23 22:03:02 | INFO     | app.core.middleware:102 | ← [2033ad43] GET /metrics | 200 | 1.23ms | user=anonymous
+2026-05-23 22:03:03 | INFO     | app.core.middleware:55 | → [6f28c42d] GET /health | ip=172.64.149.246 | user=anonymous
+2026-05-23 22:03:05 | INFO     | app.core.middleware:55 | → [93492a2d] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-23 22:03:05 | INFO     | app.core.middleware:102 | ← [6f28c42d] GET /health | 200 | 1253.79ms | user=anonymous
+2026-05-23 22:03:05 | INFO     | app.core.middleware:102 | ← [93492a2d] GET /health | 200 | 756.74ms | user=anonymous
+2026-05-23 22:03:17 | INFO     | app.core.middleware:55 | → [943499aa] GET /metrics | ip=172.18.0.4 | user=anonymous
+2026-05-23 22:03:17 | INFO     | app.core.middleware:102 | ← [943499aa] GET /metrics | 200 | 4.84ms | user=anonymous
+2026-05-23 22:03:32 | INFO     | app.core.middleware:55 | → [c31aa109] GET /metrics | ip=172.18.0.4 | user=anonymous
+2026-05-23 22:03:32 | INFO     | app.core.middleware:102 | ← [c31aa109] GET /metrics | 200 | 1.54ms | user=anonymous
