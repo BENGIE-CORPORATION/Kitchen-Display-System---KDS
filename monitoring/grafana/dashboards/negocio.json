@@ -1,0 +1,707 @@
+{
+  "uid": "kds-negocio-v1",
+  "title": "KDS — Negocio",
+  "description": "KPIs de negocio: cajas, pedidos, pagos y autenticación. Fuente: Prometheus ← backend KDS.",
+  "tags": ["kds", "negocio", "kpi"],
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "30s",
+  "time": { "from": "now-6h", "to": "now" },
+  "timepicker": {
+    "refresh_intervals": ["10s", "30s", "1m", "5m", "15m"],
+    "time_options": ["1h", "3h", "6h", "12h", "24h", "2d", "7d", "30d"]
+  },
+  "graphTooltip": 1,
+  "links": [
+    {
+      "title": "KDS — Sistema",
+      "url": "/d/kds-sistema-v1/kds-sistema",
+      "type": "link",
+      "icon": "external link",
+      "targetBlank": false
+    },
+    {
+      "title": "KDS — Logs",
+      "url": "/d/kds-logs-v1/kds-logs",
+      "type": "link",
+      "icon": "external link",
+      "targetBlank": false
+    }
+  ],
+
+  "panels": [
+
+    {
+      "id": 1,
+      "type": "row",
+      "title": "Cajas & Sesiones",
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 1 },
+      "collapsed": false
+    },
+
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Cajas abiertas ahora",
+      "description": "Número de sesiones de caja actualmente abiertas en todas las sucursales.",
+      "gridPos": { "x": 0, "y": 1, "w": 6, "h": 5 },
+      "datasource": "Prometheus",
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "auto",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "orange", "value": null },
+              { "color": "green",  "value": 1    }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "kds_cajas_sesiones_abiertas_actual",
+          "legendFormat": "Cajas abiertas",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Aperturas de caja (período)",
+      "description": "Total de aperturas de caja en el período seleccionado.",
+      "gridPos": { "x": 6, "y": 1, "w": 6, "h": 5 },
+      "datasource": "Prometheus",
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "fixedColor": "blue", "mode": "fixed" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "blue", "value": null }]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "increase(kds_cajas_aperturas_total[$__range])",
+          "legendFormat": "Aperturas",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Cierres de caja (período)",
+      "description": "Total de cierres de caja en el período seleccionado.",
+      "gridPos": { "x": 12, "y": 1, "w": 6, "h": 5 },
+      "datasource": "Prometheus",
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "fixedColor": "purple", "mode": "fixed" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "purple", "value": null }]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "increase(kds_cajas_cierres_total[$__range])",
+          "legendFormat": "Cierres",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Cajas abiertas en el tiempo",
+      "description": "Evolución del número de sesiones de caja abiertas simultáneamente.",
+      "gridPos": { "x": 18, "y": 1, "w": 6, "h": 5 },
+      "datasource": "Prometheus",
+      "options": {
+        "tooltip": { "mode": "single" },
+        "legend": { "displayMode": "hidden" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "min": 0,
+          "color": { "fixedColor": "green", "mode": "fixed" },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 20,
+            "spanNulls": true,
+            "drawStyle": "line"
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "kds_cajas_sesiones_abiertas_actual",
+          "legendFormat": "Cajas",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 6,
+      "type": "row",
+      "title": "Pedidos",
+      "gridPos": { "x": 0, "y": 6, "w": 24, "h": 1 },
+      "collapsed": false
+    },
+
+    {
+      "id": 7,
+      "type": "stat",
+      "title": "Total pedidos (período)",
+      "description": "Total de pedidos creados en el período seleccionado.",
+      "gridPos": { "x": 0, "y": 7, "w": 6, "h": 4 },
+      "datasource": "Prometheus",
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "fixedColor": "blue", "mode": "fixed" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "blue", "value": null }]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum(increase(kds_pedidos_creados_total[$__range]))",
+          "legendFormat": "Pedidos",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 8,
+      "type": "bargauge",
+      "title": "Pedidos por tipo",
+      "description": "Desglose de pedidos creados por tipo (mesa, mostrador, delivery, etc.) en el período.",
+      "gridPos": { "x": 6, "y": 7, "w": 10, "h": 9 },
+      "datasource": "Prometheus",
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true,
+        "minVizWidth": 0,
+        "minVizHeight": 10
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "continuous-blues" },
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "blue", "value": null }]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum by (tipo_pedido) (increase(kds_pedidos_creados_total[$__range]))",
+          "legendFormat": "{{tipo_pedido}}",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "Tasa de creación de pedidos",
+      "description": "Pedidos por minuto a lo largo del tiempo, desglosados por tipo.",
+      "gridPos": { "x": 16, "y": 7, "w": 8, "h": 9 },
+      "datasource": "Prometheus",
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "min": 0,
+          "custom": {
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": true
+          },
+          "color": { "mode": "palette-classic" }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum by (tipo_pedido) (rate(kds_pedidos_creados_total[$__interval]))",
+          "legendFormat": "{{tipo_pedido}}",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 10,
+      "type": "row",
+      "title": "Pagos",
+      "gridPos": { "x": 0, "y": 16, "w": 24, "h": 1 },
+      "collapsed": false
+    },
+
+    {
+      "id": 11,
+      "type": "stat",
+      "title": "Monto acumulado (período)",
+      "description": "Suma total del monto de pagos registrados en el período. Unidad en la moneda configurada.",
+      "gridPos": { "x": 0, "y": 17, "w": 8, "h": 4 },
+      "datasource": "Prometheus",
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "color": { "fixedColor": "dark-green", "mode": "fixed" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "dark-green", "value": null }]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "increase(kds_pagos_monto_acumulado_total[$__range])",
+          "legendFormat": "Monto",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 12,
+      "type": "stat",
+      "title": "Pagos registrados (período)",
+      "description": "Número total de pagos procesados en el período.",
+      "gridPos": { "x": 8, "y": 17, "w": 8, "h": 4 },
+      "datasource": "Prometheus",
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "fixedColor": "green", "mode": "fixed" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "green", "value": null }]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum(increase(kds_pagos_registrados_total[$__range]))",
+          "legendFormat": "Pagos",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 13,
+      "type": "stat",
+      "title": "Reversiones (período)",
+      "description": "Número de pagos reversados/anulados en el período. Debería ser 0 en operación normal.",
+      "gridPos": { "x": 16, "y": 17, "w": 8, "h": 4 },
+      "datasource": "Prometheus",
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green",  "value": null },
+              { "color": "yellow", "value": 1    },
+              { "color": "red",    "value": 5    }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum(increase(kds_pagos_reversados_total[$__range]))",
+          "legendFormat": "Reversiones",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 14,
+      "type": "bargauge",
+      "title": "Pagos por método",
+      "description": "Distribución de pagos por método (efectivo, tarjeta, SINPE, etc.) en el período.",
+      "gridPos": { "x": 0, "y": 21, "w": 12, "h": 9 },
+      "datasource": "Prometheus",
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "continuous-greens" },
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "green", "value": null }]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum by (metodo_pago) (increase(kds_pagos_registrados_total[$__range]))",
+          "legendFormat": "{{metodo_pago}}",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 15,
+      "type": "timeseries",
+      "title": "Tasa de pagos en el tiempo",
+      "description": "Pagos por minuto desglosados por método de pago.",
+      "gridPos": { "x": 12, "y": 21, "w": 12, "h": 9 },
+      "datasource": "Prometheus",
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "min": 0,
+          "custom": {
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": true
+          },
+          "color": { "mode": "palette-classic" }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum by (metodo_pago) (rate(kds_pagos_registrados_total[$__interval]))",
+          "legendFormat": "{{metodo_pago}}",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 16,
+      "type": "row",
+      "title": "Autenticación",
+      "gridPos": { "x": 0, "y": 30, "w": 24, "h": 1 },
+      "collapsed": false
+    },
+
+    {
+      "id": 17,
+      "type": "timeseries",
+      "title": "Logins: exitosos vs fallidos",
+      "description": "Intentos de inicio de sesión por resultado (exito / error_credenciales / etc.).",
+      "gridPos": { "x": 0, "y": 31, "w": 12, "h": 8 },
+      "datasource": "Prometheus",
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "right", "calcs": ["sum"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "min": 0,
+          "custom": {
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": true
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "exitoso" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "error_credenciales" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }]
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum by (resultado) (rate(kds_auth_logins_total[$__interval]))",
+          "legendFormat": "{{resultado}}",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 18,
+      "type": "stat",
+      "title": "Tasa de éxito en login (últimos 5 min)",
+      "description": "Porcentaje de logins exitosos sobre el total de intentos en los últimos 5 minutos.",
+      "gridPos": { "x": 12, "y": 31, "w": 6, "h": 4 },
+      "datasource": "Prometheus",
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red",    "value": null },
+              { "color": "yellow", "value": 0.8  },
+              { "color": "green",  "value": 0.95 }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum(rate(kds_auth_logins_total{resultado=\"exitoso\"}[5m])) / sum(rate(kds_auth_logins_total[5m]))",
+          "legendFormat": "Éxito %",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 19,
+      "type": "stat",
+      "title": "Registros nuevos (período)",
+      "description": "Usuarios nuevos registrados en el período seleccionado.",
+      "gridPos": { "x": 18, "y": 31, "w": 6, "h": 4 },
+      "datasource": "Prometheus",
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "fixedColor": "blue", "mode": "fixed" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "blue", "value": null }]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum(increase(kds_auth_registros_total{resultado=\"exitoso\"}[$__range]))",
+          "legendFormat": "Registros",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 20,
+      "type": "timeseries",
+      "title": "Registros de usuarios",
+      "description": "Tasa de registros nuevos (exitosos y fallidos).",
+      "gridPos": { "x": 12, "y": 35, "w": 12, "h": 4 },
+      "datasource": "Prometheus",
+      "options": {
+        "tooltip": { "mode": "multi" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "min": 0,
+          "custom": {
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": true
+          },
+          "color": { "mode": "palette-classic" }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum by (resultado) (rate(kds_auth_registros_total[$__interval]))",
+          "legendFormat": "{{resultado}}",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 21,
+      "type": "row",
+      "title": "HTTP API",
+      "gridPos": { "x": 0, "y": 39, "w": 24, "h": 1 },
+      "collapsed": false
+    },
+
+    {
+      "id": 22,
+      "type": "timeseries",
+      "title": "Tasa de error HTTP (5xx)",
+      "description": "Porcentaje de respuestas HTTP 5xx sobre el total. Alerta si supera el 5%.",
+      "gridPos": { "x": 0, "y": 40, "w": 12, "h": 8 },
+      "datasource": "Prometheus",
+      "options": {
+        "tooltip": { "mode": "single" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "custom": {
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": true
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green",  "value": null },
+              { "color": "yellow", "value": 0.01 },
+              { "color": "red",    "value": 0.05 }
+            ]
+          },
+          "color": { "mode": "thresholds" }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "sum(rate(http_requests_total{status_code=~\"5..\"}[$__interval])) / sum(rate(http_requests_total[$__interval]))",
+          "legendFormat": "Error rate 5xx",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 23,
+      "type": "timeseries",
+      "title": "Latencia p95 por endpoint",
+      "description": "Latencia en el percentil 95 por handler de la API. Objetivo: < 500ms.",
+      "gridPos": { "x": 12, "y": 40, "w": 12, "h": 8 },
+      "datasource": "Prometheus",
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "right", "calcs": ["mean", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "min": 0,
+          "custom": {
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 5,
+            "spanNulls": true
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green",  "value": null },
+              { "color": "yellow", "value": 0.5  },
+              { "color": "red",    "value": 2.0  }
+            ]
+          },
+          "color": { "mode": "palette-classic" }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "histogram_quantile(0.95, sum by (handler, le) (rate(http_request_duration_seconds_bucket[$__interval])))",
+          "legendFormat": "{{handler}}",
+          "refId": "A"
+        }
+      ]
+    }
+
+  ]
+}

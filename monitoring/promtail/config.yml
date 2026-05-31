@@ -1,0 +1,84 @@
+# ══════════════════════════════════════════════════════════════
+#  Promtail — Configuración
+#  Agente que lee app.json y empuja los logs a Loki.
+#
+#  Pipeline de procesamiento por registro:
+#    1. Leer línea JSON del archivo
+#    2. Parsear campos: ts, level, logger, func, line, msg, exception
+#    3. Promover level y logger como etiquetas Loki (para filtrado rápido)
+#    4. Usar ts como timestamp oficial del log
+#    5. Usar msg como el cuerpo del log visible en Grafana
+# ══════════════════════════════════════════════════════════════
+
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+  log_level: warn
+
+# Archivo de posiciones: recuerda hasta dónde leyó cada archivo.
+# Persiste entre reinicios para no reingestar logs duplicados.
+positions:
+  filename: /tmp/promtail-positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+    # Backoff y reintentos ante fallos temporales de Loki
+    backoff_config:
+      min_period:  500ms
+      max_period:  5m
+      max_retries: 10
+    # Timeout de envío por lote
+    timeout: 10s
+
+scrape_configs:
+
+  # ── Logs de la aplicación KDS ──────────────────────────────
+  - job_name: kds-backend
+
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job:     kds-backend    # etiqueta principal para queries: {job="kds-backend"}
+          service: backend
+          __path__: /var/log/kds/app.json   # archivo montado desde el backend
+
+    pipeline_stages:
+
+      # 1. Parsear la línea completa como JSON
+      - json:
+          expressions:
+            ts:        ts
+            level:     level
+            logger:    logger
+            func:      func
+            line:      line
+            msg:       msg
+            exception: exception
+
+      # 2. Promover campos a etiquetas Loki
+      #    IMPORTANTE: mantener cardinalidad baja.
+      #    - level:  ~6 valores posibles → perfecto como etiqueta
+      #    - logger: ~20 módulos posibles → aceptable
+      #    NO agregar: func, line, msg (alta cardinalidad)
+      - labels:
+          level:
+          logger:
+
+      # 3. Usar el timestamp del log (no el de ingesta)
+      #    Formato: "2026-05-30T14:23:01.123Z" (ISO 8601 UTC)
+      - timestamp:
+          source: ts
+          format: "2006-01-02T15:04:05.000Z"
+          fallback_formats:
+            - RFC3339
+            - RFC3339Nano
+
+      # 4. El cuerpo del log en Grafana será el campo "msg"
+      #    (la línea formateada y legible del logger)
+      - output:
+          source: msg
+
+      # Nota: func y line NO se promueven como structured_metadata porque
+      # Loki tiene allow_structured_metadata: false. Siguen disponibles
+      # en el body JSON y se pueden extraer en LogQL con | json | func="..."

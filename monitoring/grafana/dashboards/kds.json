@@ -46,7 +46,7 @@
       "gridPos": {"h":4,"w":6,"x":0,"y":9},
       "targets": [{
         "datasource": "Prometheus",
-        "expr": "sum(rate(http_requests_total{status=~\"5..\"}[5m])) / sum(rate(http_requests_total[5m])) * 100",
+        "expr": "sum(rate(http_requests_total{status_code=~\"5..\"}[5m])) / sum(rate(http_requests_total[5m])) * 100",
         "legendFormat": "Error Rate"
       }],
       "fieldConfig": {

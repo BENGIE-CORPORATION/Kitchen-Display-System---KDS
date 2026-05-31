@@ -1,0 +1,27 @@
+# ══════════════════════════════════════════════════════════════
+#  Grafana Alerting — Contact Points
+#
+#  Para activar notificaciones por email, configurar en docker-compose:
+#    GF_SMTP_ENABLED=true
+#    GF_SMTP_HOST=smtp.gmail.com:587
+#    GF_SMTP_USER=tu@email.com
+#    GF_SMTP_PASSWORD=tu-app-password
+#    GF_SMTP_FROM_ADDRESS=tu@email.com
+#  Y cambiar "addresses" abajo por el email del destinatario.
+#
+#  Para agregar Slack u otros canales: hacerlo desde la UI de Grafana
+#  en Alerting → Contact points → Add contact point.
+# ══════════════════════════════════════════════════════════════
+
+apiVersion: 1
+
+contactPoints:
+  - orgId: 1
+    name: KDS Email
+    receivers:
+      - uid: kds-email-receiver
+        type: email
+        settings:
+          addresses: "admin@tudominio.com"
+          singleEmail: false
+        disableResolveMessage: false

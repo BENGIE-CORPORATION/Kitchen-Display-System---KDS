@@ -6,7 +6,15 @@ scrape_configs:
   - job_name: "kds-backend"
     metrics_path: "/metrics"
     static_configs:
-      - targets: ["backend:8000"]   # nombre del servicio en docker-compose
+      - targets: ["backend:8000"]
         labels:
           service: "backend"
           env: "development"
+
+  - job_name: "cadvisor"
+    metrics_path: "/metrics"
+    scrape_interval: 10s          # métricas de contenedores cambian rápido
+    static_configs:
+      - targets: ["cadvisor:8080"]
+        labels:
+          service: "cadvisor"

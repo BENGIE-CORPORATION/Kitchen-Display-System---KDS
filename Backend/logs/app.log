@@ -5493,3 +5493,127 @@ For more info
 2026-05-31 01:28:21 | INFO     | app.core.middleware:55 | → [8d1d31b6] GET /metrics | ip=172.18.0.4 | user=anonymous
 2026-05-31 01:28:21 | INFO     | app.core.middleware:102 | ← [8d1d31b6] GET /metrics | 200 | 4.0ms | user=anonymous
 2026-05-31 01:28:21 | INFO     | app.core.middleware:102 | ← [7f01ca31] GET /health | 200 | 1248.2ms | user=anonymous
+2026-05-31 01:30:05 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-05-31 01:30:05 | INFO     | app.main:89 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
+2026-05-31 01:30:06 | INFO     | app.core.logger:75 | Logger configurado | nivel=DEBUG | debug=True
+2026-05-31 01:30:06 | INFO     | app.main:89 | Servidor iniciado | app=Backend FastAPI for BENJI Kitchen System Display | v=0.1.0 | env=development | debug=True
+2026-05-31 01:30:09 | INFO     | app.core.middleware:55 | → [77920441] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-31 01:30:10 | INFO     | app.core.middleware:102 | ← [77920441] GET /health | 200 | 1258.49ms | user=anonymous
+2026-05-31 01:30:27 | INFO     | app.core.middleware:55 | → [b8fb4370] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:30:27 | INFO     | app.core.middleware:102 | ← [b8fb4370] GET /metrics | 200 | 5.83ms | user=anonymous
+2026-05-31 01:30:40 | INFO     | app.core.middleware:55 | → [fd00031e] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-31 01:30:41 | INFO     | app.core.middleware:102 | ← [fd00031e] GET /health | 200 | 1096.11ms | user=anonymous
+2026-05-31 01:30:42 | INFO     | app.core.middleware:55 | → [347bfbb3] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:30:42 | INFO     | app.core.middleware:102 | ← [347bfbb3] GET /metrics | 200 | 2.92ms | user=anonymous
+2026-05-31 01:30:57 | INFO     | app.core.middleware:55 | → [1ee9cde9] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:30:57 | INFO     | app.core.middleware:102 | ← [1ee9cde9] GET /metrics | 200 | 7.98ms | user=anonymous
+2026-05-31 01:31:11 | INFO     | app.core.middleware:55 | → [6f633184] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-31 01:31:12 | INFO     | app.core.middleware:55 | → [ab8644b7] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:31:12 | INFO     | app.core.middleware:102 | ← [ab8644b7] GET /metrics | 200 | 5.41ms | user=anonymous
+2026-05-31 01:31:13 | INFO     | app.core.middleware:102 | ← [6f633184] GET /health | 200 | 1243.58ms | user=anonymous
+2026-05-31 01:31:27 | INFO     | app.core.middleware:55 | → [c1b4f5f7] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:31:27 | INFO     | app.core.middleware:102 | ← [c1b4f5f7] GET /metrics | 200 | 3.12ms | user=anonymous
+2026-05-31 01:31:42 | INFO     | app.core.middleware:55 | → [9778c112] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:31:42 | INFO     | app.core.middleware:102 | ← [9778c112] GET /metrics | 200 | 3.05ms | user=anonymous
+2026-05-31 01:31:43 | INFO     | app.core.middleware:55 | → [e13050a1] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-31 01:31:44 | INFO     | app.core.middleware:102 | ← [e13050a1] GET /health | 200 | 1149.22ms | user=anonymous
+2026-05-31 01:31:57 | INFO     | app.core.middleware:55 | → [f4a29989] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:31:57 | INFO     | app.core.middleware:102 | ← [f4a29989] GET /metrics | 200 | 4.51ms | user=anonymous
+2026-05-31 01:32:12 | INFO     | app.core.middleware:55 | → [6e5a1dc7] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:32:12 | INFO     | app.core.middleware:102 | ← [6e5a1dc7] GET /metrics | 200 | 3.85ms | user=anonymous
+2026-05-31 01:32:14 | INFO     | app.core.middleware:55 | → [d9903288] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-31 01:32:15 | INFO     | app.core.middleware:102 | ← [d9903288] GET /health | 200 | 1186.57ms | user=anonymous
+2026-05-31 01:32:27 | INFO     | app.core.middleware:55 | → [e1c5df17] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:32:27 | INFO     | app.core.middleware:102 | ← [e1c5df17] GET /metrics | 200 | 5.06ms | user=anonymous
+2026-05-31 01:32:42 | INFO     | app.core.middleware:55 | → [772c26c4] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:32:42 | INFO     | app.core.middleware:102 | ← [772c26c4] GET /metrics | 200 | 4.45ms | user=anonymous
+2026-05-31 01:32:45 | INFO     | app.core.middleware:55 | → [627348f6] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-31 01:32:46 | INFO     | app.core.middleware:102 | ← [627348f6] GET /health | 200 | 1189.65ms | user=anonymous
+2026-05-31 01:32:57 | INFO     | app.core.middleware:55 | → [8ccc849f] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:32:57 | INFO     | app.core.middleware:102 | ← [8ccc849f] GET /metrics | 200 | 5.78ms | user=anonymous
+2026-05-31 01:33:12 | INFO     | app.core.middleware:55 | → [c3a6c859] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:33:12 | INFO     | app.core.middleware:102 | ← [c3a6c859] GET /metrics | 200 | 5.17ms | user=anonymous
+2026-05-31 01:33:16 | INFO     | app.core.middleware:55 | → [310f0989] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-31 01:33:18 | INFO     | app.core.middleware:102 | ← [310f0989] GET /health | 200 | 1552.37ms | user=anonymous
+2026-05-31 01:33:27 | INFO     | app.core.middleware:55 | → [a97c7518] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:33:27 | INFO     | app.core.middleware:102 | ← [a97c7518] GET /metrics | 200 | 4.8ms | user=anonymous
+2026-05-31 01:33:42 | INFO     | app.core.middleware:55 | → [fb69b324] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:33:42 | INFO     | app.core.middleware:102 | ← [fb69b324] GET /metrics | 200 | 4.43ms | user=anonymous
+2026-05-31 01:33:48 | INFO     | app.core.middleware:55 | → [f20d34e4] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-31 01:33:50 | INFO     | app.core.middleware:102 | ← [f20d34e4] GET /health | 200 | 1456.77ms | user=anonymous
+2026-05-31 01:33:57 | INFO     | app.core.middleware:55 | → [f6309834] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:33:57 | INFO     | app.core.middleware:102 | ← [f6309834] GET /metrics | 200 | 5.37ms | user=anonymous
+2026-05-31 01:34:12 | INFO     | app.core.middleware:55 | → [8589cd5b] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:34:12 | INFO     | app.core.middleware:102 | ← [8589cd5b] GET /metrics | 200 | 4.29ms | user=anonymous
+2026-05-31 01:34:20 | INFO     | app.core.middleware:55 | → [4e99a2b7] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-31 01:34:21 | INFO     | app.core.middleware:102 | ← [4e99a2b7] GET /health | 200 | 1364.66ms | user=anonymous
+2026-05-31 01:34:27 | INFO     | app.core.middleware:55 | → [6c192939] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:34:27 | INFO     | app.core.middleware:102 | ← [6c192939] GET /metrics | 200 | 5.07ms | user=anonymous
+2026-05-31 01:34:42 | INFO     | app.core.middleware:55 | → [db2f112a] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:34:42 | INFO     | app.core.middleware:102 | ← [db2f112a] GET /metrics | 200 | 4.4ms | user=anonymous
+2026-05-31 01:34:51 | INFO     | app.core.middleware:55 | → [7507ec36] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-31 01:34:55 | INFO     | app.core.middleware:102 | ← [7507ec36] GET /health | 200 | 4001.44ms | user=anonymous
+2026-05-31 01:34:57 | INFO     | app.core.middleware:55 | → [20e5710f] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:34:57 | INFO     | app.core.middleware:102 | ← [20e5710f] GET /metrics | 200 | 4.72ms | user=anonymous
+2026-05-31 01:35:12 | INFO     | app.core.middleware:55 | → [686e4e4a] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:35:12 | INFO     | app.core.middleware:102 | ← [686e4e4a] GET /metrics | 200 | 5.76ms | user=anonymous
+2026-05-31 01:35:25 | INFO     | app.core.middleware:55 | → [95965d5e] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-31 01:35:26 | INFO     | app.core.middleware:102 | ← [95965d5e] GET /health | 200 | 1350.22ms | user=anonymous
+2026-05-31 01:35:27 | INFO     | app.core.middleware:55 | → [dee6dce6] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:35:27 | INFO     | app.core.middleware:102 | ← [dee6dce6] GET /metrics | 200 | 4.8ms | user=anonymous
+2026-05-31 01:35:42 | INFO     | app.core.middleware:55 | → [8ce98db4] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:35:42 | INFO     | app.core.middleware:102 | ← [8ce98db4] GET /metrics | 200 | 4.65ms | user=anonymous
+2026-05-31 01:35:56 | INFO     | app.core.middleware:55 | → [19bc33d4] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-31 01:35:57 | INFO     | app.core.middleware:55 | → [90b4278a] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:35:57 | INFO     | app.core.middleware:102 | ← [90b4278a] GET /metrics | 200 | 5.94ms | user=anonymous
+2026-05-31 01:35:58 | INFO     | app.core.middleware:102 | ← [19bc33d4] GET /health | 200 | 1348.52ms | user=anonymous
+2026-05-31 01:36:12 | INFO     | app.core.middleware:55 | → [d10a761d] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:36:12 | INFO     | app.core.middleware:102 | ← [d10a761d] GET /metrics | 200 | 4.85ms | user=anonymous
+2026-05-31 01:36:27 | INFO     | app.core.middleware:55 | → [9ad1a457] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:36:27 | INFO     | app.core.middleware:102 | ← [9ad1a457] GET /metrics | 200 | 6.75ms | user=anonymous
+2026-05-31 01:36:28 | INFO     | app.core.middleware:55 | → [00180540] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-31 01:36:29 | INFO     | app.core.middleware:102 | ← [00180540] GET /health | 200 | 1251.7ms | user=anonymous
+2026-05-31 01:36:42 | INFO     | app.core.middleware:55 | → [c4145d93] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:36:42 | INFO     | app.core.middleware:102 | ← [c4145d93] GET /metrics | 200 | 4.6ms | user=anonymous
+2026-05-31 01:36:57 | INFO     | app.core.middleware:55 | → [2c359829] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:36:57 | INFO     | app.core.middleware:102 | ← [2c359829] GET /metrics | 200 | 4.95ms | user=anonymous
+2026-05-31 01:36:59 | INFO     | app.core.middleware:55 | → [1af18eae] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-31 01:37:00 | INFO     | app.core.middleware:102 | ← [1af18eae] GET /health | 200 | 1119.19ms | user=anonymous
+2026-05-31 01:37:12 | INFO     | app.core.middleware:55 | → [5c294a36] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:37:12 | INFO     | app.core.middleware:102 | ← [5c294a36] GET /metrics | 200 | 5.2ms | user=anonymous
+2026-05-31 01:37:27 | INFO     | app.core.middleware:55 | → [9196b992] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:37:27 | INFO     | app.core.middleware:102 | ← [9196b992] GET /metrics | 200 | 3.99ms | user=anonymous
+2026-05-31 01:37:30 | INFO     | app.core.middleware:55 | → [1fa4d592] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-31 01:37:31 | INFO     | app.core.middleware:102 | ← [1fa4d592] GET /health | 200 | 1132.36ms | user=anonymous
+2026-05-31 01:37:42 | INFO     | app.core.middleware:55 | → [82adffe7] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:37:42 | INFO     | app.core.middleware:102 | ← [82adffe7] GET /metrics | 200 | 4.61ms | user=anonymous
+2026-05-31 01:37:57 | INFO     | app.core.middleware:55 | → [de024943] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:37:57 | INFO     | app.core.middleware:102 | ← [de024943] GET /metrics | 200 | 4.86ms | user=anonymous
+2026-05-31 01:38:02 | INFO     | app.core.middleware:55 | → [7df2b3ef] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-31 01:38:03 | INFO     | app.core.middleware:102 | ← [7df2b3ef] GET /health | 200 | 1100.0ms | user=anonymous
+2026-05-31 01:38:12 | INFO     | app.core.middleware:55 | → [a41bea15] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:38:12 | INFO     | app.core.middleware:102 | ← [a41bea15] GET /metrics | 200 | 5.37ms | user=anonymous
+2026-05-31 01:38:27 | INFO     | app.core.middleware:55 | → [dc76db49] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:38:27 | INFO     | app.core.middleware:102 | ← [dc76db49] GET /metrics | 200 | 4.67ms | user=anonymous
+2026-05-31 01:38:33 | INFO     | app.core.middleware:55 | → [6026076e] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-31 01:38:34 | INFO     | app.core.middleware:102 | ← [6026076e] GET /health | 200 | 1276.52ms | user=anonymous
+2026-05-31 01:38:42 | INFO     | app.core.middleware:55 | → [e4553505] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:38:42 | INFO     | app.core.middleware:102 | ← [e4553505] GET /metrics | 200 | 4.52ms | user=anonymous
+2026-05-31 01:38:57 | INFO     | app.core.middleware:55 | → [a507df48] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:38:57 | INFO     | app.core.middleware:102 | ← [a507df48] GET /metrics | 200 | 2.19ms | user=anonymous
+2026-05-31 01:39:04 | INFO     | app.core.middleware:55 | → [97397780] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-31 01:39:05 | INFO     | app.core.middleware:102 | ← [97397780] GET /health | 200 | 1208.6ms | user=anonymous
+2026-05-31 01:39:12 | INFO     | app.core.middleware:55 | → [aa52f595] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:39:12 | INFO     | app.core.middleware:102 | ← [aa52f595] GET /metrics | 200 | 4.96ms | user=anonymous
+2026-05-31 01:39:27 | INFO     | app.core.middleware:55 | → [102d544e] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:39:27 | INFO     | app.core.middleware:102 | ← [102d544e] GET /metrics | 200 | 5.14ms | user=anonymous
+2026-05-31 01:39:35 | INFO     | app.core.middleware:55 | → [cfbe291b] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-31 01:39:36 | INFO     | app.core.middleware:102 | ← [cfbe291b] GET /health | 200 | 1151.46ms | user=anonymous
+2026-05-31 01:39:42 | INFO     | app.core.middleware:55 | → [910c7b22] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:39:42 | INFO     | app.core.middleware:102 | ← [910c7b22] GET /metrics | 200 | 2.41ms | user=anonymous
+2026-05-31 01:39:57 | INFO     | app.core.middleware:55 | → [3eb7c935] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:39:57 | INFO     | app.core.middleware:102 | ← [3eb7c935] GET /metrics | 200 | 4.76ms | user=anonymous
+2026-05-31 01:40:06 | INFO     | app.core.middleware:55 | → [780bbe9d] GET /health | ip=127.0.0.1 | user=anonymous
+2026-05-31 01:40:08 | INFO     | app.core.middleware:102 | ← [780bbe9d] GET /health | 200 | 1198.18ms | user=anonymous
+2026-05-31 01:40:12 | INFO     | app.core.middleware:55 | → [28c9d866] GET /metrics | ip=172.18.0.3 | user=anonymous
+2026-05-31 01:40:12 | INFO     | app.core.middleware:102 | ← [28c9d866] GET /metrics | 200 | 4.66ms | user=anonymous

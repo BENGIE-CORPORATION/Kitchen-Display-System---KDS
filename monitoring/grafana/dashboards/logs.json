@@ -1,0 +1,428 @@
+{
+  "uid": "kds-logs-v1",
+  "title": "KDS — Logs",
+  "description": "Logs estructurados del backend KDS. Fuente: Loki ← Promtail ← logs/app.json",
+  "tags": ["kds", "logs", "loki"],
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "30s",
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {
+    "refresh_intervals": ["10s", "30s", "1m", "5m", "15m"],
+    "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d"]
+  },
+  "graphTooltip": 1,
+  "fiscalYearStartMonth": 0,
+  "links": [
+    {
+      "title": "KDS — Métricas",
+      "url": "/d/kds-metrics/kds-metricas",
+      "type": "link",
+      "icon": "external link",
+      "targetBlank": false
+    }
+  ],
+
+  "templating": {
+    "list": [
+      {
+        "name": "level",
+        "label": "Nivel",
+        "type": "custom",
+        "query": "ERROR,WARNING,INFO,SUCCESS,DEBUG,TRACE",
+        "current": { "text": "All", "value": "$__all" },
+        "options": [
+          { "text": "All",     "value": "$__all", "selected": true },
+          { "text": "ERROR",   "value": "ERROR" },
+          { "text": "WARNING", "value": "WARNING" },
+          { "text": "INFO",    "value": "INFO" },
+          { "text": "SUCCESS", "value": "SUCCESS" },
+          { "text": "DEBUG",   "value": "DEBUG" }
+        ],
+        "includeAll": true,
+        "allValue": ".+",
+        "multi": false,
+        "hide": 0
+      },
+      {
+        "name": "logger",
+        "label": "Módulo",
+        "type": "query",
+        "datasource": { "uid": "loki", "type": "loki" },
+        "query": "label_values({job=\"kds-backend\"}, logger)",
+        "current": { "text": "All", "value": "$__all" },
+        "includeAll": true,
+        "allValue": ".+",
+        "multi": false,
+        "refresh": 2,
+        "sort": 1,
+        "hide": 0
+      }
+    ]
+  },
+
+  "annotations": {
+    "list": [
+      {
+        "name": "Errores",
+        "datasource": { "uid": "loki", "type": "loki" },
+        "expr": "{job=\"kds-backend\", level=\"ERROR\"}",
+        "enable": true,
+        "hide": false,
+        "iconColor": "red",
+        "step": "60s"
+      }
+    ]
+  },
+
+  "panels": [
+
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Total logs (rango)",
+      "description": "Total de líneas de log en el rango de tiempo seleccionado.",
+      "gridPos": { "x": 0, "y": 0, "w": 4, "h": 4 },
+      "datasource": { "uid": "loki", "type": "loki" },
+      "options": {
+        "reduceOptions": { "calcs": ["sum"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "auto",
+        "orientation": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue",  "value": null },
+              { "color": "green", "value": 1    }
+            ]
+          },
+          "mappings": []
+        }
+      },
+      "targets": [
+        {
+          "datasource": { "uid": "loki", "type": "loki" },
+          "expr": "sum(count_over_time({job=\"kds-backend\"}[$__range]))",
+          "legendFormat": "Total",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "INFO",
+      "description": "Logs de nivel INFO en el rango seleccionado.",
+      "gridPos": { "x": 4, "y": 0, "w": 4, "h": 4 },
+      "datasource": { "uid": "loki", "type": "loki" },
+      "options": {
+        "reduceOptions": { "calcs": ["sum"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "fixedColor": "green", "mode": "fixed" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "green", "value": null }]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": { "uid": "loki", "type": "loki" },
+          "expr": "sum(count_over_time({job=\"kds-backend\", level=\"INFO\"}[$__range]))",
+          "legendFormat": "INFO",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "SUCCESS",
+      "description": "Logs de nivel SUCCESS en el rango seleccionado.",
+      "gridPos": { "x": 8, "y": 0, "w": 4, "h": 4 },
+      "datasource": { "uid": "loki", "type": "loki" },
+      "options": {
+        "reduceOptions": { "calcs": ["sum"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "fixedColor": "dark-green", "mode": "fixed" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "dark-green", "value": null }]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": { "uid": "loki", "type": "loki" },
+          "expr": "sum(count_over_time({job=\"kds-backend\", level=\"SUCCESS\"}[$__range]))",
+          "legendFormat": "SUCCESS",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "WARNING",
+      "description": "Logs de nivel WARNING en el rango seleccionado.",
+      "gridPos": { "x": 12, "y": 0, "w": 4, "h": 4 },
+      "datasource": { "uid": "loki", "type": "loki" },
+      "options": {
+        "reduceOptions": { "calcs": ["sum"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "fixedColor": "yellow", "mode": "fixed" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green",  "value": null },
+              { "color": "yellow", "value": 1    }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": { "uid": "loki", "type": "loki" },
+          "expr": "sum(count_over_time({job=\"kds-backend\", level=\"WARNING\"}[$__range]))",
+          "legendFormat": "WARNING",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "ERROR",
+      "description": "Logs de nivel ERROR en el rango seleccionado. Debería ser 0 en condiciones normales.",
+      "gridPos": { "x": 16, "y": 0, "w": 4, "h": 4 },
+      "datasource": { "uid": "loki", "type": "loki" },
+      "options": {
+        "reduceOptions": { "calcs": ["sum"] },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red",   "value": 1    }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": { "uid": "loki", "type": "loki" },
+          "expr": "sum(count_over_time({job=\"kds-backend\", level=\"ERROR\"}[$__range]))",
+          "legendFormat": "ERROR",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Tasa de error actual",
+      "description": "Porcentaje de logs que son ERROR en los últimos 5 minutos.",
+      "gridPos": { "x": 20, "y": 0, "w": 4, "h": 4 },
+      "datasource": { "uid": "loki", "type": "loki" },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green",  "value": null   },
+              { "color": "yellow", "value": 0.01   },
+              { "color": "red",    "value": 0.05   }
+            ]
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasource": { "uid": "loki", "type": "loki" },
+          "expr": "sum(rate({job=\"kds-backend\", level=\"ERROR\"}[5m])) / sum(rate({job=\"kds-backend\"}[5m]))",
+          "legendFormat": "Error %",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Volumen de logs por nivel",
+      "description": "Tasa de logs por segundo agrupada por nivel. Identifica picos de errores y actividad inusual.",
+      "gridPos": { "x": 0, "y": 4, "w": 16, "h": 8 },
+      "datasource": { "uid": "loki", "type": "loki" },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "desc" },
+        "legend": { "displayMode": "table", "placement": "right", "calcs": ["sum", "max"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "custom": {
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 15,
+            "spanNulls": true
+          }
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "ERROR"   }, "properties": [{ "id": "color", "value": { "fixedColor": "red",        "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "WARNING" }, "properties": [{ "id": "color", "value": { "fixedColor": "yellow",     "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "INFO"    }, "properties": [{ "id": "color", "value": { "fixedColor": "green",      "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "SUCCESS" }, "properties": [{ "id": "color", "value": { "fixedColor": "dark-green", "mode": "fixed" } }] },
+          { "matcher": { "id": "byName", "options": "DEBUG"   }, "properties": [{ "id": "color", "value": { "fixedColor": "gray",       "mode": "fixed" } }] }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": { "uid": "loki", "type": "loki" },
+          "expr": "sum by (level) (rate({job=\"kds-backend\"}[$__interval]))",
+          "legendFormat": "{{level}}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 8,
+      "type": "bargauge",
+      "title": "Actividad por módulo",
+      "description": "Cantidad de logs por módulo/logger en el rango seleccionado. Los módulos más activos aparecen primero.",
+      "gridPos": { "x": 16, "y": 4, "w": 8, "h": 8 },
+      "datasource": { "uid": "loki", "type": "loki" },
+      "options": {
+        "reduceOptions": { "calcs": ["sum"] },
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "valueMode": "color",
+        "showUnfilled": true,
+        "minVizWidth": 0,
+        "minVizHeight": 10
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "continuous-blues" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "blue", "value": null }]
+          },
+          "mappings": []
+        }
+      },
+      "targets": [
+        {
+          "datasource": { "uid": "loki", "type": "loki" },
+          "expr": "sum by (logger) (count_over_time({job=\"kds-backend\"}[$__range]))",
+          "legendFormat": "{{logger}}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 9,
+      "type": "logs",
+      "title": "Errores y Warnings recientes",
+      "description": "Stream de logs con nivel ERROR o WARNING. Se actualiza automáticamente cada 30s.",
+      "gridPos": { "x": 0, "y": 12, "w": 24, "h": 8 },
+      "datasource": { "uid": "loki", "type": "loki" },
+      "options": {
+        "dedupStrategy":    "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels":       true,
+        "showTime":         true,
+        "sortOrder":        "Descending",
+        "wrapLogMessage":   true
+      },
+      "targets": [
+        {
+          "datasource": { "uid": "loki", "type": "loki" },
+          "expr": "{job=\"kds-backend\", level=~\"ERROR|WARNING\"}",
+          "legendFormat": "",
+          "queryType": "range",
+          "refId": "A",
+          "maxLines": 200
+        }
+      ]
+    },
+
+    {
+      "id": 10,
+      "type": "logs",
+      "title": "Log stream completo",
+      "description": "Todos los logs. Usar los filtros de Nivel y Módulo en la parte superior del dashboard para refinar.",
+      "gridPos": { "x": 0, "y": 20, "w": 24, "h": 16 },
+      "datasource": { "uid": "loki", "type": "loki" },
+      "options": {
+        "dedupStrategy":     "none",
+        "enableLogDetails":  true,
+        "prettifyLogMessage": false,
+        "showCommonLabels":  false,
+        "showLabels":        true,
+        "showTime":          true,
+        "sortOrder":         "Descending",
+        "wrapLogMessage":    true
+      },
+      "targets": [
+        {
+          "datasource": { "uid": "loki", "type": "loki" },
+          "expr": "{job=\"kds-backend\", level=~\"$level\", logger=~\"$logger\"}",
+          "legendFormat": "",
+          "queryType": "range",
+          "refId": "A",
+          "maxLines": 500
+        }
+      ]
+    }
+
+  ]
+}

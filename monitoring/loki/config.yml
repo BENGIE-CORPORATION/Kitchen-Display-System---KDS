@@ -1,0 +1,74 @@
+# ══════════════════════════════════════════════════════════════
+#  Loki — Configuración
+#  Agregador de logs compatible con Grafana.
+#  Almacenamiento en filesystem (Docker volume).
+# ══════════════════════════════════════════════════════════════
+
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+  grpc_listen_port: 9096
+  log_level: warn          # solo errores de Loki en stdout (no polucionar con debug)
+
+# ── Modo monolítico (single binary) ──────────────────────────
+# Todos los componentes en un mismo proceso. Adecuado para deployments
+# de una sola instancia. Para escalar horizontalmente, usar modo microservicios.
+common:
+  instance_addr: 127.0.0.1
+  path_prefix: /loki
+  storage:
+    filesystem:
+      chunks_directory: /loki/chunks
+      rules_directory:  /loki/rules
+  replication_factor: 1
+  ring:
+    kvstore:
+      store: inmemory
+
+# ── Schema: formato de índice y almacenamiento ────────────────
+schema_config:
+  configs:
+    - from: 2024-01-01
+      store:        tsdb
+      object_store: filesystem
+      schema:       v13
+      index:
+        prefix: index_
+        period: 24h
+
+# ── Límites globales ──────────────────────────────────────────
+limits_config:
+  # Retención de 31 días (744h) para desarrollo.
+  # En producción subir a 2160h (90d) o lo que indique la política.
+  retention_period:          744h
+  volume_enabled:            true   # habilita /loki/api/v1/index/volume (usado por Grafana)
+  allow_structured_metadata: false  # metadatos estructurados no usados aún
+
+  # Límites de ingesta — evitar saturar disco en desarrollo
+  ingestion_rate_mb:         16
+  ingestion_burst_size_mb:   32
+  max_label_names_per_series: 15
+  max_label_value_length:    4096
+
+# ── Compactor: aplica retención y compacta índices ────────────
+compactor:
+  working_directory:    /loki/compactor
+  retention_enabled:    true
+  delete_request_store: filesystem
+
+# ── Ruler: sin alertas por ahora ──────────────────────────────
+ruler:
+  alertmanager_url: http://localhost:9093
+
+# ── Query range: configuración de caché y timeouts ────────────
+query_range:
+  results_cache:
+    cache:
+      embedded_cache:
+        enabled:  true
+        max_size_mb: 100
+
+# ── Analytics: deshabilitar telemetría ───────────────────────
+analytics:
+  reporting_enabled: false
