@@ -17,6 +17,8 @@ from .proveedores import router as proveedores_router
 from .recetas import router as recetas_router
 from .cajas import router as cajas_router
 from .clientes import router as clientes_router
+from .mesas import router as mesas_router
+from .metodos_pago import router as metodos_pago_router
 from .pagos import router as pagos_router
 from .pedidos import router as pedidos_router
 
@@ -37,7 +39,9 @@ api_router.include_router(movimientos_inventario_router) # /api/v1/movimientos-i
 api_router.include_router(ordenes_compra_router)    # /api/v1/ordenes-compra/*
 api_router.include_router(proveedores_router)      # /api/v1/proveedores/*
 api_router.include_router(recetas_router)         # /api/v1/recetas/*
-api_router.include_router(cajas_router)         # /api/v1/cajas/*
+api_router.include_router(cajas_router)           # /api/v1/cajas/*
 api_router.include_router(clientes_router)         # /api/v1/clientes/*
-api_router.include_router(pagos_router)         # /api/v1/pagos/*
-api_router.include_router(pedidos_router)         # /api/v1/pedidos/*
+api_router.include_router(mesas_router)            # /api/v1/mesas/*
+api_router.include_router(metodos_pago_router)     # /api/v1/metodos-pago/*
+api_router.include_router(pagos_router)            # /api/v1/pagos/*
+api_router.include_router(pedidos_router)          # /api/v1/pedidos/*
