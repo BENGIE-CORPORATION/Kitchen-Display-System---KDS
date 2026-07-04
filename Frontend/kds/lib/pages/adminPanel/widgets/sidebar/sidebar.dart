@@ -4,6 +4,7 @@ import '../../../../routes/routes.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';
 import 'menu/menu_item.dart';
+import 'package:kds/common/widgets/sucursal_selector.dart';
 
 class TSidebar extends StatelessWidget {
   final String currentRoute;
@@ -50,17 +51,22 @@ class TSidebar extends StatelessWidget {
                     .apply(letterSpacingDelta: 1.2),
               ),
 
+              // selector de sucursal (solo visible para super_admin)
+              const SucursalSelector(),
+
               const SizedBox(height: 30),
 
               _buildMenuItem(context, TRoutes.admin, "Dashboard"),
+              _buildMenuItem(context, TRoutes.mainarea, "REVIEW: Área Principal (mesas)"),
               _buildMenuItem(context, TRoutes.sales, "Ventas"),
-              _buildMenuItem(context, TRoutes.mainarea, "Salón Principal"),
-              _buildMenuItem(context, TRoutes.caja, "Caja"),
-              _buildMenuItem(context, TRoutes.inventory, "Inventario"),
-              _buildMenuItem(context, TRoutes.providers, "Proveedores"),
+              _buildMenuItem(context, TRoutes.caja, "Cajas"),
               _buildMenuItem(context, TRoutes.menu, "Menú"),
-              _buildMenuItem(context, TRoutes.employees, "Empleados"),
-              _buildMenuItem(context, TRoutes.config, "Configuración"),
+              _buildMenuItem(context, TRoutes.inventory, "FIX: Inventario"),
+              _buildMenuItem(context, TRoutes.providers, "FIX: Proveedores"),
+              _buildMenuItem(context, TRoutes.ordenes, "FIX: Órdenes de Compra"),
+              _buildMenuItem(context, TRoutes.employees, "DUDOSO: Empleados"),
+              //_buildMenuItem(context, TRoutes.clientes, "NI: Clientes"),
+              _buildMenuItem(context, TRoutes.config, "REVIEW: Configuración"),
             ],
           ),
         ),

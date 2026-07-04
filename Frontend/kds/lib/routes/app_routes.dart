@@ -7,6 +7,7 @@ import '../pages/adminPanel/config/config_page.dart';
 import '../pages/adminPanel/employees/employees_page.dart';
 import '../pages/adminPanel/page_wrappers.dart';
 import '../pages/adminPanel/menu/menu_page.dart';
+import '../pages/adminPanel/ordenes_compra/ordenes_compra_page.dart';
 //import '../pages/admin/admin_layout.dart';
 import 'routes.dart';
 
@@ -17,14 +18,15 @@ class AppRoutes {
     
     // ADMIN ROUTES
     TRoutes.caja: (context) => const CajaPage(),
-    TRoutes.config: (context) => const ConfigPage(),
+    TRoutes.config: (context) => const ConfigScreen(),
     TRoutes.dashboard: (context) => const DashboardPage(),
-    TRoutes.employees: (context) => const EmployeesPage(),
+    TRoutes.employees: (context) => const EmployeesScreen(),
     TRoutes.inventory: (context) => const InventoryScreen(),
     TRoutes.mainarea: (context) => const MainAreaScreen(),
     TRoutes.menu: (context) => const MenuPage(),
-    TRoutes.providers: (context) => const ProvidersScreen(),
+    TRoutes.providers: (context) => const SuppliersScreen(),
     TRoutes.sales: (context) => const SalesScreen(),
+    TRoutes.ordenes: (context) => const OrdenesCompraScreen(),
     
 
     // SOLO ESTA
