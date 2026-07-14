@@ -177,6 +177,33 @@ class CategoriaRead {
       );
 }
 
+// VarianteRead — opciones de un producto (ej: tamaño, tipo de cocción)
+// usadas como modificadores al agregar un producto al carrito.
+class VarianteRead {
+  final String id;
+  final String productoId;
+  final String nombre;
+  final double precioAdicional;
+  final String estado;
+
+  const VarianteRead({
+    required this.id,
+    required this.productoId,
+    required this.nombre,
+    required this.precioAdicional,
+    required this.estado,
+  });
+
+  factory VarianteRead.fromJson(Map<String, dynamic> json) => VarianteRead(
+        id: json['id'],
+        productoId: json['producto_id'],
+        nombre: json['nombre'],
+        precioAdicional:
+            double.tryParse(json['precio_adicional']?.toString() ?? '0') ?? 0,
+        estado: json['estado'] ?? 'activo',
+      );
+}
+
 class PaginatedProductosSucursal {
   final List<ProductoSucursalRead> items;
   final int total;

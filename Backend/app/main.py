@@ -61,7 +61,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(SlowAPIMiddleware)
 
 # ── Logging de requests ───────────────────────────────────────────────────────
-app.add_middleware(RequestLoggingMiddleware)
+#app.add_middleware(RequestLoggingMiddleware)
 
 # ── CORS ─────────────────────────────────────────────────────────────────────
 # Orígenes permitidos leídos de CORS_ORIGINS en el .env correspondiente.
@@ -69,7 +69,7 @@ app.add_middleware(RequestLoggingMiddleware)
 # Prod: CORS_ORIGINS=https://tudominio.com
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins_list,
+    allow_origin_regex=r"http://localhost:\d+",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -155,6 +155,12 @@ async def global_exception_handler(request: Request, exc: Exception):
 def root():
     return {"status": "ok", "version": settings.app_version, "env": settings.app_env}
 
+@app.middleware("http")
+async def debug(request: Request, call_next):
+    print("🔥 METHOD:", request.method)
+    print("🔥 PATH:", request.url.path)
+    print("🔥 ORIGIN:", request.headers.get("origin"))
+    return await call_next(request)
 
 # ─── Health check completo ────────────────────────────────────────────────────
 

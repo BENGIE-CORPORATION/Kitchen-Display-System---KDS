@@ -55,6 +55,73 @@ class StatusBadge extends StatelessWidget {
         textColor: Color(0xFFB45309),
       );
 
+  /// Estados reales de mesa (/mesas) — libre | ocupada | reservada | fuera_de_servicio
+  factory StatusBadge.fueraDeServicio() => const StatusBadge(
+        label: 'Fuera de servicio',
+        backgroundColor: Color(0xFFF3F4F6),
+        textColor: Color(0xFF4B5563),
+      );
+
+  /// Estados de pedido/cocina (/pedidos) — abierto | en_preparacion | listo | entregado
+  factory StatusBadge.nuevo() => const StatusBadge(
+        label: 'Nuevo',
+        backgroundColor: Color(0xFFDBEAFE),
+        textColor: Color(0xFF1D4ED8),
+        dotColor: Color(0xFF2563EB),
+      );
+
+  factory StatusBadge.enPreparacion() => const StatusBadge(
+        label: 'En preparación',
+        backgroundColor: Color(0xFFFEF3C7),
+        textColor: Color(0xFFB45309),
+        dotColor: Color(0xFFD97706),
+      );
+
+  factory StatusBadge.listo() => const StatusBadge(
+        label: 'Listo',
+        backgroundColor: Color(0xFFDCFCE7),
+        textColor: Color(0xFF15803D),
+        dotColor: Color(0xFF16A34A),
+      );
+
+  factory StatusBadge.entregado() => const StatusBadge(
+        label: 'Entregado',
+        backgroundColor: Color(0xFFF3F4F6),
+        textColor: Color(0xFF4B5563),
+      );
+
+  /// Mapea un estado textual de pedido a su badge correspondiente.
+  factory StatusBadge.pedidoEstado(String estado) {
+    switch (estado) {
+      case 'abierto':
+        return StatusBadge.nuevo();
+      case 'en_preparacion':
+        return StatusBadge.enPreparacion();
+      case 'listo':
+        return StatusBadge.listo();
+      case 'entregado':
+        return StatusBadge.entregado();
+      default:
+        return StatusBadge.inactive();
+    }
+  }
+
+  /// Mapea un estado textual de mesa a su badge correspondiente.
+  factory StatusBadge.mesaEstado(String estado) {
+    switch (estado) {
+      case 'libre':
+        return StatusBadge.available();
+      case 'ocupada':
+        return StatusBadge.occupied();
+      case 'reservada':
+        return StatusBadge.reserved();
+      case 'fuera_de_servicio':
+        return StatusBadge.fueraDeServicio();
+      default:
+        return StatusBadge.inactive();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(

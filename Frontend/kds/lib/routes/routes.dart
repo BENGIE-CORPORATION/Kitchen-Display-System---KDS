@@ -5,10 +5,8 @@ class TRoutes {
 
   static const home = '/';
   static const employee = '/employee';
-  //pendiente la parte de app de empleados
   static const kitchendisplay = '/kitchendisplay';
-  //pendiente la parte de kitchen display
-  
+
   static const admin = '/admin';
   static const dashboard = '/admin/dashboard';
   static const sales = '/admin/sales';

@@ -5,12 +5,14 @@ import 'package:go_router/go_router.dart';
 import '../pages/adminPanel/admin_layout.dart';
 import '../pages/adminPanel/dashboard/dashboard_page.dart';
 import '../pages/adminPanel/caja/caja_page.dart';
-import '../pages/adminPanel/config/config_page.dart';
-import '../pages/adminPanel/employees/employees_page.dart';
+//import '../pages/adminPanel/config/config_page.dart';
+//import '../pages/adminPanel/employees/employees_page.dart';
 import '../pages/adminPanel/menu/menu_page.dart';
 import '../pages/adminPanel/page_wrappers.dart';
 import '../pages/home/home_page.dart';
 import '../pages/login/login_page.dart';
+import '../pages/employeeApp/employee_app_page.dart';
+import '../pages/kitchenDisplay/kitchen_page.dart';
 import '../common/providers/auth_provider.dart';
 import 'routes.dart';
 
@@ -46,6 +48,14 @@ GoRouter createRouter(AuthProvider authProvider) {
       GoRoute(
         path: TRoutes.login,
         builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: TRoutes.employee,
+        builder: (context, state) => const EmployeeAppPage(),
+      ),
+      GoRoute(
+        path: TRoutes.kitchendisplay,
+        builder: (context, state) => const KitchenDisplayPage(),
       ),
 
       ShellRoute(

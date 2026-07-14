@@ -39,6 +39,16 @@ class SalesService {
     return PedidoReadDetalle.fromJson(data);
   }
 
+  static Future<PedidoRead> createPedido(Map<String, dynamic> body) async {
+    final data = await ApiService.post('/api/v1/pedidos/', body);
+    return PedidoRead.fromJson(data);
+  }
+
+  static Future<void> registrarPago(
+      String pedidoId, Map<String, dynamic> body) async {
+    await ApiService.post('/api/v1/pedidos/$pedidoId/pagos', body);
+  }
+
   static Future<PedidoRead> cambiarEstado(
     String id,
     String nuevoEstado, {
